@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What&#x27;s up Doc - Home Scholar Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/assets/css/site.css">
+<style>
+  /* font-family reads the shared --site-font custom property, defined
+     once in pipeline.site_nav.site_nav_style() (config.SITE_FONT_FAMILY)
+     -- home_page_design addendum follow-up: the site's typography is
+     one config knob, not a per-template hardcoded value. Trailing
+     fallback covers a custom node.html that somehow omits the site-nav
+     style block. */
+  body { font-family: var(--site-font, system-ui, sans-serif); max-width: 60rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #222; }
+  .breadcrumb { font-size: 0.85rem; color: #666; margin-bottom: 1.5rem; }
+  .breadcrumb a { color: #666; }
+  h1 { margin-top: 0; }
+  .node-cover { max-width: 220px; display: block; margin-bottom: 1rem; }
+
+  .folders, .files { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; margin: 1rem 0; }
+  .folder, .file-viewable, .file-download, .file-fbundle, .ext-link { text-decoration: none; color: #1a5fb4; }
+
+  /* §7 folder-listing display thumbnail */
+  .folder { display: flex; align-items: center; gap: 10px; }
+  .folder-thumb { width: 40px; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 4px; flex: 0 0 auto; }
+  .folder-name { line-height: 1.3; }
+
+  .gallery-preview { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .gallery-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; }
+
+  /* design_2 §1.2/§2.2 -- button-styled links (view-full-gallery, fbundle
+     view/download), shared look with each viewer page's own .btn */
+  .btn { display: inline-block; padding: 6px 14px; border-radius: 6px; background: #1a5fb4; color: #fff !important;
+         text-decoration: none !important; font-size: 0.85rem; border: none; cursor: pointer; }
+  .btn:hover { background: #164a8f; }
+  .btn.secondary { background: #eee; color: #222 !important; border: 1px solid #ccc; }
+  .btn.secondary:hover { background: #ddd; }
+  .fbundle-tile { display: flex; align-items: center; gap: 10px; }
+
+  /* asset buckets -- Ebooks / Images / Audio / Links / Facebook Bundles / Downloads */
+  /* .files is `display: flex; flex-direction: column; align-items:
+     flex-start` (see .folders, .files rule above -- kept that way on
+     purpose for §7's folder links, which should shrink to their own
+     content width, not stretch full-width). .asset-bucket/.view-toggle-
+     row are also direct flex-item children of .files, though, and
+     `align-items: flex-start` shrink-wraps THEM too by default -- which
+     silently collapsed every grid bucket below to a single narrow
+     column (the grid's own auto-fill sizing has no width to divide up
+     if its block-level ancestor never gets more than its content's
+     width in the first place). `align-self: stretch` opts these two
+     back into filling .files' full row width, independent of the
+     folder links' own shrink-to-fit behavior. Confirmed via a real
+     rendered page (Chromium/Playwright), not just reasoning about the
+     CSS -- same "measure it" lesson §6.4 already documents for this
+     codebase. */
+  .asset-bucket, .view-toggle-row { align-self: stretch; }
+  .asset-bucket { margin: 1.25rem 0; }
+  .bucket-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: #666; margin: 0 0 0.5rem; }
+
+  /* §4a -- ONE master Grid/List toggle, rendered once above the first of
+     the three ordered sections (downloads -> images -> links), governing
+     .bucket-items in every .asset-bucket except .fbundle (see module
+     docstring/_render_view_toggle() -- Facebook Bundles keeps its own
+     completed, untouched layout and is never in the toggle's reach). */
+  .view-toggle-row { display: flex; justify-content: flex-end; margin: 0 0 0.75rem; }
+  .view-toggle { display: inline-flex; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; flex: 0 0 auto; }
+  .view-toggle-btn { background: #fff; border: none; padding: 4px 10px; font-size: 0.78rem; color: #666; cursor: pointer; }
+  .view-toggle-btn + .view-toggle-btn { border-left: 1px solid #ddd; }
+  .view-toggle-btn[aria-pressed="true"] { background: #1a5fb4; color: #fff; }
+
+  /* §4a amendment -- every card-based bucket (Ebooks/Audio/Other/
+     Downloads/Images/Links -- everything except .fbundle) shares ONE
+     preview-card visual system, matching the look Links established
+     first (§5): a bordered, rounded card with a shaped thumb-wrap plus a
+     filename/label underneath, uniformly resized between Grid (CSS grid,
+     auto-fill columns) and List (compact 34px-square-thumb row) by the
+     shared toggle above -- not a bespoke smaller treatment per bucket.
+     default (no JS yet / view class not applied) falls back to a plain
+     column, same as before the toggle existed. */
+  .bucket-items { display: flex; flex-direction: column; gap: 0.5rem; }
+  .bucket-items.view-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; align-items: start; }
+  .bucket-items.view-list { display: flex; flex-direction: column; gap: 4px; }
+
+  /* Card shell -- shape is the primary type signal (book = 2/3 portrait
+     cover proportions, video = 16/9 landscape thumbnail proportions,
+     file/image = 1/1 square, unknown/no-preview-available = 4/3) --
+     reads before anyone gets to the label or badge text. Border color is
+     the secondary, redundant signal: 1px #ddd default, 1px red for video
+     specifically (session-confirmed values -- started at a thicker/
+     darker treatment, walked back to this after comparing against a
+     real page). type-file/type-image (§4a) reuse this exact shell --
+     only their thumb-wrap aspect ratio + inner content differ from the
+     original type-book/type-video/type-unknown set Links introduced. */
+  .preview-card { display: block; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; text-decoration: none; background: #fff; }
+  .preview-card.type-video { border-color: #c62828; }
+  .preview-card.type-book .preview-thumb-wrap { aspect-ratio: 2 / 3; }
+  .preview-card.type-video .preview-thumb-wrap { aspect-ratio: 16 / 9; }
+  .preview-card.type-unknown .preview-thumb-wrap { aspect-ratio: 4 / 3; }
+  .preview-card.type-file .preview-thumb-wrap,
+  .preview-card.type-image .preview-thumb-wrap { aspect-ratio: 1 / 1; }
+  .preview-thumb-wrap { position: relative; background: #eee; }
+  .preview-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fallback-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #aaa; background: #f2f2f2; }
+  .play-badge { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.1); }
+  .play-circle { width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; }
+  .platform-badge { position: absolute; left: 5px; bottom: 5px; font-size: 9px; padding: 1px 6px; border-radius: 8px; background: rgba(0,0,0,0.6); color: #fff; letter-spacing: 0.02em; }
+  .preview-card-label { padding: 6px 7px; font-size: 11.5px; color: #222; line-height: 1.3; word-break: break-word; }
+
+  /* type-file (§4a) -- icon is a flat badge graphic on a transparent
+     background, not a photo, so it gets `object-fit: contain` + padding
+     on a light neutral backdrop rather than the `cover`-fit real
+     thumbnails use (same idea as .fallback-icon above, just a real
+     per-filetype <img> instead of a text glyph, since every file gets an
+     icon -- config.FILETYPE_ICON_FALLBACK covers anything not in the
+     8-filetype map, so there's never a "no icon" case to handle here). */
+  .preview-card.type-file .preview-thumb-wrap { background: #f2f2f2; }
+  .preview-card.type-file .preview-thumb-wrap img { object-fit: contain; padding: 16%; box-sizing: border-box; }
+
+  /* type-image (§4a) -- the existing hover-preview + download widget
+     (pipeline.viewers.render_preview_tile()/PREVIEW_WIDGET_STYLE, §6.4)
+     is nested inside the shared thumb-wrap unchanged; its own
+     `.preview-thumb`/`.thumb-img` elements just need to fill the
+     wrap's box (previously a fixed 96x96px square of their own) so the
+     card shell -- not the widget -- now owns sizing. `.thumb-dl`'s
+     absolute corner-badge positioning is untouched, since it's already
+     relative to `.preview-thumb`, not to any fixed image size. */
+  .preview-card.type-image .preview-thumb-wrap .preview-thumb { display: block; width: 100%; height: 100%; }
+  .preview-card.type-image .preview-thumb-wrap .thumb-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* List view: a genuinely different, compact ROW -- fixed 34px square
+     thumbnail (shape distinction is grid-only; list relies on border
+     color for links, and is simply uniform for file/image cards) +
+     single-line label -- not the grid card shrunk into one column,
+     which produced tall wasteful rows when thumbnails kept their
+     type-specific aspect ratio. Badge/play-icon dropped: no room for
+     them at this size, and border color alone still carries the link
+     type signal. Label is nowrap+ellipsis so no row can wrap and grow
+     taller than its neighbors -- that's what makes every row the same
+     height, not just the fixed thumbnail size alone. Un-scoped from
+     `.asset-bucket.links` this pass (§4a) -- applies to every card in
+     every bucket the master toggle governs, not just Links. */
+  .view-list .preview-card { display: flex; align-items: center; gap: 8px; border-radius: 6px; }
+  .view-list .preview-thumb-wrap { flex: 0 0 auto; width: 34px; aspect-ratio: 1 / 1 !important; }
+  .view-list .play-badge, .view-list .platform-badge { display: none; }
+  .view-list .preview-card-label { padding: 4px 8px 4px 0; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* type-image in list view (§4a) -- the hover-preview widget's own
+     22px download badge (.thumb-dl) doesn't fit inside a 34px list
+     thumbnail (confirmed visually -- it swallowed the whole thumbnail).
+     Same tradeoff Links' list view already makes for its own badges at
+     this size (see .play-badge/.platform-badge above): drop it, keep
+     the thumbnail itself clickable for the hover-preview. Whole-row
+     download stays available from Grid view. */
+  .view-list .preview-card.type-image .thumb-dl { display: none; }
+</style>
+
+<style>
+  .preview-thumb { position: relative; display: inline-block; line-height: 0; }
+  .thumb-img { cursor: zoom-in; }
+  .thumb-dl { position: absolute; right: 4px; bottom: 4px; background: rgba(0,0,0,0.6); color: #fff;
+              width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center;
+              justify-content: center; text-decoration: none; font-size: 0.8rem; line-height: 1;
+              cursor: pointer; }
+  .thumb-dl:hover { background: rgba(0,0,0,0.85); }
+  .thumb-dl.downloading { opacity: 0.6; pointer-events: none; }
+
+  /* Fixed, centered preview that fades + scales in over a darkening
+     backdrop -- matching the reference catalog design (uploaded
+     catalog.html) rather than the earlier flat, abrupt-show/hide
+     modal. Driven by a CSS class (not the `hidden` attribute), since
+     `display` can't be transitioned -- opacity/visibility/transform
+     can. This also sidesteps the earlier `[hidden]` vs `display:`
+     specificity bug entirely for this element: nothing here sets its
+     own `display`, so there's no UA-stylesheet tie to lose.
+
+     pointer-events: none ALWAYS (never `auto`, even while .visible) --
+     this isn't cosmetic, it's load-bearing. Once shown, this overlay
+     sits on top of the very tile the mouse is still resting on; if it
+     accepted pointer events, the browser would treat the tile as
+     "left" the instant the overlay appeared (it's now the topmost
+     element under the cursor) even though the mouse never moved --
+     which immediately fired this module's own mouseleave handler and
+     hid the preview it had just shown. Confirmed directly: instrumented
+     logging caught `mouseleave` firing ~1s after `mouseenter`, exactly
+     when the dwell timer completed and the overlay appeared -- that's
+     what "flickers and doesn't show until repositioning the mouse" was.
+     The reference design had this right from the start (`.preview {
+     pointer-events: none; }`, permanently) -- this was lost when
+     adapting it. Dismissal relies entirely on the tile's own
+     mouseleave now (move the mouse away -> hides), not a click on the
+     overlay, since pointer-events: none means the overlay can never
+     receive a click in the first place. */
+  .preview-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+                      background: rgba(20,16,12,0); opacity: 0; visibility: hidden; pointer-events: none;
+                      transition: opacity 0.12s ease, background 0.12s ease, visibility 0s linear 0.12s;
+                      z-index: 200; }
+  .preview-overlay.visible { background: rgba(20,16,12,0.55); opacity: 1; visibility: visible;
+                              transition: opacity 0.12s ease, background 0.12s ease; }
+  .preview-overlay img { max-width: 92vw; max-height: 92vh; width: auto; height: auto;
+                          object-fit: contain; background: var(--card-bg, #fff); border: 4px solid var(--card-bg, #fff);
+                          box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.97);
+                          transition: transform 0.12s ease; }
+  .preview-overlay.visible img { transform: scale(1); }
+
+  /* Bug fix (see module docstring): `[hidden]` and a plain class
+     selector both have specificity (0,1,0); author CSS loaded after the
+     UA stylesheet wins that tie, so any `hidden`-toggled element that
+     also sets its own `display:` stays visible without this override.
+     !important beats the tie unconditionally regardless of order/
+     specificity. Still needed here for OTHER hidden-toggled elements
+     on pages that include this stylesheet (.preview-overlay itself no
+     longer relies on `hidden` -- see above). */
+  [hidden] { display: none !important; }
+</style>
+<style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+</style>
+</head>
+<body>
+<div class="site-nav"><a class="site-nav-home" href="/">&#9738; Home</a><nav class="site-pages-nav"><a href="/library/">Browse Library</a><a href="/about Home Scholar Library.html">About</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/ebook_collections.html">Ebook Collections</a><a href="/faq.html">FAQ</a><a href="/reading-guide.html">Reading Guide</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="breadcrumb"><a href="/library/">Home Scholar Library</a> / <a href="/library/--Fudd%2C%20Elmer/">--Fudd, Elmer</a> / <a href="/library/--Fudd%2C%20Elmer/What%27s%20up%20Doc/">What&#x27;s up Doc</a></div>
+<h1>What&#x27;s up Doc</h1>
+<img class="node-cover" src="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/dpx_053_lotus-vases_display.jpg" alt="What&#x27;s up Doc">
+
+<div class="folders"></div>
+<div class="files"><div class="view-toggle-row"><div class="view-toggle" role="group" aria-label="Asset view"><button type="button" class="view-toggle-btn" data-view="grid" aria-pressed="true">Grid</button><button type="button" class="view-toggle-btn" data-view="list" aria-pressed="false">List</button></div></div>
+<div class="asset-bucket images"><h3 class="bucket-title">Images</h3><div class="bucket-items"><div class="preview-card type-image"><div class="preview-thumb-wrap"><span class="preview-thumb" data-full="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/5c725f7720000001016eab0f.jpg" data-name="5c725f7720000001016eab0f.jpg"><img class="image-thumb thumb-img" src="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/5c725f7720000001016eab0f.jpg" alt="5c725f7720000001016eab0f.jpg"><a class="thumb-dl" href="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/5c725f7720000001016eab0f.jpg" download="5c725f7720000001016eab0f.jpg" title="Download">⤓</a></span></div><div class="preview-card-label">5c725f7720000001016eab0f.jpg</div></div><div class="preview-card type-image"><div class="preview-thumb-wrap"><span class="preview-thumb" data-full="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/ERs8nqJW4AMcTbs.jpg" data-name="ERs8nqJW4AMcTbs.jpg"><img class="image-thumb thumb-img" src="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/ERs8nqJW4AMcTbs.jpg" alt="ERs8nqJW4AMcTbs.jpg"><a class="thumb-dl" href="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/ERs8nqJW4AMcTbs.jpg" download="ERs8nqJW4AMcTbs.jpg" title="Download">⤓</a></span></div><div class="preview-card-label">ERs8nqJW4AMcTbs.jpg</div></div></div></div></div>
+<div id="preview-overlay" class="preview-overlay"><img id="preview-img" src="" alt=""></div>
+<script>
+(function() {
+  // §4a -- ONE master Grid/List toggle for the whole page (replaces the
+  // earlier Links-only per-bucket toggle/key). Applies to every
+  // .bucket-items EXCEPT inside .asset-bucket.fbundle -- Facebook
+  // Bundles is exempt on purpose (see catalog_renderer module docstring/
+  // _render_view_toggle()), so its own item layout is never touched here
+  // regardless of which view is selected.
+  var STORAGE_KEY = "library-asset-view";
+
+  function applyView(view) {
+    document.querySelectorAll(".asset-bucket:not(.fbundle) .bucket-items").forEach(function(items) {
+      items.classList.toggle("view-grid", view === "grid");
+      items.classList.toggle("view-list", view === "list");
+    });
+    document.querySelectorAll(".view-toggle-btn").forEach(function(btn) {
+      btn.setAttribute("aria-pressed", btn.dataset.view === view ? "true" : "false");
+    });
+  }
+
+  document.addEventListener("click", function(e) {
+    var btn = e.target.closest(".view-toggle-btn");
+    if (!btn) return;
+    var view = btn.dataset.view;
+    try { localStorage.setItem(STORAGE_KEY, view); } catch (err) { /* private browsing, etc. */ }
+    applyView(view);
+  });
+
+  var saved = "grid";
+  try { saved = localStorage.getItem(STORAGE_KEY) || "grid"; } catch (err) { /* private browsing, etc. */ }
+  applyView(saved);
+})();
+</script>
+<script>
+(function() {
+  var HOVER_DELAY_MS = 700;
+  var overlay = document.getElementById("preview-overlay");
+  var overlayImg = document.getElementById("preview-img");
+  if (!overlay || !overlayImg) return;
+  var hoverTimer = null;
+
+  function showPreview(tile) {
+    overlayImg.src = tile.dataset.full;
+    overlayImg.alt = tile.dataset.name || "";
+    overlay.classList.add("visible");
+  }
+  function hidePreview() {
+    overlay.classList.remove("visible");
+  }
+
+  // Fetch-to-blob download: the plain `download` attribute on `.thumb-dl`
+  // is silently ignored by browsers for a cross-origin href (full_url
+  // points at Internet Archive), so a plain click just navigates/opens
+  // the image instead of saving it -- confirmed IA's file-serving
+  // response itself sends `Access-Control-Allow-Origin: *` (checked
+  // against a real item/file, both the archive.org redirect hop and the
+  // resolved ia*.us.archive.org response), so a same-origin-style fetch
+  // is allowed and we can build a real local download from the bytes.
+  // Falls back to opening the image in a new tab if the fetch ever
+  // fails (network error, IA outage, a future file host that doesn't
+  // send the header) -- never leaves the click doing nothing.
+  function downloadFull(link) {
+    var url = link.getAttribute("href");
+    var filename = link.getAttribute("download") || "";
+    link.classList.add("downloading");
+    fetch(url)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error("bad response " + resp.status);
+        return resp.blob();
+      })
+      .then(function(blob) {
+        var blobUrl = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 30000);
+      })
+      .catch(function() {
+        window.open(url, "_blank");
+      })
+      .finally(function() {
+        link.classList.remove("downloading");
+      });
+  }
+
+  document.querySelectorAll(".preview-thumb").forEach(function(tile) {
+    // Listen on the TILE (the wrapper around both the image and the
+    // small download icon), not the <img> alone -- the download icon
+    // is a sibling absolutely-positioned on top of the image's corner,
+    // so listening on just the <img> meant the cursor landing on/near
+    // that icon fired a spurious mouseleave (icon is now topmost under
+    // the cursor) right as the dwell timer was about to complete,
+    // resetting it -- which is why the preview only ever appeared
+    // after "repositioning" the mouse. The wrapper's boundary is what
+    // actually matters for "is the pointer over this tile at all".
+    tile.addEventListener("mouseenter", function() {
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(function() { showPreview(tile); }, HOVER_DELAY_MS);
+    });
+    tile.addEventListener("mouseleave", function() {
+      clearTimeout(hoverTimer);
+      hidePreview();
+    });
+  });
+
+  document.querySelectorAll(".thumb-dl").forEach(function(link) {
+    // The icon sits inside the same tile the hover-preview timer
+    // watches (deliberately -- see the tile-level listener comment
+    // above), so moving the cursor toward the icon to click it never
+    // leaves the tile: the dwell timer keeps running and the full
+    // preview overlay was popping up right as/before the click landed.
+    // Cancelling the timer (and hiding an already-shown preview) the
+    // moment the cursor reaches the icon specifically -- not just the
+    // tile generally -- stops that: hovering the icon is a distinct
+    // intent (download) from hovering the image (preview), even though
+    // both live inside the same tile boundary.
+    link.addEventListener("mouseenter", function() {
+      clearTimeout(hoverTimer);
+      hidePreview();
+    });
+    link.addEventListener("click", function(e) {
+      e.preventDefault();
+      clearTimeout(hoverTimer);
+      hidePreview();
+      downloadFull(link);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var INDEX_URL = '/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

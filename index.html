@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Home Scholar Library</title>
+<link rel="stylesheet" href="/assets/css/site.css">
+<style>
+  :root{--ink:#242018;--paper:#f3eee2;--cream:#fbf8f0;--gold:#a87a39;--rule:#c9b993;--deep:#172018}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink)}
+  /* font-family reads the shared --site-font custom property (defined
+     in the 
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+ block below, config.SITE_FONT_FAMILY) --
+     home_page_design addendum follow-up: the site's typography is one
+     config knob, applied here too, NOT just the nav -- except the hero
+     itself, which is explicitly locked below regardless of this value. */
+  body{font-family:var(--site-font, Georgia, "Times New Roman", serif);line-height:1.55}
+  .page{max-width:1280px;margin:0 auto;background:var(--cream);min-height:100vh;box-shadow:0 0 36px #0001}
+  .hero{position:relative;height:min(54vw,600px);min-height:390px;background:url('/assets/images/muses-banner.png') center 45%/cover no-repeat;overflow:hidden}
+  .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,13,9,.03) 38%,rgba(12,14,10,.26) 66%,rgba(15,16,12,.88) 100%)}
+  /* LOCKED to the banner's own original font, deliberately independent
+     of --site-font/body above -- this is the hero text as supplied
+     (eyebrow/h1/rule/subtitle all inherit font-family down from here),
+     and per explicit instruction it must never change even if the rest
+     of the site's typography (--site-font, config.SITE_FONT_FAMILY)
+     does later. */
+  .mast{position:absolute;z-index:1;left:0;right:0;bottom:0;padding:clamp(32px,5vw,72px);color:#fffdf5;text-align:center;text-shadow:0 2px 18px #0009;font-family:Georgia,"Times New Roman",serif}
+  .eyebrow{font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;margin:0 0 12px;color:#eee1bd}
+  h1{font-weight:400;font-size:clamp(2.4rem,5.7vw,5.4rem);line-height:.98;margin:0;letter-spacing:-.025em}
+  .rule{width:90px;height:1px;background:#d7bd7a;margin:25px auto 18px}
+  .subtitle{font-size:clamp(1rem,1.5vw,1.22rem);max-width:680px;margin:auto;color:#f3eee2}
+  main{padding:clamp(40px,6vw,82px) clamp(28px,8vw,104px) 72px;text-align:center}
+  footer{border-top:1px solid var(--rule);margin:0 8%;padding:24px 0 34px;text-align:center;font-size:.78rem;letter-spacing:.08em;color:#776d5d;text-transform:uppercase}
+
+  /* Utility bar above the hero -- deliberately NOT inside .hero/.mast,
+     so the banner image and its overlaid text (eyebrow/h1/rule/subtitle)
+     stay exactly as delivered, untouched by this addition. Slim, quiet,
+     cream-on-paper -- reads as part of the page's own frame, not a
+     competing masthead.
+
+     BUGFIX (this pass): this used to force `display:flex;justify-
+     content:flex-end`, which squashed the ENTIRE .site-nav block (a
+     single flex item here) into the top-right corner -- .site-nav's own
+     internal spread (pages-nav left, search pushed right via its own
+     `.site-search{margin-left:auto}`, see SITE_NAV_STYLE) never got a
+     chance to run, because flex-end had already collapsed it to its
+     shrink-to-fit width first. Every other page type embeds .site-nav
+     directly in a centered body with no such wrapper, which is why only
+     the home page looked different/off-center. Fixed by dropping the
+     wrapper's own flex/justify-content entirely -- .site-nav fills the
+     row and spreads itself exactly like it does everywhere else. */
+  .util-bar{max-width:1280px;margin:0 auto;padding:14px clamp(20px,4vw,48px)}
+  .util-bar .site-search{max-width:300px}
+  .util-bar .site-search input{border-color:var(--rule);background:var(--cream);font-family:Georgia,"Times New Roman",serif}
+
+  /* Home page categories (home_page_categories_design_addendum_20260810,
+     folded in this pass) -- Latest Additions / My Favorites / Home
+     Scholar Editions, badge-selectable, shared Grid/List toggle. Same
+     warm/serif language as the rest of the page, not the plain
+     system-ui library-browser look (§4a's card system is a
+     deliberately different, utilitarian register for the
+     file-explorer pages; this is the front door). Styling itself now
+     lives with the markup in pipeline.home's _HOME_CATEGORIES_STYLE
+     (injected inline per render, same as 
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+ below) --
+     retired the old .latest-section/.latest-heading/.latest-grid/
+     .home-card* rules that used to live here, since they're superseded
+     by that block's .home-categories/.home-tab/.home-panel/.home-grid/
+     .home-card* rules. Only --gold/--rule/--cream/--paper/--ink (the
+     page's own custom properties, defined above) are still shared. */
+
+  @media print{
+    @page{size:landscape;margin:0}
+    body,.page{background:#fff;box-shadow:none}
+    .page{max-width:none}
+    .hero{height:55vh;min-height:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    main{padding-top:36px;padding-bottom:34px}
+    .util-bar,.home-categories{display:none}
+  }
+  @media(max-width:620px){.hero{min-height:460px}.mast{padding:28px 22px 38px}main{padding-left:22px;padding-right:22px}}
+</style>
+<style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="util-bar"><div class="site-nav"><nav class="site-pages-nav"><a href="/library/">Browse Library</a><a href="/about Home Scholar Library.html">About</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/ebook_collections.html">Ebook Collections</a><a href="/faq.html">FAQ</a><a href="/reading-guide.html">Reading Guide</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div></div>
+  <header class="hero" aria-label="Classical muses banner">
+    <div class="mast">
+      <p class="eyebrow">A Library for Independent Study</p>
+      <h1>The Home Scholar Library</h1>
+      <div class="rule"></div>
+      <p class="subtitle">A quiet place for enduring books, thoughtful study, and the cultivation of a well-furnished mind.</p>
+    </div>
+  </header>
+  <main>
+    <section class="home-categories"><style>
+.home-categories{max-width:980px;margin:56px auto 0;text-align:left}
+.home-category-bar{display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;margin:0 0 30px}
+.home-tabs{display:flex;flex-wrap:wrap;gap:10px}
+.home-tab{font:inherit;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;border:1px solid var(--rule);color:var(--ink);border-radius:999px;
+  padding:8px 18px;cursor:pointer}
+.home-tab.is-active{background:var(--gold);border-color:var(--gold);color:var(--cream)}
+.home-view-toggle{font:inherit;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
+  background:transparent;border:1px solid var(--rule);color:var(--ink);border-radius:6px;
+  padding:7px 14px;cursor:pointer}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:24px}
+.home-panel.home-view-list .home-grid{display:flex;flex-direction:column;gap:0}
+.home-panel.home-view-list .home-card{display:flex;align-items:center;gap:14px;
+  padding:8px 0;border-bottom:1px solid var(--rule)}
+.home-panel.home-view-list .home-card-thumb{width:44px;aspect-ratio:2/3;flex:none}
+.home-panel.home-view-list .home-card-title{margin-top:0;text-align:left;font-size:.86rem}
+.home-card{display:block;text-decoration:none;color:var(--ink)}
+.home-card-thumb{aspect-ratio:2/3;background:var(--paper);border:1px solid var(--rule);
+  overflow:hidden;display:flex;align-items:center;justify-content:center}
+.home-card-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.home-card-fallback{font-size:2rem;color:var(--gold);opacity:.5}
+.home-card-title{margin-top:9px;font-size:.86rem;line-height:1.35;text-align:center}
+.home-card:hover .home-card-title{color:var(--gold)}
+.home-empty-note{text-align:center;color:#6b6253;font-size:.9rem}
+</style><div class="home-category-bar"><div class="home-tabs" role="tablist"><button type="button" class="home-tab is-active" data-panel="home-panel-latest" role="tab" aria-selected="true">Latest Additions</button><button type="button" class="home-tab" data-panel="home-panel-favorites" role="tab" aria-selected="false">My Favorites</button><button type="button" class="home-tab" data-panel="home-panel-hs_editions" role="tab" aria-selected="false">Home Scholar Editions</button></div><button type="button" id="home-view-toggle" class="home-view-toggle" aria-label="Toggle grid/list view">Grid / List</button></div><div class="home-panel" id="home-panel-latest" role="tabpanel"><div class="home-grid"><a class="home-card" href="/library/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%20Crisis%201919-1939/"><div class="home-card-thumb"><img src="http://localhost:8001/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%20Crisis%201919-1939/_display.jpg" alt=""></div><div class="home-card-title">The Twenty Year Crisis 1919-1939</div></a><a class="home-card" href="/library/--Abbott%2C%20Jacob/Alexander%20the%20Great/"><div class="home-card-thumb"><img src="http://localhost:8001/--Abbott%2C%20Jacob/Alexander%20the%20Great/_display.jpg" alt=""></div><div class="home-card-title">Alexander the Great</div></a><a class="home-card" href="/library/--Facebook%20Pages/Modernity%20and%20the%20Bonfire%20of%20the%20Humanities/"><div class="home-card-thumb"><img src="http://localhost:8001/--Facebook%20Pages/Modernity%20and%20the%20Bonfire%20of%20the%20Humanities/dpx_017_dark-spade_display.jpg" alt=""></div><div class="home-card-title">Modernity and the Bonfire of the Humanities</div></a><a class="home-card" href="/library/Asimov%2C%20Isaac/Book%2000.%20Dummy/"><div class="home-card-thumb"><img src="http://localhost:8001/Asimov%2C%20Isaac/Book%2000.%20Dummy/dpx_067_palmetto_display.jpg" alt=""></div><div class="home-card-title">Book 00. Dummy</div></a><a class="home-card" href="/library/--Fudd%2C%20Elmer/What%27s%20up%20Doc/"><div class="home-card-thumb"><img src="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/dpx_053_lotus-vases_display.jpg" alt=""></div><div class="home-card-title">What&#x27;s up Doc</div></a><a class="home-card" href="/library/Steiner%2C%20Rudolf/Christianity%20as%20Mystical%20Fact/"><div class="home-card-thumb"><img src="http://localhost:8001/Steiner%2C%20Rudolf/Christianity%20as%20Mystical%20Fact/_display.jpg" alt=""></div><div class="home-card-title">Christianity as Mystical Fact</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20Roman%20Empire/"><div class="home-card-thumb"><img src="http://localhost:8001/Nardo%2C%20Don/The%20Roman%20Empire/_display.jpg" alt=""></div><div class="home-card-title">The Roman Empire</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20battle%20of%20Marathon/"><div class="home-card-thumb"><img src="http://localhost:8001/Nardo%2C%20Don/The%20battle%20of%20Marathon/_display.jpg" alt=""></div><div class="home-card-title">The battle of Marathon</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20Civil%20War/"><div class="home-card-thumb"><img src="http://localhost:8001/Nardo%2C%20Don/The%20Civil%20War/_display.jpg" alt=""></div><div class="home-card-title">The Civil War</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20age%20of%20Augustus/"><div class="home-card-thumb"><img src="http://localhost:8001/Nardo%2C%20Don/The%20age%20of%20Augustus/_display.jpg" alt=""></div><div class="home-card-title">The age of Augustus</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20collapse%20of%20the%20Roman%20Republic/"><div class="home-card-thumb"><img src="http://localhost:8001/Nardo%2C%20Don/The%20collapse%20of%20the%20Roman%20Republic/_display.jpg" alt=""></div><div class="home-card-title">The collapse of the Roman Republic</div></a><a class="home-card" href="/library/Nardo%2C%20Don/Tycho%20Brahe/"><div class="home-card-thumb"><img src="http://localhost:8001/Nardo%2C%20Don/Tycho%20Brahe/_display.jpg" alt=""></div><div class="home-card-title">Tycho Brahe</div></a></div></div><div class="home-panel" id="home-panel-favorites" role="tabpanel" hidden><div class="home-grid"><a class="home-card" href="/library/Asimov%2C%20Isaac/Book%2004.%20The%20Greeks%20A%20Great%20Adventure/"><div class="home-card-thumb"><img src="http://localhost:8001/Asimov%2C%20Isaac/Book%2004.%20The%20Greeks%20A%20Great%20Adventure/_display.jpg" alt=""></div><div class="home-card-title">Book 04. The Greeks A Great Adventure</div></a><a class="home-card" href="/library/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%20Crisis%201919-1939/"><div class="home-card-thumb"><img src="http://localhost:8001/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%20Crisis%201919-1939/_display.jpg" alt=""></div><div class="home-card-title">The Twenty Year Crisis 1919-1939</div></a><a class="home-card" href="/library/Maybury%2C%20Richard%20J/Book%2002.%20whatever%20happened%20to%20penny%20candy/"><div class="home-card-thumb"><img src="http://localhost:8001/Maybury%2C%20Richard%20J/Book%2002.%20whatever%20happened%20to%20penny%20candy/_display.jpg" alt=""></div><div class="home-card-title">Book 02. whatever happened to penny candy</div></a></div></div><div class="home-panel" id="home-panel-hs_editions" role="tabpanel" hidden><div class="home-grid"><a class="home-card" href="/library/--Fudd%2C%20Elmer/What%27s%20up%20Doc/"><div class="home-card-thumb"><img src="http://localhost:8001/--Fudd%2C%20Elmer/What%27s%20up%20Doc/dpx_053_lotus-vases_display.jpg" alt=""></div><div class="home-card-title">What&#x27;s up Doc</div></a></div></div><script>
+(function(){
+  var STORAGE_KEY = "homeViewMode"; // separate key from the §4a file-explorer toggle
+  var tabs = document.querySelectorAll(".home-tab");
+  var panels = document.querySelectorAll(".home-panel");
+  var viewToggle = document.getElementById("home-view-toggle");
+
+  function activatePanel(id){
+    tabs.forEach(function(t){
+      var on = t.getAttribute("data-panel") === id;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    panels.forEach(function(p){ p.hidden = (p.id !== id); });
+  }
+  tabs.forEach(function(t){
+    t.addEventListener("click", function(){ activatePanel(t.getAttribute("data-panel")); });
+  });
+
+  function applyViewMode(mode){
+    panels.forEach(function(p){ p.classList.toggle("home-view-list", mode === "list"); });
+  }
+  var savedMode = null;
+  try { savedMode = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+  applyViewMode(savedMode === "list" ? "list" : "grid");
+  if (viewToggle){
+    viewToggle.addEventListener("click", function(){
+      var isList = panels[0] && panels[0].classList.contains("home-view-list");
+      var next = isList ? "grid" : "list";
+      applyViewMode(next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+    });
+  }
+})();
+</script></section>
+  </main>
+  <footer>The Home Scholar Library</footer>
+</div>
+<script>
+(function() {
+  var INDEX_URL = '/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>
