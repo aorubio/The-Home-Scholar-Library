@@ -1,19 +1,170 @@
-<!DOCTYPE html>
+<!--
+templates/page.html
+====================
+Real template for pipeline.renderer._render_content_pages() -- renders
+every content/*.md page (About, Contact, FAQ, Software, ...) through this
+one shared shell. Falls back to renderer.py's own bare-bones
+_DEFAULT_PAGE_TEMPLATE if this file goes missing or loses its <h1 id="why-this-library">Why this Library?</h1>
+<p>Self development/education is my purpose and reason for this library, but its not enough just to say so. We suffer many modern social crisis', and we know education is close to the root of it, both as cause and potential solution. A hundred years of reforms, however, has only deepened the crisis and decline. One cannot fix what is misunderstood. I offer no magic formula. You are the last stand for your own development, if desired at all, or is to happen at all, but it must come through self discovery. </p>
+<blockquote>
+<p><strong><em>"Know thyself"</em></strong></p>
+</blockquote>
+<p>This is a maxim which was inscribed upon the Temple of Apollo at Delphi, 2,500 years ago. Plato understood it to mean, broadly speaking, "know your soul". I would add, "discover how to be more human." Becoming more human is the real evolution of mankind.</p>
+<blockquote>
+<p><strong><em>"The mind is not a vessel to be filled but a fire to be kindled." - Plutach.</em></strong></p>
+<p><strong><em>"What education is to the individual, revelation is to the whole human race." - Gotthold Ephraim Lessing</em></strong></p>
+<p><strong><em>"The unexamined life is not worth living." - Socrates</em></strong></p>
+</blockquote>
+<p>Taken seriously, how many lives are unexamined? These words are the seeds of individual fire, and would completely transform one's life forever. By catching fire only a littel, Modernity would pass into history. </p>
+<blockquote>
+<p><strong><em>"All men by nature desire knowledge" - Aristotle</em></strong></p>
+</blockquote>
+<p>We are not here for entertainment or endless speculations but to accomplish our reason for living. There is always a tension between the Moderns and the Ancients when looking at who we are and how we should live. One must be clear which impulse we are under and which is worth following consiously.</p>
+<h1 id="where-we-stand-today">Where We Stand Today</h1>
+<blockquote>
+<p><strong>"The problem in our country isn't with books being banned, but with people no longer reading. You don't have to burn books to destroy a culture. Just get people to stop reading them." —Ray Bradbury</strong></p>
+</blockquote>
+<p>I owe Project Gutenberg an unpayable debt. But wade into that catalog and you'll drown in mediocrity — thousands of forgettable books preserved with the same care as the handful of genuinely great ones. Meanwhile, real literature, the stuff that would wreck you if you read it, sits buried two clicks deeper, untouched, because nobody thought to dig it out, or nobody's reading what's already sitting in plain sight. I'm doing my small part digging. But it's one man against a landfill.</p>
+<p>That's a glimpse of the problem we must solve. I have always dreamed of collecting the best books in the world, first for myself, and for people who educate themselves and others, and this growing collection is my pushback against the landfill. While I cannot claim to have found all the best books, yet, (smile), you can judge for yourself if you are improved by what you find here.</p>
+<p>What you'll find is a collection of what I think are the best and most interesting books, always growing and refining. It's intended to be a real resource for the curious, the truth seeker, the learner, the educator, and the self-educator.</p>
+<p>Public Libraries are always a mixed bag of good and bad, because they try to be all things to all people. Books form an important foundation for education however, so it matters to distinguish a good book from a bad one — contrary as that is to the modern mindset. This is my chance to put forward my best "books."</p>
+<p>To rise above the landfill, I focus on what I find excites the mind and the self discovery of higher human self, rather than duplicating programs or other popular libraries. </p>
+<h1 id="what-books-you-will-find-here">What Books You Will Find Here.</h1>
+<p>The strategy is simple: search, find, read and share the best books. There is no complicated criteria, except the question, is this a great book? or does this book look interesting? Many books have fallen off to make room for better books. I have found so many books, especially in the Public Domain, which deserve a good look. This website proves that a self directed education, (the only real kind of education) is really not expensive, except for your time and dedication and clearness of purpose. </p>
+<p>People ask if I have read all these books. No, but when I find great books, I get a clearer picture of what they are and who is writing them.</p>
+<p>Some examples may serve here. Consider Isaac Asimov, a remarkable writer. Most people don't know he wrote a brilliant historical series: <em>Historia Universal Asimov Series</em>. Ive read <em>The Greeks</em>, <em>The Roman Republic</em> and <em>The Roman Empire</em>, all favorites. I list the rest of the series too. </p>
+<p>I found Will Durant to have some of the best popular historical prose writing to be found (opposed to dry academic writing). I list his eleven volume set, <em>The Story of Civilization</em>.</p>
+<p>The Classics are always a breath of fresh air when reading directly and not about them. There are many adapted Classics in public domain very suitable for young readers as well. Many such books are prized like those of authors like Alfred Church, Jacob Abbott and his brother John Abbott.</p>
+<p>The spiritual works must also be not be left out. The Bible, Buddhist (<em>The Life of the Buddha</em>) and Indian scriptures (<em>The Bhagavad Gita and the Mahabharata</em>) are the greatest treasures to be experienced. Nor the subjects that fall outside modern boundaries are to be ignored. Consider Plato and his discussion of ancient Atlantis. Those who refer to them as "Myth," certainly did not get that from Plato. So this example, drawn from the classics themselves, normally out of sight, is a source of great interest. </p>
+<p>The discovery of Rudolph Steiner is for me the capstone of knowledge. I don't say that lightly. When the normal paths of learning can no longer satisfy, one is compelled to reach further. Steiner's many hundreds of works are well represented here.</p>
+<h1 id="the-problem-is-much-worsebetter-than-we-think">The Problem is Much Worse/Better Than We Think.</h1>
+<blockquote>
+<p><strong>The conscious and intelligent manipulation of the organized habits and opinions of the masses is an important element in democratic society. Those who manipulate this unseen mechanism of society constitute an invisible government which is the true ruling power of our country.</strong></p>
+<p><strong>We are governed, our minds are molded, our tastes formed, our ideas suggested, largely by men we have never heard of. This is a logical result of the way our democratic society is organized. -PROPAGANDA By EDWARD L. BERNAYS, 1928</strong></p>
+</blockquote>
+<p>100 years later, we are way past the warning stage. Those who have heard nor heeded the warning are too asleep to respond and remain vulnerable to the modern ills. The destructive effects of propaganda on an unsuspecting society and individuals are deep and wide and personal. Consider the already advanced stage of mass illiteracy, mass depression, mass medication, mass illness. The last decade has exposed our fictional view of the world, how it works, and who we are. but there is still much work exposing to be done.</p>
+<p>We live our lives in a blind channel. Our youthful powers are deadened at school and work. Imagine the power of youth at speaking, reading, writing, new languages, music, dance, etc., all lost potential because parents themselves have lost the impulse of self education for generations. this is the opposite of evolution and progress. </p>
+<p>Reading good books is certainly a necessary habit to regain some upward impulse. The Liberal arts have not lost their usefulness, (see the Trivium and Dororothy Sayers, the Lost Tools of Learning). </p>
+<p>The good news is I believe a sea change is happening in our time. Where it leads has yet to be seen, but I can wish for the best, and I certainly do.</p>
+<h1 id="to-be-continued">To Be Continued...</h1>
+token -- same convention every other templates/*.html file in this
+pipeline follows (rspa_index.html, gs_index.html, library_index.html all
+have the identical "real file wins, built-in Python string is the safety
+net" relationship with their own renderer module).
+
+Same plain double-brace token substitution as those siblings -- never
+spell a token's literal name inside prose/comments here, or its
+replacement text gets spliced into the comment (rspa_index.html's own
+header comment has the same caution).
+
+Design intent: content/*.md pages are long-form reading (About in
+particular has grown into a real multi-section essay), not app chrome --
+distinct from the rest of the site's utilitarian, sans-serif UI (filter
+bars, chip rows, file-explorer trees). This template leans into that:
+serif body copy at a comfortable reading measure, a first-paragraph drop
+cap, pull-quote-styled blockquotes for content/*.md's own attributed
+quotes, and lightly numbered "chapter" headings when a page actually has
+more than one top-level section (About's five; a one-heading page like
+Contact/Software never gets a numeral -- see the :has() rule below). A
+short in-page "On this page" jump nav and a back-to-top button (same
+.li-back-top pattern templates/rspa_index.html/library_index.html
+already use) appear automatically once a page has enough headings to
+need them, and stay invisibly absent otherwise.
+-->
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>About - Home Scholar Library</title>
+<title>About</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/The-Home-Scholar-Library/assets/css/site.css">
 <style>
-  /* font-family reads the shared --site-font custom property -- see
-     catalog_renderer.py's identical rule/comment for the full
-     reasoning; both templates read the same one config knob. */
-  body { font-family: var(--site-font, system-ui, sans-serif); max-width: 46rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #222; }
-  h1, h2, h3 { line-height: 1.25; }
-  img { max-width: 100%; }
-  pre { background: #f4f4f4; padding: 0.75rem; overflow-x: auto; }
-  code { background: #f4f4f4; padding: 0.1rem 0.3rem; }
+  body { font-family: var(--site-font, Georgia, serif); max-width: 46rem; margin: 2rem auto; padding: 0 1rem 4rem;
+    line-height: 1.75; color: #2b2a28; font-size: 1.08rem; }
+
+  /* ===== Masthead / page nav ===== */
+  .page-toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; padding: 10px 0 0; border-top: 1px solid #eee; }
+  .page-toc[hidden] { display: none; }
+  .page-toc-label { font-family: system-ui, sans-serif; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #999; align-self: center; margin-right: 4px; }
+  .page-toc a { font-family: system-ui, sans-serif; font-size: 0.8rem; font-weight: 600; color: #333; background: #f5f5f5;
+    border: 1px solid #ddd; border-radius: 999px; padding: 4px 12px; text-decoration: none; }
+  .page-toc a:hover { background: #eaf1fb; border-color: #b8d0ef; }
+  .page-toc a.current { background: #1a5fb4; border-color: #1a5fb4; color: #fff; }
+
+  /* ===== Article typography ===== */
+  article { margin-top: 0.5rem; }
+
+  article h1 { font-family: var(--site-font, Georgia, serif); font-size: 1.7rem; font-weight: 600; color: #1a3a5c;
+    text-align: center; letter-spacing: 0.02em; line-height: 1.35; margin: 2.6em 0 0.3em; scroll-margin-top: 16px; }
+  article h1:first-child { margin-top: 0.4em; }
+  /* A thin ornamental rule under every chapter heading, and -- only on a
+     page that actually HAS more than one top-level section (:has() over
+     "a later sibling h1 exists") -- a quiet Roman-numeral counter before
+     it. A single-heading page (Contact, Software) never shows a numeral;
+     it would just read as "I. Contact", odd for one paragraph. */
+  article h1::after { content: ""; display: block; width: 46px; height: 2px; margin: 0.5em auto 0; background: #cfe0f5; }
+  article { counter-reset: chapter; }
+  article:has(h1 ~ h1) h1 { counter-increment: chapter; }
+  article:has(h1 ~ h1) h1::before { content: counter(chapter, upper-roman) ". "; color: #7b93ab; font-weight: 500; }
+
+  article h2 { font-family: var(--site-font, Georgia, serif); font-size: 1.3rem; font-weight: 600; color: #1a3a5c;
+    border-bottom: 1px solid #e3e3e3; padding-bottom: 0.25em; margin: 2em 0 0.6em; scroll-margin-top: 16px; }
+  article h3 { font-family: var(--site-font, Georgia, serif); font-size: 1.08rem; font-weight: 700; color: #1a5fb4;
+    margin: 1.8em 0 0.4em; scroll-margin-top: 16px; }
+
+  article p { margin: 0 0 1.15em; }
+  /* Drop cap on the very first paragraph of the page only -- :first-of-type
+     among article's own children matches once per element type per
+     parent, so this can never repeat lower in a multi-section essay. */
+  article > p:first-of-type::first-letter { font-family: var(--site-font, Georgia, serif); font-size: 3.4em;
+    font-weight: 600; float: left; line-height: 0.82; margin: 0.03em 0.08em 0 0; color: #1a5fb4; }
+
+  article a { color: #1a5fb4; text-decoration: none; border-bottom: 1px solid #cfe0f5; }
+  article a:hover { border-bottom-color: #1a5fb4; }
+
+  article strong { font-weight: 700; color: #1a1a1a; }
+  article em { font-style: italic; }
+
+  article ul, article ol { margin: 0 0 1.15em; padding-left: 1.4em; }
+  article li { margin: 0.35em 0; }
+
+  article hr { border: none; border-top: 1px solid #e3e3e3; margin: 2.5em auto; width: 40%; }
+
+  article code { background: #f4f0e8; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.9em; }
+  article pre { background: #f4f0e8; padding: 0.9rem 1rem; overflow-x: auto; border-radius: 6px; }
+  article pre code { background: none; padding: 0; }
+
+  article img { max-width: 100%; border-radius: 4px; }
+
+  /* Pull-quote treatment -- content/*.md's own attributed quotes
+     ("> ***"Know thyself"***") land here. Big hanging quotation mark,
+     accent-colored left rule, warm tinted panel, no browser-default
+     indent-and-italic-and-nothing-else. */
+  article blockquote { position: relative; margin: 1.8em 0; padding: 0.6em 1.6em 0.6em 2.2em; background: #f7f4ec;
+    border-left: 4px solid #1a5fb4; border-radius: 0 6px 6px 0; font-size: 1.05em; }
+  article blockquote p { margin: 0 0 0.4em; }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article blockquote::before { content: "\201C"; position: absolute; left: 0.22em; top: 0.02em; font-family: Georgia, serif;
+    font-size: 2.6em; line-height: 1; color: #cfe0f5; font-weight: 700; }
+
+  /* ===== Back to top -- same pattern templates/rspa_index.html and
+     templates/library_index.html already use (.li-back-top), pasted
+     here rather than shared at import time -- see pipeline.site_nav's
+     own module docstring on why this codebase keeps this fragment
+     hand-copied per template rather than centralizing it. */
+  .li-back-top { position: fixed; right: 22px; bottom: 22px; width: 42px; height: 42px; border-radius: 50%;
+    background: #1a5fb4; color: #fff; border: none; font-size: 18px; cursor: pointer; display: none;
+    align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 30; }
+  .li-back-top.show { display: flex; }
+  .li-back-top:hover { background: #164a8f; }
+
+  @media (max-width: 600px) {
+    body { font-size: 1.02rem; }
+    article h1 { font-size: 1.4rem; }
+    article blockquote { padding: 0.6em 1.1em 0.6em 1.7em; }
+    article blockquote::before { font-size: 2.1em; left: 0.15em; }
+  }
 </style>
 <style>
   :root { --site-font: 'EB Garamond', Georgia, serif; }
@@ -35,38 +186,294 @@
   .site-search-result:hover { background: #f4f6fa; }
   .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
   .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  /* Gutenberg Select search-result pill + outgoing-link glyph
+     (gs_library_design.md §8) -- a GS hit's own url leaves the site, so
+     this marks that visually before the click, same reasoning as the
+     outgoing-arrow treatment gs_index.html's own row links get. */
+  .site-search-result-gs-pill { display: inline-block; margin-left: 6px; font-size: 0.68rem; font-weight: 600;
+    padding: 1px 7px; border-radius: 999px; background: #f1e9da; color: #7a5a1e; vertical-align: middle; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
 </style>
+<style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
 </head>
 <body>
-<div class="site-nav"><a class="site-nav-home" href="/">&#9738; Home</a><nav class="site-pages-nav"><a href="/library/">Browse Library</a><a href="/about Home Scholar Library.html">About</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/ebook_collections.html">Ebook Collections</a><a href="/faq.html">FAQ</a><a href="/reading-guide.html">Reading Guide</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
-<article>
+<div id="hs-background" aria-hidden="true"></div>
+<div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<nav class="page-toc" id="pageToc" aria-label="On this page" hidden>
+  <span class="page-toc-label">On this page</span>
+</nav>
+<article id="pageArticle">
+<h1 id="why-this-library">Why this Library?</h1>
+<p>Self development/education is my purpose and reason for this library, but its not enough just to say so. We suffer many modern social crisis', and we know education is close to the root of it, both as cause and potential solution. A hundred years of reforms, however, has only deepened the crisis and decline. One cannot fix what is misunderstood. I offer no magic formula. You are the last stand for your own development, if desired at all, or is to happen at all, but it must come through self discovery. </p>
+<blockquote>
+<p><strong><em>"Know thyself"</em></strong></p>
+</blockquote>
+<p>This is a maxim which was inscribed upon the Temple of Apollo at Delphi, 2,500 years ago. Plato understood it to mean, broadly speaking, "know your soul". I would add, "discover how to be more human." Becoming more human is the real evolution of mankind.</p>
+<blockquote>
+<p><strong><em>"The mind is not a vessel to be filled but a fire to be kindled." - Plutach.</em></strong></p>
+<p><strong><em>"What education is to the individual, revelation is to the whole human race." - Gotthold Ephraim Lessing</em></strong></p>
+<p><strong><em>"The unexamined life is not worth living." - Socrates</em></strong></p>
+</blockquote>
+<p>Taken seriously, how many lives are unexamined? These words are the seeds of individual fire, and would completely transform one's life forever. By catching fire only a littel, Modernity would pass into history. </p>
+<blockquote>
+<p><strong><em>"All men by nature desire knowledge" - Aristotle</em></strong></p>
+</blockquote>
+<p>We are not here for entertainment or endless speculations but to accomplish our reason for living. There is always a tension between the Moderns and the Ancients when looking at who we are and how we should live. One must be clear which impulse we are under and which is worth following consiously.</p>
+<h1 id="where-we-stand-today">Where We Stand Today</h1>
+<blockquote>
+<p><strong>"The problem in our country isn't with books being banned, but with people no longer reading. You don't have to burn books to destroy a culture. Just get people to stop reading them." —Ray Bradbury</strong></p>
+</blockquote>
 <p>I owe Project Gutenberg an unpayable debt. But wade into that catalog and you'll drown in mediocrity — thousands of forgettable books preserved with the same care as the handful of genuinely great ones. Meanwhile, real literature, the stuff that would wreck you if you read it, sits buried two clicks deeper, untouched, because nobody thought to dig it out, or nobody's reading what's already sitting in plain sight. I'm doing my small part digging. But it's one man against a landfill.</p>
-<p>That's a glimpse of the problem we must solve. I have always dreamed of collecting the best books in the world, first for myself, and for people who educate themselves and others, and this growing collection is my pushback against the landfill. While I cannot claim to have found all the best books yet, (smile), you can judge for yourself if you are improved by what you find here.</p>
+<p>That's a glimpse of the problem we must solve. I have always dreamed of collecting the best books in the world, first for myself, and for people who educate themselves and others, and this growing collection is my pushback against the landfill. While I cannot claim to have found all the best books, yet, (smile), you can judge for yourself if you are improved by what you find here.</p>
 <p>What you'll find is a collection of what I think are the best and most interesting books, always growing and refining. It's intended to be a real resource for the curious, the truth seeker, the learner, the educator, and the self-educator.</p>
-<p>Libraries are always a mixed bag of good and bad, because they try to be all things to all people. Books are the foundation of education however, so it matters to distinguish a good book from a bad one — contrary as that is to the modern mindset. This is my chance to put forward my best "books."</p>
-<p>To rise above the landfill, I focus on what's genuinely hard to find rather than duplicating what's already everywhere. I avoid great books that are easily available online — Gibbon, Dickens, Dumas, Shakespeare, Jane Austen — all great, and already very popular.</p>
-<p>What I focus on instead:</p>
-<ol>
-<li>
-<p><strong>Alternate translations of classics</strong> by Homer, Herodotus, Ovid, Livy, Virgil, Dante — translations not yet widely available or hard to find. For example, I wouldn't post the legendary Alexander Pope's <em>Iliad</em> or Samuel Butler's prose translation, so as not to duplicate books that are already easy to find.</p>
-</li>
-<li>
-<p><strong>Interesting public-domain discoveries</strong> useful for young readers and homeschoolers — great historical biographies, histories, and the like.</p>
-</li>
-<li>
-<p><strong>Abridgments.</strong> I've found real abridgment gems of great authors like Gibbon, Hume, Guizot, Michelet, Symonds, Froissart, Michaud, and others.</p>
-</li>
-<li>
-<p><strong>Spiritual works, philosophical works, dramatic literature.</strong></p>
-</li>
-<li>
-<p><strong>Related media</strong> — audiobooks, film, YouTube productions, and art.</p>
-</li>
-</ol>
+<p>Public Libraries are always a mixed bag of good and bad, because they try to be all things to all people. Books form an important foundation for education however, so it matters to distinguish a good book from a bad one — contrary as that is to the modern mindset. This is my chance to put forward my best "books."</p>
+<p>To rise above the landfill, I focus on what I find excites the mind and the self discovery of higher human self, rather than duplicating programs or other popular libraries. </p>
+<h1 id="what-books-you-will-find-here">What Books You Will Find Here.</h1>
+<p>The strategy is simple: search, find, read and share the best books. There is no complicated criteria, except the question, is this a great book? or does this book look interesting? Many books have fallen off to make room for better books. I have found so many books, especially in the Public Domain, which deserve a good look. This website proves that a self directed education, (the only real kind of education) is really not expensive, except for your time and dedication and clearness of purpose. </p>
+<p>People ask if I have read all these books. No, but when I find great books, I get a clearer picture of what they are and who is writing them.</p>
+<p>Some examples may serve here. Consider Isaac Asimov, a remarkable writer. Most people don't know he wrote a brilliant historical series: <em>Historia Universal Asimov Series</em>. Ive read <em>The Greeks</em>, <em>The Roman Republic</em> and <em>The Roman Empire</em>, all favorites. I list the rest of the series too. </p>
+<p>I found Will Durant to have some of the best popular historical prose writing to be found (opposed to dry academic writing). I list his eleven volume set, <em>The Story of Civilization</em>.</p>
+<p>The Classics are always a breath of fresh air when reading directly and not about them. There are many adapted Classics in public domain very suitable for young readers as well. Many such books are prized like those of authors like Alfred Church, Jacob Abbott and his brother John Abbott.</p>
+<p>The spiritual works must also be not be left out. The Bible, Buddhist (<em>The Life of the Buddha</em>) and Indian scriptures (<em>The Bhagavad Gita and the Mahabharata</em>) are the greatest treasures to be experienced. Nor the subjects that fall outside modern boundaries are to be ignored. Consider Plato and his discussion of ancient Atlantis. Those who refer to them as "Myth," certainly did not get that from Plato. So this example, drawn from the classics themselves, normally out of sight, is a source of great interest. </p>
+<p>The discovery of Rudolph Steiner is for me the capstone of knowledge. I don't say that lightly. When the normal paths of learning can no longer satisfy, one is compelled to reach further. Steiner's many hundreds of works are well represented here.</p>
+<h1 id="the-problem-is-much-worsebetter-than-we-think">The Problem is Much Worse/Better Than We Think.</h1>
+<blockquote>
+<p><strong>The conscious and intelligent manipulation of the organized habits and opinions of the masses is an important element in democratic society. Those who manipulate this unseen mechanism of society constitute an invisible government which is the true ruling power of our country.</strong></p>
+<p><strong>We are governed, our minds are molded, our tastes formed, our ideas suggested, largely by men we have never heard of. This is a logical result of the way our democratic society is organized. -PROPAGANDA By EDWARD L. BERNAYS, 1928</strong></p>
+</blockquote>
+<p>100 years later, we are way past the warning stage. Those who have heard nor heeded the warning are too asleep to respond and remain vulnerable to the modern ills. The destructive effects of propaganda on an unsuspecting society and individuals are deep and wide and personal. Consider the already advanced stage of mass illiteracy, mass depression, mass medication, mass illness. The last decade has exposed our fictional view of the world, how it works, and who we are. but there is still much work exposing to be done.</p>
+<p>We live our lives in a blind channel. Our youthful powers are deadened at school and work. Imagine the power of youth at speaking, reading, writing, new languages, music, dance, etc., all lost potential because parents themselves have lost the impulse of self education for generations. this is the opposite of evolution and progress. </p>
+<p>Reading good books is certainly a necessary habit to regain some upward impulse. The Liberal arts have not lost their usefulness, (see the Trivium and Dororothy Sayers, the Lost Tools of Learning). </p>
+<p>The good news is I believe a sea change is happening in our time. Where it leads has yet to be seen, but I can wish for the best, and I certainly do.</p>
+<h1 id="to-be-continued">To Be Continued...</h1>
 </article>
+<button class="li-back-top" id="liBackTop" title="Back to top" aria-label="Back to top">&uarr;</button>
 <script>
 (function() {
-  var INDEX_URL = '/assets/search-index.json';
+  // Builds the "On this page" pill row from whatever headings
+  // markdown's own "toc" extension gave an id (config already loads
+  // that extension -- see pipeline.renderer._render_content_pages).
+  // Only appears at all once there are enough headings for it to be
+  // worth anything -- a one-heading page (Contact, Software) never
+  // shows an empty/one-item nav.
+  var article = document.getElementById('pageArticle');
+  var toc = document.getElementById('pageToc');
+  var headings = Array.prototype.slice.call(article.querySelectorAll('h1[id], h2[id], h3[id]'));
+  if (headings.length > 1) {
+    headings.forEach(function(h) {
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      toc.appendChild(a);
+    });
+    toc.hidden = false;
+
+    if (window.IntersectionObserver) {
+      var links = Array.prototype.slice.call(toc.querySelectorAll('a'));
+      var byId = {};
+      links.forEach(function(a) { byId[a.getAttribute('href').slice(1)] = a; });
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          var link = byId[entry.target.id];
+          if (!link) return;
+          if (entry.isIntersecting) {
+            links.forEach(function(a) { a.classList.remove('current'); });
+            link.classList.add('current');
+          }
+        });
+      }, { rootMargin: '-10% 0px -70% 0px' });
+      headings.forEach(function(h) { observer.observe(h); });
+    }
+  }
+
+  var backBtn = document.getElementById('liBackTop');
+  window.addEventListener('scroll', function() {
+    backBtn.classList.toggle('show', window.scrollY > 480);
+  }, { passive: true });
+  backBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+})();
+</script>
+</div>
+<script src="/The-Home-Scholar-Library/assets/backgrounds/generators/common.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/library.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/dark.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/deep-sky-locked.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/starfield.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/solar-system.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/about.html",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json?v=20261002-120004';
   var indexPromise = null;
 
   function loadIndex() {
@@ -91,12 +498,27 @@
       var a = document.createElement("a");
       a.className = "site-search-result";
       a.href = item.url;
+      // Gutenberg Select hits (gs_library_design.md §8): a GS entry's
+      // url is an outgoing gutenberg.org link, not a page on this site --
+      // open in a new tab so a search click never navigates the visitor
+      // away from the site entirely, same as every other outbound link
+      // convention already in play (e.g. meta.yaml link cards).
+      if (item.source === "gs") {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
       var title = document.createElement("span");
       title.textContent = item.title;
+      a.appendChild(title);
+      if (item.source === "gs") {
+        var pill = document.createElement("span");
+        pill.className = "site-search-result-gs-pill";
+        pill.textContent = "Gutenberg Select ↗";
+        a.appendChild(pill);
+      }
       var path = document.createElement("span");
       path.className = "site-search-result-path";
       path.textContent = item.path || "";
-      a.appendChild(title);
       a.appendChild(path);
       results.appendChild(a);
     });

@@ -1,0 +1,136 @@
+/* =========================================================
+   reader_theme.css
+   A general-purpose "online book reading" template theme.
+   Drop into any generated book site alongside the book's own
+   stylesheet.css. Load this file AFTER stylesheet.css so it
+   controls page chrome without fighting the book's own rules,
+   which are scoped inside .book-page by build_site.py.
+   ========================================================= */
+
+:root {
+  --page-bg: #f7f3ea;          /* cream page color */
+  --page-shadow: 0 2px 8px rgba(0,0,0,0.12), 0 12px 40px rgba(0,0,0,0.10);
+  --ink: #2b2620;
+  --accent: #8a6d3b;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --measure: 42em;             /* readable line length */
+}
+
+/* Decorative tiled background behind the page.
+   Swap the data-URI for your own tile image if you have one;
+   this is a lightweight inline SVG so it works with no extra asset. */
+html {
+  background-color: #d8cdb8;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%23d8cdb8'/%3E%3Cpath d='M0 0h60v60H0z' fill='none' stroke='%23c9bda3' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%23c9bda3'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+body {
+  margin: 0;
+  padding: var(--gutter) 0 6rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* The "page" card that sits on the decorative background */
+.book-page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  background: var(--page-bg);
+  color: var(--ink);
+  padding: clamp(2rem, 6vw, 4.5rem) clamp(1.5rem, 6vw, 4rem);
+  box-shadow: var(--page-shadow);
+  border-radius: 3px;
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
+  line-height: 1.7;
+  font-size: 1.125rem;
+}
+
+.book-page h1, .book-page h2, .book-page h3 {
+  font-family: "Trajan Pro", "Cinzel", Georgia, serif;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+/* Drop cap on the first paragraph after a heading/header block */
+.book-page header + p:first-letter,
+.book-page > p:first-of-type:first-letter {
+  float: left;
+  font-family: Georgia, serif;
+  font-size: 3.6em;
+  line-height: 0.8;
+  padding: 0.05em 0.08em 0 0;
+  color: var(--accent);
+}
+
+.book-page p {
+  margin: 0 0 1.1em;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.book-page a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(138,109,59,0.35);
+}
+
+/* Reading nav bar — sticky footer, styled as site chrome (outside .book-page) */
+.book-nav {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: var(--measure);
+  margin: 2rem auto 0;
+  padding: 0.85rem 1.25rem;
+  background: rgba(43,38,32,0.92);
+  backdrop-filter: blur(4px);
+  border-radius: 999px;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+
+.book-nav a {
+  color: #f0e9d8;
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+}
+.book-nav a:hover { text-decoration: underline; }
+.book-nav .toc-link { opacity: 0.85; font-variant: small-caps; letter-spacing: 0.05em; }
+
+/* Index / table of contents page */
+.toc-page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  background: var(--page-bg);
+  box-shadow: var(--page-shadow);
+  padding: clamp(2rem, 6vw, 4.5rem);
+  border-radius: 3px;
+  font-family: Georgia, serif;
+}
+.toc-page h1 {
+  text-align: center;
+  font-family: "Trajan Pro", "Cinzel", Georgia, serif;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.2em;
+}
+.toc-page .toc-subtitle {
+  text-align: center;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 2.5em;
+}
+.toc-page ol {
+  line-height: 2.1;
+  columns: 1;
+}
+.toc-page a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(138,109,59,0.3); }
+.toc-page a:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  .book-page, .toc-page { border-radius: 0; }
+  .book-nav { border-radius: 12px; font-size: 0.82rem; }
+}

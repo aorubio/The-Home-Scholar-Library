@@ -1,0 +1,1042 @@
+<!--
+templates/gs_index.html
+========================
+Real template for pipeline.gs_index.render_gs_index() -- consumed via
+plain double-brace-token substitution, same convention as every other
+*.html file in this folder (pipeline.library_index._load_template()'s
+own CAUTION about literal token spellings in prose applies here too --
+avoided below the same way that file avoids it). Falls back to a minimal
+built-in default (pipeline.gs_index._DEFAULT_GS_INDEX_TEMPLATE) if this
+file goes missing or loses its DATA_URL token.
+
+Look and feel: reuses the SAME site chrome/colors/typography every other
+page on the site already uses (pipeline.site_nav's shared header,
+config.SITE_FONT_FAMILY via var(--site-font), the same link-blue/border-
+gray values pipeline.catalog_renderer's node template and
+templates/library_index.html both use -- #1a5fb4 links, #222 body text,
+#ddd/#eee borders). No explicit `background` on body/html, same omission
+every other page template makes -- pipeline.backgrounds owns that via
+the BACKGROUND* tokens below.
+
+This is the SECOND design pass on this page. The first pass used a
+fixed-height virtualized scroll list -- replaced here with an authors-
+tree / books-flat reversible toggle, a close port of
+templates/library_index.html's own .li-mode-toggle / renderAuthorsTree()/
+renderBooksFlat() / alpha-index machinery (class names below are
+deliberately the SAME ones that file uses -- li-toolbar, li-mode-toggle,
+li-alpha-index, li-view, li-row, li-author-node, etc. -- for exact visual
+parity, not just similar-looking CSS re-derived by hand; this is a
+separate page so there's no collision). Two things this page still keeps
+that library_index.html's own tabs don't need, because GS is a single,
+separate collection rather than one tab among many: its OWN instant
+substring filter over title + author (gs-search-wrap, unchanged from the
+first pass), and the gs.yaml-driven intro paragraph + the two collection-
+zip download buttons, both placed above the tree/list.
+
+Two structural differences from templates/library_index.html's own
+tree, both because a GS entry has no HSL page of its own (see
+pipeline.gs_index.build_gs_index_data()'s own comment):
+  - Each book link (`.li-row-title` / a `<li>`'s own <a>) points straight
+    OUT to the entry's own gutenberg.org URL, target="_blank" +
+    rel="noopener noreferrer", with a trailing outgoing-link glyph --
+    same as the very first pass of this page, and the same visual
+    convention site_nav.js's search box already uses for a GS hit.
+  - An author name in the tree is plain text, not a link -- GS's
+    "author" is just pgcurator.py's own folder-grouping label, with no
+    HSL author page underneath it to point to (unlike a real HSL author,
+    which does have one).
+There is also no tabbar and no "New" badge here (single collection, no
+per-item added-timestamp concept) -- both intentionally omitted rather
+than ported, since neither applies to GS.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gutenberg Select - Home Scholar Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/The-Home-Scholar-Library/assets/css/site.css">
+<style>
+  body { font-family: var(--site-font, system-ui, sans-serif); max-width: 64rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #222; }
+  h1 { margin: 0 0 0.15em; text-align: center; }
+  .gs-intro { color: #555; font-size: 0.95rem; max-width: 48rem; margin: 0 auto 1rem; }
+  .gs-intro p { margin: 0 0 0.6em; }
+
+  .gs-downloads { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 4px 0 22px; }
+
+  .btn-feature-download { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600;
+    padding: 9px 16px; border-radius: 8px; text-decoration: none; background: #eaf1fb; color: #1a5fb4;
+    border: 1px solid #cfe0f5; cursor: pointer; }
+  .btn-feature-download:hover { background: #dbe9fa; }
+  .btn-feature-download.downloading { opacity: 0.6; pointer-events: none; }
+  /* BUG FIX -- described carefully here WITHOUT spelling out the
+     widget-style token's own literal double-brace name (see this
+     file's top-of-file CAUTION note: doing that inside this
+     str.replace()-substituted file splices that token's whole CSS
+     payload into the middle of this very comment, prematurely closing
+     it at the payload's own embedded comment-end marker and turning
+     everything after that into live, unparsable CSS -- exactly what
+     silently broke this fix the first time it was written, which is
+     its own lesson in why the caution note exists; this note is
+     ALSO written to avoid reproducing that comment-end marker itself
+     anywhere in its own text, for the identical reason).
+     The download link is ALSO classed `.thumb-dl` (purely so
+     pipeline.viewers.preview_widget_script()'s querySelectorAll on
+     that class wires up the real fetch-to-blob click handler -- see
+     _download_button()'s own comment in pipeline.gs_index). But the
+     shared preview-widget stylesheet's `.thumb-dl` base rule (a 22px,
+     absolutely-positioned, bottom-right CORNER icon meant to sit on a
+     thumbnail tile) is substituted into this page's <head> AFTER the
+     <style> block below, and ties `.btn-feature-download` above on
+     specificity (both single-class) -- so on a tie, later-in-source
+     wins: position/width/height/border-radius from `.thumb-dl` was
+     overriding this rule, shrinking each download button down to a
+     small dark circle pinned to the corner of the page instead of the
+     visible button it should be, sitting under the intro text right
+     where the markup actually places it. The `.thumb-dl.btn-feature-
+     download` TWO-CLASS rule right below wins on specificity regardless
+     of load order (exactly the fix
+     pipeline.catalog_renderer._render_hero_row()'s own CSS already
+     applies for the same two classes) -- restoring `position: static`
+     and the real button size/shape. */
+  .thumb-dl.btn-feature-download {
+    position: static; width: auto; height: auto; border-radius: 8px;
+    background: #eaf1fb; color: #1a5fb4 !important;
+  }
+  .thumb-dl.btn-feature-download:hover { background: #dbe9fa; }
+  .thumb-dl.btn-feature-download.downloading { opacity: 0.6; pointer-events: none; }
+
+  /* Language filter buttons -- same pill look as the Library page's tab bar. */
+  .gs-langbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+  .gs-lang { font: inherit; font-size: 0.85rem; font-weight: 600; background: #f5f5f5; border: 1px solid #ddd;
+    border-radius: 999px; padding: 7px 16px; cursor: pointer; color: #555; white-space: nowrap; }
+  .gs-lang:hover { background: #eaf1fb; border-color: #b8d0ef; }
+  .gs-lang.active { background: #1a5fb4; border-color: #1a5fb4; color: #fff; }
+  .gs-lang .n { font-weight: 400; opacity: 0.8; }
+
+  
+  .hs-filter-row { display: flex; gap: 8px; align-items: stretch; }
+  .hs-filter-row input { flex: 1 1 auto; min-width: 0; }
+  .hs-filter-mode { flex: 0 0 auto; font: inherit; font-size: 0.9rem; padding: 0 10px; border: 1px solid #ccc;
+    border-radius: 8px; background: #fff; color: #333; cursor: pointer; }
+  .hs-filter-hint { font-size: 0.78rem; color: #888; margin: 4px 2px 0; }
+
+  .gs-stats { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 14px; font-size: 0.85rem; color: #555; }
+  .gs-stats b { color: #222; }
+
+  /* GS's own filter -- separate from site_nav.js's site-wide search box,
+     unchanged from the page's first pass. */
+  .gs-search-wrap { margin: 0 0 14px; }
+  .gs-search-wrap input { width: 100%; box-sizing: border-box; padding: 9px 12px; font-size: 0.95rem;
+    border: 1px solid #ccc; border-radius: 8px; font-family: inherit; }
+
+  /* ===== Toolbar (Authors/Books mode toggle) -- ported from
+     templates/library_index.html's own .li-toolbar/.li-mode-toggle/
+     .li-tree-actions, same class names, same look. ===== */
+  .li-toolbar { border-bottom: 1px solid #ddd; padding: 10px 0; display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .li-mode-toggle { display: inline-flex; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+  .li-mode-toggle button { font: inherit; font-size: 0.82rem; border: none; background: #fff; padding: 6px 14px;
+    cursor: pointer; color: #555; }
+  .li-mode-toggle button + button { border-left: 1px solid #ddd; }
+  .li-mode-toggle button[aria-pressed="true"] { background: #1a5fb4; color: #fff; }
+  .li-tree-actions { font-size: 0.78rem; display: flex; gap: 8px; }
+  .li-tree-actions button { background: #eee; border: 1px solid #ddd; border-radius: 6px; padding: 5px 10px;
+    cursor: pointer; color: #555; font-size: 0.78rem; }
+  .li-tree-actions button:hover { background: #ddd; }
+
+  /* ===== Alpha index -- ported from templates/library_index.html ===== */
+  .li-alpha-index { position: sticky; top: 0; z-index: 25; background: #fafafa; border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .li-alpha-index-inner { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 4px; }
+  .li-alpha-link { font-size: 0.78rem; font-weight: 700; width: 24px; height: 24px; display: flex;
+    align-items: center; justify-content: center; border-radius: 4px; color: #333; text-decoration: none;
+    border: 1px solid transparent; }
+  .li-alpha-link:hover { background: #eaf1fb; border-color: #b8d0ef; text-decoration: none; }
+  .li-alpha-link.li-top { background: #1a5fb4; color: #fff; width: auto; padding: 0 10px; }
+  .li-alpha-link.li-top:hover { background: #164a8f; }
+  .li-alpha-link.li-disabled { color: #ccc; pointer-events: none; }
+
+  /* ===== Content -- ported from templates/library_index.html ===== */
+  .li-main { padding-top: 18px; }
+  .li-view { display: none; }
+  .li-view.active { display: block; }
+  .li-letter-heading { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: #1a5fb4;
+    border-bottom: 2px solid #cfe0f5; padding: 18px 0 4px; margin-bottom: 6px; scroll-margin-top: 46px; }
+  .li-letter-heading:first-child { padding-top: 0; }
+
+  .li-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
+    gap: 6px 12px; padding: 8px 4px; border-bottom: 1px solid #eee; }
+  .li-row:hover { background: #f7f9fc; }
+  .li-row-title { font-size: 1rem; flex: 1 1 auto; min-width: 220px; }
+  .li-row-author { flex: 0 0 auto; font-size: 0.9rem; color: #555; }
+
+  .li-author-node summary { cursor: pointer; padding: 8px 4px; border-bottom: 1px solid #eee; list-style: none; }
+  .li-author-node summary::-webkit-details-marker { display: none; }
+  .li-author-node summary::before { content: "▸"; display: inline-block; width: 1em; color: #888; }
+  .li-author-node[open] > summary::before { content: "▾"; }
+  .li-author-count { color: #888; font-size: 0.85rem; }
+  .li-book-list { list-style: none; margin: 0 0 8px; padding: 0 0 0 2.1em; }
+  .li-book-list li { padding: 5px 0; border-bottom: 1px solid #f2f2f2; font-size: 0.95rem; }
+
+  .li-empty-note { color: #888; font-size: 0.9rem; padding: 1rem 0; }
+
+  /* Outgoing-link styling -- every book link on this page leaves the
+     site (no HSL page of its own to land on), so links get the link
+     color plus a trailing glyph, same convention the first pass of this
+     page and site_nav.js's own GS search-hit pill both already use. */
+  .gs-out-link { color: #1a5fb4; text-decoration: none; }
+  .gs-out-link:hover { text-decoration: underline; }
+  .gs-out-arrow { color: #999; font-size: 0.85rem; margin-left: 2px; }
+
+  /* Language badge -- shown only when marker !== "en" (the English case
+     is the overwhelming majority, so a badge on every row would be
+     noise, not signal). Unchanged from the page's first pass. */
+  .badge-language { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+    background: #f1e9da; color: #7a5a1e; white-space: nowrap; margin-left: 6px; }
+
+  /* ===== Back to top -- ported from templates/library_index.html ===== */
+  .li-back-top { position: fixed; right: 22px; bottom: 22px; width: 42px; height: 42px; border-radius: 50%;
+    background: #1a5fb4; color: #fff; border: none; font-size: 18px; cursor: pointer; display: none;
+    align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 30; }
+  .li-back-top.show { display: flex; }
+  .li-back-top:hover { background: #164a8f; }
+</style>
+<style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  /* Gutenberg Select search-result pill + outgoing-link glyph
+     (gs_library_design.md §8) -- a GS hit's own url leaves the site, so
+     this marks that visually before the click, same reasoning as the
+     outgoing-arrow treatment gs_index.html's own row links get. */
+  .site-search-result-gs-pill { display: inline-block; margin-left: 6px; font-size: 0.68rem; font-weight: 600;
+    padding: 1px 7px; border-radius: 999px; background: #f1e9da; color: #7a5a1e; vertical-align: middle; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+<style>
+  .preview-thumb { position: relative; display: inline-block; line-height: 0; }
+  .thumb-img { cursor: zoom-in; }
+  .thumb-dl { position: absolute; right: 4px; bottom: 4px; background: rgba(0,0,0,0.6); color: #fff;
+              width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center;
+              justify-content: center; text-decoration: none; font-size: 0.8rem; line-height: 1;
+              cursor: pointer; }
+  .thumb-dl:hover { background: rgba(0,0,0,0.85); }
+  .thumb-dl.downloading { opacity: 0.6; pointer-events: none; }
+
+  /* Fixed, centered preview that fades + scales in over a darkening
+     backdrop -- matching the reference catalog design (uploaded
+     catalog.html) rather than the earlier flat, abrupt-show/hide
+     modal. Driven by a CSS class (not the `hidden` attribute), since
+     `display` can't be transitioned -- opacity/visibility/transform
+     can. This also sidesteps the earlier `[hidden]` vs `display:`
+     specificity bug entirely for this element: nothing here sets its
+     own `display`, so there's no UA-stylesheet tie to lose.
+
+     pointer-events: none ALWAYS (never `auto`, even while .visible) --
+     this isn't cosmetic, it's load-bearing. Once shown, this overlay
+     sits on top of the very tile the mouse is still resting on; if it
+     accepted pointer events, the browser would treat the tile as
+     "left" the instant the overlay appeared (it's now the topmost
+     element under the cursor) even though the mouse never moved --
+     which immediately fired this module's own mouseleave handler and
+     hid the preview it had just shown. Confirmed directly: instrumented
+     logging caught `mouseleave` firing ~1s after `mouseenter`, exactly
+     when the dwell timer completed and the overlay appeared -- that's
+     what "flickers and doesn't show until repositioning the mouse" was.
+     The reference design had this right from the start (`.preview {
+     pointer-events: none; }`, permanently) -- this was lost when
+     adapting it. Dismissal relies entirely on the tile's own
+     mouseleave now (move the mouse away -> hides), not a click on the
+     overlay, since pointer-events: none means the overlay can never
+     receive a click in the first place. */
+  .preview-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+                      background: rgba(20,16,12,0); opacity: 0; visibility: hidden; pointer-events: none;
+                      transition: opacity 0.12s ease, background 0.12s ease, visibility 0s linear 0.12s;
+                      z-index: 200; }
+  .preview-overlay.visible { background: rgba(20,16,12,0.55); opacity: 1; visibility: visible;
+                              transition: opacity 0.12s ease, background 0.12s ease; }
+  .preview-overlay img { max-width: 92vw; max-height: 92vh; width: auto; height: auto;
+                          object-fit: contain; background: var(--card-bg, #fff); border: 4px solid var(--card-bg, #fff);
+                          box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.97);
+                          transition: transform 0.12s ease; }
+  .preview-overlay.visible img { transform: scale(1); }
+
+  /* Bug fix (see module docstring): `[hidden]` and a plain class
+     selector both have specificity (0,1,0); author CSS loaded after the
+     UA stylesheet wins that tie, so any `hidden`-toggled element that
+     also sets its own `display:` stays visible without this override.
+     !important beats the tie unconditionally regardless of order/
+     specificity. Still needed here for OTHER hidden-toggled elements
+     on pages that include this stylesheet (.preview-overlay itself no
+     longer relies on `hidden` -- see above). */
+  [hidden] { display: none !important; }
+</style>
+<style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+</head>
+<body>
+<div id="hs-background" aria-hidden="true"></div>
+<div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<h1>Gutenberg Select - Home Scholar Library</h1>
+<div class="gs-intro"><p>Gutenberg Select is a curated collection of the better Gutenberg offerings for the self learner. This is a wider and separate collection from the Home Scholar Library proper. Inclusion here is a fast decision based on subjec and titles from the approx 80,000 current books on Gutenberg.</p><p>Each entry links straight out to its own description page on Gutenberg.org. check out BetterGutenberg.org for companion titles. I am not able to easily make an automatic cross reference at this time.</p><p>Browse or filter below, or grab one of the pre-built zips below.</p></div>
+
+<div class="gs-downloads">
+<a class="thumb-dl btn-feature-download gs-download-btn" href="https://archive.org/download/home-scholar-archive/libraryGS/GS-English.zip" download="GS-English.zip">⤓ Download English Collection</a>
+<a class="thumb-dl btn-feature-download gs-download-btn" href="https://archive.org/download/home-scholar-archive/libraryGS/GS-Foreign.zip" download="GS-Foreign.zip">⤓ Download Foreign-Language Collection</a>
+</div>
+
+<div class="gs-langbar" id="gs-langbar" role="group" aria-label="Filter by language"></div>
+
+<div class="gs-stats" id="gs-stats">Loading&hellip;</div>
+
+<div class="gs-search-wrap">
+  <div class="hs-filter-row">
+    <input type="search" id="gs-filter-input" placeholder="Filter by title or author&hellip;" aria-label="Filter Gutenberg Select by title or author" autocomplete="off">
+    <select class="hs-filter-mode" id="hs-filter-mode" aria-label="Match mode"><option value="all">All words</option><option value="any">Any word</option><option value="phrase">Exact phrase</option></select>
+  </div>
+  <div class="hs-filter-hint">Tip: use &quot;quotes&quot; to keep words together, and a leading &minus; to exclude a word (e.g. <i>light -letters</i>).</div>
+</div>
+
+<div class="li-toolbar" id="liToolbar">
+  <div class="li-mode-toggle" id="liModeToggle">
+    <button data-mode="authors" aria-pressed="true" id="liModeAuthorsBtn">Authors</button>
+    <button data-mode="books" aria-pressed="false" id="liModeBooksBtn">Books</button>
+  </div>
+  <div class="li-tree-actions" id="liTreeActions">
+    <button id="liExpandAllBtn">Expand all</button>
+    <button id="liCollapseAllBtn">Collapse all</button>
+  </div>
+</div>
+
+<div class="li-alpha-index" id="liAlphaIndex">
+  <div class="li-alpha-index-inner" id="liAlphaIndexInner"></div>
+</div>
+
+<main class="li-main">
+  <div class="li-view active" id="liView-gs"></div>
+</main>
+
+<button class="li-back-top" id="liBackTop" title="Back to top" aria-label="Back to top">&uarr;</button>
+
+<div id="preview-overlay" class="preview-overlay"><img id="preview-img" src="" alt=""></div>
+
+<script>
+window.HSFilter = (function(){
+  function parse(raw){
+    var inc = [], exc = [], re = /(-?)"([^"]*)"|(\S+)/g, m;
+    while ((m = re.exec(raw)) !== null){
+      var neg = false, term;
+      if (m[3] !== undefined){
+        term = m[3];
+        if (term.charAt(0) === '-'){ neg = true; term = term.slice(1); }
+        term = term.replace(/"/g, '');
+      } else {
+        neg = m[1] === '-'; term = m[2];
+      }
+      term = term.trim().toLowerCase();
+      if (!term) continue;
+      (neg ? exc : inc).push({ t: term, quoted: m[3] === undefined });
+    }
+    return { inc: inc, exc: exc };
+  }
+  function build(raw, mode){
+    raw = String(raw || '').trim();
+    if (!raw) return null;
+    var p = parse(raw);
+    if (!p.inc.length && !p.exc.length) return null;
+    var inc = p.inc.map(function(x){ return x.t; });
+    if (mode === 'phrase'){
+      // unquoted words fuse into ONE phrase; quoted units stay as typed
+      var loose = p.inc.filter(function(x){ return !x.quoted; }).map(function(x){ return x.t; }).join(' ');
+      inc = p.inc.filter(function(x){ return x.quoted; }).map(function(x){ return x.t; });
+      if (loose) inc.push(loose);
+    }
+    var exc = p.exc.map(function(x){ return x.t; });
+    function excluded(text){
+      var s = String(text).toLowerCase();
+      for (var k = 0; k < exc.length; k++) if (s.indexOf(exc[k]) !== -1) return true;
+      return false;
+    }
+    var fn = function(text){
+      var s = String(text).toLowerCase(), i;
+      if (excluded(s)) return false;
+      if (!inc.length) return true;
+      if (mode === 'any'){
+        for (i = 0; i < inc.length; i++) if (s.indexOf(inc[i]) !== -1) return true;
+        return false;
+      }
+      for (i = 0; i < inc.length; i++) if (s.indexOf(inc[i]) === -1) return false;
+      return true;
+    };
+    // fn.excluded(text): true if text contains an excluded term. Pages use
+    // it when a group/author HEADING matched (keep the whole shelf) --
+    // exclusions still apply to the individual entries beneath it.
+    fn.excluded = excluded;
+    return fn;
+  }
+  return { build: build };
+})();
+</script>
+<script>
+(function() {
+  var statsEl = document.getElementById("gs-stats");
+  var filterInput = document.getElementById("gs-filter-input");
+
+  var DATA = null;
+  var state = { mode: "authors", query: "", lang: "en", match: null, matchMode: "all" };
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function(c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  // Natural-ish sort + letter grouping -- ported verbatim from
+  // templates/library_index.html so titles/authors group and order the
+  // same way they do on that page.
+  function natKey(str){ return String(str).toLowerCase().match(/\d+|\D+/g) || [str]; }
+  function natCompare(a, b){
+    var ak = natKey(a), bk = natKey(b);
+    var len = Math.max(ak.length, bk.length);
+    for (var i = 0; i < len; i++){
+      var av = ak[i], bv = bk[i];
+      if (av === undefined) return -1;
+      if (bv === undefined) return 1;
+      var an = /^\d+$/.test(av), bn = /^\d+$/.test(bv);
+      if (an && bn){
+        var d = parseInt(av,10) - parseInt(bv,10);
+        if (d !== 0) return d;
+      } else if (av !== bv) return av < bv ? -1 : 1;
+    }
+    return 0;
+  }
+  function firstLetter(str){
+    var m = String(str).trim().match(/[A-Za-z]/);
+    return m ? m[0].toUpperCase() : '#';
+  }
+  var PREFIX_RE = /^(?:(?:Book|Volume|Vol|Part|Chapter|No\.?|Number|GA)[\s\-]*)?\d{1,4}[.,:)\-]?\s+(?=\S)/i;
+  var GA_PREFIX_RE = /^GA\s*([^,]+),\s+(?=\S)/i;
+  function stripNumberPrefix(title){
+    title = String(title);
+    var ga = title.match(GA_PREFIX_RE);
+    if (ga) return title.slice(ga[0].length) + ' (GA' + ga[1].trim() + ')';
+    var m = title.match(PREFIX_RE);
+    return m ? title.slice(m[0].length) : title;
+  }
+
+  var ALPHABET = '#ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  function buildAlphaIndex(letters){
+    var present = {};
+    letters.forEach(function(l){ present[l] = true; });
+    var html = '<a href="#" class="li-alpha-link li-top" data-jump-top="1">&uarr; Top</a>';
+    ALPHABET.forEach(function(letter){
+      html += present[letter]
+        ? '<a class="li-alpha-link" href="#gs-' + letter + '">' + letter + '</a>'
+        : '<span class="li-alpha-link li-disabled">' + letter + '</span>';
+    });
+    return html;
+  }
+
+  function languageBadge(book){
+    return book.marker !== "en" ? '<span class="badge-language">' + esc(book.language) + '</span>' : '';
+  }
+  function outLink(book, text){
+    return '<a class="gs-out-link" href="' + esc(book.url) + '" target="_blank" rel="noopener noreferrer">' +
+           esc(text) + '<span class="gs-out-arrow" aria-hidden="true">&#8599;</span></a>';
+  }
+
+  // ---- Language buttons (config.GS_LANGUAGE_BUTTONS, passed in DATA) ----
+  // markers null = ALL; an array = those language markers; the string
+  // "other" = every marker not claimed by any other button.
+  function claimedMarkers(){
+    var claimed = {};
+    DATA.languageButtons.forEach(function(b){
+      if (Array.isArray(b.markers)) b.markers.forEach(function(m){ claimed[m] = true; });
+    });
+    return claimed;
+  }
+  function langMatches(button, marker, claimed){
+    marker = String(marker || '').toLowerCase();
+    if (button.markers === null) return true;
+    if (button.markers === 'other') return !claimed[marker];
+    return button.markers.indexOf(marker) !== -1;
+  }
+  function currentLangButton(){
+    return DATA.languageButtons.filter(function(b){ return b.key === state.lang; })[0] || DATA.languageButtons[0];
+  }
+  function filterByLanguage(authors){
+    var btn = currentLangButton();
+    if (btn.markers === null) return authors;
+    var claimed = claimedMarkers();
+    return authors.map(function(a){
+      return { name: a.name, books: a.books.filter(function(b){ return langMatches(btn, b.marker, claimed); }) };
+    }).filter(function(a){ return a.books.length > 0; });
+  }
+  function buildLangBar(){
+    var claimed = claimedMarkers();
+    var counts = DATA.languageButtons.map(function(btn){
+      var n = 0;
+      DATA.authors.forEach(function(a){ a.books.forEach(function(b){ if (langMatches(btn, b.marker, claimed)) n++; }); });
+      return n;
+    });
+    document.getElementById('gs-langbar').innerHTML = DATA.languageButtons.map(function(btn, i){
+      return '<button type="button" class="gs-lang' + (btn.key === state.lang ? ' active' : '') +
+             '" data-lang="' + esc(btn.key) + '" aria-pressed="' + (btn.key === state.lang) + '">' +
+             esc(btn.label) + ' <span class="n">(' + counts[i] + ')</span></button>';
+    }).join('');
+  }
+
+  // query matches title OR author, same "instant substring filter" UX
+  // this page's own search box has always had. An author whose NAME
+  // matches keeps all of their books (finding an author by name should
+  // show their whole shelf); otherwise only the books whose own title
+  // matches survive.
+  function filterAuthors(authors){
+    if (!state.match) return authors;
+    return authors.map(function(a){
+      var authorMatches = state.match(a.name);
+      var books = authorMatches ? a.books.filter(function(b){ return !state.match.excluded(stripNumberPrefix(b.title)); }) : a.books.filter(function(b){
+        return state.match(stripNumberPrefix(b.title));
+      });
+      return { name: a.name, books: books };
+    }).filter(function(a){ return a.books.length > 0; });
+  }
+
+  function renderAuthorsTree(authors){
+    var sorted = authors.slice().sort(function(a,b){ return natCompare(a.name, b.name); });
+    var lettersSeen = [], html = '', lastLetter = null;
+    sorted.forEach(function(a){
+      var L = firstLetter(a.name);
+      if (L !== lastLetter){
+        html += '<h2 class="li-letter-heading" id="gs-' + L + '">' + L + '</h2>';
+        lettersSeen.push(L); lastLetter = L;
+      }
+      var books = a.books.map(function(b){ return { book: b, displayTitle: stripNumberPrefix(b.title) }; })
+                          .sort(function(x,y){ return natCompare(x.displayTitle, y.displayTitle); });
+      var itemsHtml = books.map(function(entry){
+        return '<li>' + outLink(entry.book, entry.displayTitle) + languageBadge(entry.book) + '</li>';
+      }).join('');
+      html += '<details class="li-author-node" open>' +
+                '<summary>' + esc(a.name) + ' ' +
+                  '<span class="li-author-count">(' + books.length + ')</span></summary>' +
+                '<ul class="li-book-list">' + itemsHtml + '</ul>' +
+              '</details>';
+    });
+    if (!sorted.length) html = '<div class="li-empty-note">' + emptyText('No authors have items in this view yet.') + '</div>';
+    return { html: html, letters: lettersSeen };
+  }
+
+  function renderBooksFlat(authors){
+    var rows = [];
+    authors.forEach(function(a){
+      a.books.forEach(function(b){
+        rows.push({ author: a.name, book: b, displayTitle: stripNumberPrefix(b.title) });
+      });
+    });
+    rows.sort(function(x,y){ return natCompare(x.displayTitle, y.displayTitle); });
+
+    var lettersSeen = [], html = '', lastLetter = null;
+    rows.forEach(function(r){
+      var L = firstLetter(r.displayTitle);
+      if (L !== lastLetter){
+        html += '<h2 class="li-letter-heading" id="gs-' + L + '">' + L + '</h2>';
+        lettersSeen.push(L); lastLetter = L;
+      }
+      html += '<div class="li-row">' +
+                '<span class="li-row-title">' + outLink(r.book, r.displayTitle) + languageBadge(r.book) + '</span>' +
+                '<span class="li-row-author">by ' + esc(r.author) + '</span>' +
+              '</div>';
+    });
+    if (!rows.length) html = '<div class="li-empty-note">' + emptyText('No items in this view yet.') + '</div>';
+    return { html: html, letters: lettersSeen };
+  }
+
+  function emptyText(base){
+    return state.query ? 'No matches for “' + esc(filterInput.value.trim()) + '”.' : base;
+  }
+
+  function updateModeButtons(){
+    document.getElementById('liModeAuthorsBtn').setAttribute('aria-pressed', state.mode === 'authors');
+    document.getElementById('liModeBooksBtn').setAttribute('aria-pressed', state.mode === 'books');
+  }
+
+  function render(){
+    if (!DATA) return;
+    var langAuthors = filterByLanguage(DATA.authors);
+    var langCount = langAuthors.reduce(function(sum, a){ return sum + a.books.length; }, 0);
+    var scopedAuthors = filterAuthors(langAuthors);
+    var scopedBookCount = scopedAuthors.reduce(function(sum, a){ return sum + a.books.length; }, 0);
+
+    var langLabel = currentLangButton().label;
+    var langBtn = currentLangButton();
+    statsEl.innerHTML = state.query
+      ? '<b>' + scopedBookCount + '</b> of ' + langCount + (langBtn.markers === null ? '' : ' ' + esc(langLabel)) + ' entries match &ldquo;' + esc(filterInput.value.trim()) + '&rdquo;'
+      : '<b>' + langCount + '</b>' + (langBtn.markers === null ? '' : ' ' + esc(langLabel)) + ' entries' +
+        ' &mdash; <b>' + scopedAuthors.length + '</b> authors';
+
+    var result = state.mode === 'authors' ? renderAuthorsTree(scopedAuthors) : renderBooksFlat(scopedAuthors);
+    document.getElementById('liView-gs').innerHTML = result.html;
+    document.getElementById('liAlphaIndexInner').innerHTML = buildAlphaIndex(result.letters);
+  }
+
+  document.getElementById('gs-langbar').addEventListener('click', function(e){
+    var t = e.target.closest('[data-lang]');
+    if (!t) return;
+    state.lang = t.getAttribute('data-lang');
+    buildLangBar();
+    render();
+  });
+
+  document.getElementById('liModeAuthorsBtn').addEventListener('click', function(){ state.mode = 'authors'; updateModeButtons(); render(); });
+  document.getElementById('liModeBooksBtn').addEventListener('click', function(){ state.mode = 'books'; updateModeButtons(); render(); });
+
+  document.getElementById('liExpandAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('#liView-gs details.li-author-node').forEach(function(d){ d.open = true; });
+  });
+  document.getElementById('liCollapseAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('#liView-gs details.li-author-node').forEach(function(d){ d.open = false; });
+  });
+
+  function applyFilter(){
+    state.match = window.HSFilter.build(filterInput.value, state.matchMode);
+    state.query = state.match ? filterInput.value.trim().toLowerCase() : '';
+    render();
+  }
+  filterInput.addEventListener('input', function(){
+    applyFilter();
+  });
+  document.getElementById('hs-filter-mode').addEventListener('change', function(e){
+    state.matchMode = e.target.value;
+    applyFilter();
+  });
+
+  var backBtn = document.getElementById('liBackTop');
+  window.addEventListener('scroll', function(){
+    backBtn.classList.toggle('show', window.scrollY > 480);
+  }, { passive: true });
+  backBtn.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  // Delegated -- the alpha index bar's contents are replaced on every
+  // render(), so a static listener attached once here survives that.
+  document.getElementById('liAlphaIndex').addEventListener('click', function(e){
+    var t = e.target.closest('[data-jump-top]');
+    if (!t) return;
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  fetch("/The-Home-Scholar-Library/assets/gs-index-data.json?v=20261002-120004").then(function(r) { return r.json(); }).then(function(data) {
+    DATA = data;
+    state.lang = data.defaultLanguage || 'all';
+    buildLangBar();
+    updateModeButtons();
+    render();
+  }).catch(function(err) {
+    statsEl.textContent = "Could not load the Gutenberg Select index.";
+    document.getElementById('liView-gs').innerHTML =
+      '<div class="li-empty-note">Could not load the Gutenberg Select index (' + esc(err && err.message) + ').</div>';
+  });
+})();
+</script>
+
+</div>
+<script src="/The-Home-Scholar-Library/assets/backgrounds/generators/common.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/library.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/dark.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/deep-sky-locked.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/starfield.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/solar-system.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/gutenberg-select/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script>
+(function() {
+  var HOVER_DELAY_MS = 700;
+  var overlay = document.getElementById("preview-overlay");
+  var overlayImg = document.getElementById("preview-img");
+  if (!overlay || !overlayImg) return;
+  var hoverTimer = null;
+  var activeTile = null;
+
+  function showPreview(tile) {
+    activeTile = tile;
+    overlayImg.src = tile.dataset.full;
+    overlayImg.alt = tile.dataset.name || "";
+    overlay.classList.add("visible");
+  }
+  function hidePreview() {
+    activeTile = null;
+    overlay.classList.remove("visible");
+  }
+
+  // Fetch-to-blob download: the plain `download` attribute on `.thumb-dl`
+  // is silently ignored by browsers for a cross-origin href (full_url
+  // points at Internet Archive), so a plain click just navigates/opens
+  // the image instead of saving it -- confirmed IA's file-serving
+  // response itself sends `Access-Control-Allow-Origin: *` (checked
+  // against a real item/file, both the archive.org redirect hop and the
+  // resolved ia*.us.archive.org response), so a same-origin-style fetch
+  // is allowed and we can build a real local download from the bytes.
+  // Falls back to opening the image in a new tab if the fetch ever
+  // fails (network error, IA outage, a future file host that doesn't
+  // send the header) -- never leaves the click doing nothing.
+  function downloadFull(link) {
+    var url = link.getAttribute("href");
+    var filename = link.getAttribute("download") || "";
+    link.classList.add("downloading");
+    fetch(url)
+      .then(function(resp) {
+        if (!resp.ok) throw new Error("bad response " + resp.status);
+        return resp.blob();
+      })
+      .then(function(blob) {
+        var blobUrl = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 30000);
+      })
+      .catch(function() {
+        window.open(url, "_blank");
+      })
+      .finally(function() {
+        link.classList.remove("downloading");
+      });
+  }
+
+  document.querySelectorAll(".preview-thumb").forEach(function(tile) {
+    // Listen on the TILE (the wrapper around both the image and the
+    // small download icon), not the <img> alone -- the download icon
+    // is a sibling absolutely-positioned on top of the image's corner,
+    // so listening on just the <img> meant the cursor landing on/near
+    // that icon fired a spurious mouseleave (icon is now topmost under
+    // the cursor) right as the dwell timer was about to complete,
+    // resetting it -- which is why the preview only ever appeared
+    // after "repositioning" the mouse. The wrapper's boundary is what
+    // actually matters for "is the pointer over this tile at all".
+    tile.addEventListener("mouseenter", function() {
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(function() { showPreview(tile); }, HOVER_DELAY_MS);
+    });
+    tile.addEventListener("mouseleave", function() {
+      clearTimeout(hoverTimer);
+      hidePreview();
+    });
+
+    // Touch/click: opens immediately, no dwell timer -- there's no
+    // "hover for a second" on a touchscreen to wait for. Also fires
+    // for an ordinary mouse click, which is harmless (the dwell timer
+    // was already about to show the same thing). `.thumb-dl`'s own
+    // click handler below calls stopPropagation(), so a tap on the
+    // download icon reaches only that handler, never this one.
+    tile.addEventListener("click", function() {
+      clearTimeout(hoverTimer);
+      showPreview(tile);
+    });
+  });
+
+  document.querySelectorAll(".thumb-dl").forEach(function(link) {
+    // The icon sits inside the same tile the hover-preview timer
+    // watches (deliberately -- see the tile-level listener comment
+    // above), so moving the cursor toward the icon to click it never
+    // leaves the tile: the dwell timer keeps running and the full
+    // preview overlay was popping up right as/before the click landed.
+    // Cancelling the timer (and hiding an already-shown preview) the
+    // moment the cursor reaches the icon specifically -- not just the
+    // tile generally -- stops that: hovering the icon is a distinct
+    // intent (download) from hovering the image (preview), even though
+    // both live inside the same tile boundary.
+    link.addEventListener("mouseenter", function() {
+      clearTimeout(hoverTimer);
+      hidePreview();
+    });
+    link.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation(); // don't also trigger the tile's own click->showPreview
+      clearTimeout(hoverTimer);
+      hidePreview();
+      downloadFull(link);
+    });
+  });
+
+  // Touch dismissal: `.preview-overlay` is permanently `pointer-events:
+  // none` (see PREVIEW_WIDGET_STYLE), so it can never itself receive a
+  // tap -- a tap anywhere on the page passes through to whatever's
+  // underneath. This is what actually closes the preview on touch: any
+  // click that doesn't belong to the tile currently showing (either a
+  // tap on blank page, or a tap that lands on a different tile, which
+  // that tile's own listener above already handles by opening its own
+  // preview and setting itself as activeTile before this ever runs,
+  // since a listener on the click target itself fires before one on an
+  // ancestor like document) closes whatever's open.
+  document.addEventListener("click", function(e) {
+    if (activeTile && !activeTile.contains(e.target)) {
+      hidePreview();
+    }
+  });
+})();
+</script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json?v=20261002-120004';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      // Gutenberg Select hits (gs_library_design.md §8): a GS entry's
+      // url is an outgoing gutenberg.org link, not a page on this site --
+      // open in a new tab so a search click never navigates the visitor
+      // away from the site entirely, same as every other outbound link
+      // convention already in play (e.g. meta.yaml link cards).
+      if (item.source === "gs") {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      a.appendChild(title);
+      if (item.source === "gs") {
+        var pill = document.createElement("span");
+        pill.className = "site-search-result-gs-pill";
+        pill.textContent = "Gutenberg Select ↗";
+        a.appendChild(pill);
+      }
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

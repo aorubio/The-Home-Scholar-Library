@@ -1,0 +1,742 @@
+<!--
+templates/rspa_index.html
+==========================
+Real template for pipeline.rspa_index.render_rspa_index() -- plain
+double-brace-token substitution, same convention as templates/gs_index.html
+(and the same CAUTION: never spell a token's literal name inside prose or a
+comment here, or its replacement text gets spliced into the comment).
+Falls back to pipeline.rspa_index._DEFAULT_RSPA_INDEX_TEMPLATE if this
+file goes missing or loses its data-url token.
+
+Look and feel deliberately matches templates/gs_index.html (same site
+chrome, colors, filter box, outgoing-link arrow, back-to-top button, and
+now the same button-row filter pattern as GS's own language bar --
+DATA.viewButtons/DATA.defaultView, config.RSPA_VIEW_BUTTONS).
+
+Structure: each top-level RSPA_ROOT folder (GA-numbered or not; present
+whether or not it currently has any entries -- "scaffolding") renders as
+its own collapsible <details>, default open, one per group in the order
+pipeline.rspa_catalog produced (GA number, then non-GA alphabetically). A
+"Collapse all / Expand all" control bulk-toggles every group at once, for
+scanning just the folder names on a long page. Every entry links out to
+YouTube in a new tab, carrying its own channel badge and, where it
+applies, an Audiobook badge -- see config.RSPA_CHANNELS/
+config.RSPA_AUDIOBOOK_LABEL_SUBSTRING.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rudolf Steiner Lectures - Home Scholar Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/The-Home-Scholar-Library/assets/css/site.css">
+<style>
+  body { font-family: var(--site-font, system-ui, sans-serif); max-width: 64rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #222; }
+  h1 { margin: 0 0 0.15em; text-align: center; }
+  .rspa-intro { color: #555; font-size: 0.95rem; max-width: 48rem; margin: 0 auto 1rem; }
+  .rspa-intro p { margin: 0 0 0.6em; }
+
+  .rspa-stats { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 14px; font-size: 0.85rem; color: #555; }
+  .rspa-stats b { color: #222; }
+
+  /* View/channel buttons -- same shape as templates/gs_index.html's own
+     .gs-langbar/.gs-lang (DATA.languageButtons there, DATA.viewButtons
+     here); unlike GS's flat marker match, each button's meaning is its
+     own little rule over (channel, isAudiobook) -- see viewPredicate()
+     below -- so this bar switches on a plain "key" instead of a generic
+     marker list. */
+  /* Row wrapper: chips left, "Collapse all / Expand all" right -- the
+     chips answer "what to show" (a filter over entries), the toggle
+     answers "how to show it" (open/closed state of every group), and
+     keeping the toggle on this row rather than down in the text-search
+     row groups both display-affecting controls together, right by the
+     entry counts they change. */
+  .rspa-viewbar-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 8px 14px; margin: 0 0 14px; }
+  .rspa-viewbar { display: flex; flex-wrap: wrap; gap: 8px; }
+  .rspa-view { font: inherit; font-size: 0.85rem; font-weight: 600; background: #f5f5f5; border: 1px solid #ddd;
+    border-radius: 999px; padding: 5px 14px; cursor: pointer; color: #333; }
+  .rspa-view:hover { background: #eaf1fb; border-color: #b8d0ef; }
+  .rspa-view.active { background: #1a5fb4; border-color: #1a5fb4; color: #fff; }
+  .rspa-view .n { font-weight: 400; opacity: 0.8; }
+
+  /* GS's own filter -- separate from site_nav.js's site-wide search box,
+     unchanged from the page's first pass. Now also doubles as a "jump to
+     an exact GA number" box -- see the help popover below and the Enter
+     handler in the script. */
+  .rspa-search-wrap { margin: 0 0 14px; }
+  .rspa-search-wrap input { width: 100%; box-sizing: border-box; padding: 9px 12px; font-size: 0.95rem;
+    border: 1px solid #ccc; border-radius: 8px; font-family: inherit; }
+  .rspa-search-row2 { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 6px; justify-content: flex-end; }
+
+  .rspa-collapse-toggle { font: inherit; font-size: 0.82rem; background: #fff; border: 1px solid #ccc;
+    border-radius: 8px; padding: 5px 12px; cursor: pointer; color: #333; }
+  .rspa-collapse-toggle:hover { background: #eaf1fb; border-color: #b8d0ef; }
+
+  /* "?" help popover -- a <details> disclosure, same pattern as the
+     collapsible groups below, so the page speaks one visual language for
+     "click to reveal more" rather than a hover-only tooltip (which fails
+     outright on touch devices). */
+  .rspa-help { position: relative; }
+  .rspa-help summary { list-style: none; cursor: pointer; width: 22px; height: 22px; border-radius: 50%;
+    background: #eee; color: #555; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center;
+    justify-content: center; border: 1px solid #ccc; }
+  .rspa-help summary::-webkit-details-marker { display: none; }
+  .rspa-help summary:hover { background: #eaf1fb; border-color: #b8d0ef; }
+  .rspa-help[open] summary { background: #1a5fb4; border-color: #1a5fb4; color: #fff; }
+  .rspa-help-body { position: absolute; z-index: 20; top: 28px; right: 0; width: min(22rem, 82vw);
+    background: #fff; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+    padding: 12px 14px; font-size: 0.82rem; color: #444; }
+  .rspa-help-body ul { margin: 6px 0 0; padding-left: 1.1em; }
+  .rspa-help-body li { margin: 4px 0; }
+
+  /* ===== Content -- ported from templates/library_index.html ===== */
+  .li-main { padding-top: 18px; }
+  .li-view { display: none; }
+  .li-view.active { display: block; }
+  .li-empty-note { color: #888; font-size: 0.9rem; padding: 1rem 0; }
+
+  /* Outgoing-link styling -- every book link on this page leaves the
+     site (no HSL page of its own to land on), so links get the link
+     color plus a trailing glyph, same convention the first pass of this
+     page and site_nav.js's own GS search-hit pill both already use. */
+  .rspa-out-link { color: #1a5fb4; text-decoration: none; }
+  .rspa-out-link:hover { text-decoration: underline; }
+  .rspa-out-arrow { color: #999; font-size: 0.85rem; margin-left: 2px; }
+
+  /* Per-entry badges -- channel badge always shown, Audiobook badge only
+     where config.RSPA_AUDIOBOOK_LABEL_SUBSTRING matched. Deliberately
+     additive, next to the label text, not a replacement for it -- a
+     label like "GA 99 audiobook" keeps reading exactly as authored. */
+  .rspa-badge { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 1px 7px; border-radius: 999px;
+    white-space: nowrap; margin-left: 6px; }
+  .rspa-badge-channel { background: #e6eefc; color: #1a5fb4; }
+  .rspa-badge-audiobook { background: #e6dff5; color: #5b3a94; }
+
+  /* ===== Back to top -- ported from templates/library_index.html ===== */
+  .li-back-top { position: fixed; right: 22px; bottom: 22px; width: 42px; height: 42px; border-radius: 50%;
+    background: #1a5fb4; color: #fff; border: none; font-size: 18px; cursor: pointer; display: none;
+    align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 30; }
+  .li-back-top.show { display: flex; }
+  .li-back-top:hover { background: #164a8f; }
+
+  
+  .hs-filter-row { display: flex; gap: 8px; align-items: stretch; }
+  .hs-filter-row input { flex: 1 1 auto; min-width: 0; }
+  .hs-filter-mode { flex: 0 0 auto; font: inherit; font-size: 0.9rem; padding: 0 10px; border: 1px solid #ccc;
+    border-radius: 8px; background: #fff; color: #333; cursor: pointer; }
+  .hs-filter-hint { font-size: 0.78rem; color: #888; margin: 4px 2px 0; }
+
+
+  /* Each group is a native <details> -- default open (matches the page's
+     prior always-expanded look), bulk-toggled by #rspaCollapseAll. The
+     native disclosure triangle is kept as the expand/collapse affordance
+     rather than fought away with custom markup. */
+  .rspa-group { scroll-margin-top: 12px; margin: 0 0 4px; }
+  .rspa-group-heading { font-size: 1.05rem; font-weight: 700; color: #1a5fb4; border-bottom: 2px solid #cfe0f5;
+    padding: 20px 4px 4px 0; margin: 0 0 6px; cursor: pointer; display: flex; flex-wrap: wrap;
+    align-items: baseline; gap: 4px 10px; }
+  .rspa-group-heading::-webkit-details-marker { color: #1a5fb4; }
+  .rspa-group-heading .rspa-count { color: #888; font-size: 0.85rem; font-weight: 400; }
+  .rspa-archive-link { font-size: 0.78rem; font-weight: 600; color: #7a5a1e; background: #f1e9da;
+    border-radius: 999px; padding: 2px 10px; text-decoration: none; margin-left: auto; }
+  .rspa-archive-link:hover { background: #e7dcc4; }
+  .rspa-list { list-style: none; margin: 0 0 8px; padding: 0 0 0 1em; }
+  .rspa-list li { padding: 5px 0; border-bottom: 1px solid #f2f2f2; font-size: 0.95rem; }
+  .rspa-list li:hover { background: #f7f9fc; }
+  .rspa-group-empty { color: #999; font-size: 0.88rem; padding: 2px 0 10px 1em; font-style: italic; }
+  .rspa-group-empty button { font: inherit; font-style: normal; font-weight: 600; color: #1a5fb4; background: none;
+    border: none; padding: 0; cursor: pointer; text-decoration: underline; }
+  .rspa-group-empty button:hover { color: #164a8f; }
+</style>
+<style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  /* Gutenberg Select search-result pill + outgoing-link glyph
+     (gs_library_design.md §8) -- a GS hit's own url leaves the site, so
+     this marks that visually before the click, same reasoning as the
+     outgoing-arrow treatment gs_index.html's own row links get. */
+  .site-search-result-gs-pill { display: inline-block; margin-left: 6px; font-size: 0.68rem; font-weight: 600;
+    padding: 1px 7px; border-radius: 999px; background: #f1e9da; color: #7a5a1e; vertical-align: middle; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+<style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+</head>
+<body>
+<div id="hs-background" aria-hidden="true"></div>
+<div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<h1>Rudolf Steiner Lectures - Home Scholar Library</h1>
+<div class="rspa-intro"><p>Rudolf Steiner gave over 6,000 lectures, now organized largely within roughly 350 volumes. Several thousand lectures have been translated into English. Many lecture and lecture-cycle titles were assigned later by editors rather than by Steiner himself. For reliable identification, use the GA number, lecture date, and location, rather than the English titles.</p><p>Steiner saw his work as necessary because humanity was entering a stage in which old religious traditions and instinctive spiritual awareness could no longer adequately guide human beings. Modern materialism had strengthened independent thinking, which he considered an important achievement, but he believed it also risked separating humanity from knowledge of its spiritual nature.</p><p>He therefore saw Anthroposophy as necessary to reunite spiritual knowledge with modern, free, rational consciousness—not by returning to old forms of belief, but by developing spiritual insight consciously. In his view, this would allow humanity to understand its deeper purpose, educate children more fully, care for the Earth responsibly, and participate consciously in its own spiritual evolution.</p></div>
+
+<div class="rspa-stats" id="rspa-stats">Loading&hellip;</div>
+
+<div class="rspa-viewbar-row">
+  <div class="rspa-viewbar" id="rspa-viewbar" role="group" aria-label="Filter by channel"></div>
+  <button type="button" class="rspa-collapse-toggle" id="rspaCollapseAll">Collapse all</button>
+</div>
+
+<div class="rspa-search-wrap">
+  <div class="hs-filter-row">
+    <input type="search" id="rspa-filter-input" placeholder="Filter by title or GA volume, or type a GA number and press Enter&hellip;" aria-label="Filter Rudolf Steiner Lectures by title or GA volume" autocomplete="off">
+    <select class="hs-filter-mode" id="hs-filter-mode" aria-label="Match mode"><option value="all">All words</option><option value="any">Any word</option><option value="phrase">Exact phrase</option></select>
+  </div>
+  <div class="rspa-search-row2">
+    <div class="hs-filter-hint">Tip: use &quot;quotes&quot; to keep words together, and a leading &minus; to exclude a word (e.g. <i>light -letters</i>).</div>
+    <details class="rspa-help" id="rspaHelp">
+      <summary aria-label="How to use this search">?</summary>
+      <div class="rspa-help-body">
+        <div>Typing narrows the list as you go &mdash; words match titles and folder names, and a match on a folder&rsquo;s own name keeps everything inside it.</div>
+        <ul>
+          <li>The dropdown (All words / Any word / Exact phrase) controls how multiple words combine.</li>
+          <li>&ldquo;Quotes&rdquo; keep a phrase together; a leading &minus; excludes a word, in any mode.</li>
+          <li>Type the <b>exact GA number</b> of a real volume and press <b>Enter</b> to jump straight to it &mdash; it opens even if the list is currently collapsed.</li>
+          <li>A number that doesn&rsquo;t match a real GA volume, or any non-numeric search, just filters normally &mdash; Enter does nothing extra.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</div>
+
+<main class="li-main" id="rspa-main"></main>
+
+<button class="li-back-top" id="liBackTop" title="Back to top" aria-label="Back to top">&uarr;</button>
+
+<script>
+window.HSFilter = (function(){
+  function parse(raw){
+    var inc = [], exc = [], re = /(-?)"([^"]*)"|(\S+)/g, m;
+    while ((m = re.exec(raw)) !== null){
+      var neg = false, term;
+      if (m[3] !== undefined){
+        term = m[3];
+        if (term.charAt(0) === '-'){ neg = true; term = term.slice(1); }
+        term = term.replace(/"/g, '');
+      } else {
+        neg = m[1] === '-'; term = m[2];
+      }
+      term = term.trim().toLowerCase();
+      if (!term) continue;
+      (neg ? exc : inc).push({ t: term, quoted: m[3] === undefined });
+    }
+    return { inc: inc, exc: exc };
+  }
+  function build(raw, mode){
+    raw = String(raw || '').trim();
+    if (!raw) return null;
+    var p = parse(raw);
+    if (!p.inc.length && !p.exc.length) return null;
+    var inc = p.inc.map(function(x){ return x.t; });
+    if (mode === 'phrase'){
+      // unquoted words fuse into ONE phrase; quoted units stay as typed
+      var loose = p.inc.filter(function(x){ return !x.quoted; }).map(function(x){ return x.t; }).join(' ');
+      inc = p.inc.filter(function(x){ return x.quoted; }).map(function(x){ return x.t; });
+      if (loose) inc.push(loose);
+    }
+    var exc = p.exc.map(function(x){ return x.t; });
+    function excluded(text){
+      var s = String(text).toLowerCase();
+      for (var k = 0; k < exc.length; k++) if (s.indexOf(exc[k]) !== -1) return true;
+      return false;
+    }
+    var fn = function(text){
+      var s = String(text).toLowerCase(), i;
+      if (excluded(s)) return false;
+      if (!inc.length) return true;
+      if (mode === 'any'){
+        for (i = 0; i < inc.length; i++) if (s.indexOf(inc[i]) !== -1) return true;
+        return false;
+      }
+      for (i = 0; i < inc.length; i++) if (s.indexOf(inc[i]) === -1) return false;
+      return true;
+    };
+    // fn.excluded(text): true if text contains an excluded term. Pages use
+    // it when a group/author HEADING matched (keep the whole shelf) --
+    // exclusions still apply to the individual entries beneath it.
+    fn.excluded = excluded;
+    return fn;
+  }
+  return { build: build };
+})();
+</script>
+<script>
+(function() {
+  var statsEl = document.getElementById("rspa-stats");
+  var mainEl = document.getElementById("rspa-main");
+  var filterInput = document.getElementById("rspa-filter-input");
+  var viewbarEl = document.getElementById("rspa-viewbar");
+  var collapseBtn = document.getElementById("rspaCollapseAll");
+  var DATA = null;
+  var query = "";
+  var matcher = null;
+  var matchMode = "all";
+  var state = { view: "custom" };
+  var collapsed = false;
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function(c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  // Each view button's own rule over (channel, isAudiobook) -- see
+  // config.RSPA_VIEW_BUTTONS' own comment for why this is a small
+  // switch rather than a generic marker-list match like GS's language
+  // bar. "custom" (the default) is channel 2 in full -- it has no
+  // audiobook-style entries at all -- plus whichever channel-1 entries
+  // are audiobook-labeled.
+  function viewPredicate(entry) {
+    switch (state.view) {
+      case "rspa": return entry.channel === "rspa";
+      case "rsdb": return entry.channel === "rsdb";
+      case "custom": return entry.channel === "rsdb" || entry.isAudiobook;
+      case "all":
+      default: return true;
+    }
+  }
+
+  function buildViewBar() {
+    var counts = DATA.viewButtons.map(function(btn) {
+      var save = state.view; state.view = btn.key;
+      var n = 0;
+      DATA.groups.forEach(function(g) { g.entries.forEach(function(e) { if (viewPredicate(e)) n++; }); });
+      state.view = save;
+      return n;
+    });
+    viewbarEl.innerHTML = DATA.viewButtons.map(function(btn, i) {
+      return '<button type="button" class="rspa-view' + (btn.key === state.view ? ' active' : '') +
+             '" data-view="' + esc(btn.key) + '" aria-pressed="' + (btn.key === state.view) + '">' +
+             esc(btn.label) + ' <span class="n">(' + counts[i] + ')</span></button>';
+    }).join('');
+  }
+  viewbarEl.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-view]');
+    if (!btn) return;
+    state.view = btn.getAttribute('data-view');
+    buildViewBar();
+    render();
+  });
+
+  // A group whose HEADING matches keeps all of its (view-filtered)
+  // entries; otherwise only the entries whose own title matches survive.
+  // Scaffolding: every group stays visible with NO active text query,
+  // even left with zero entries by the view filter -- that's the whole
+  // point of "GA folders as scaffolding". Once an actual query is typed,
+  // a group left empty by BOTH filters is hidden again, same as before
+  // (searching for one title shouldn't leave a page full of unrelated
+  // empty headings).
+  function filterGroups(groups) {
+    var hasQuery = !!matcher;
+    return groups.map(function(g) {
+      var viewEntries = g.entries.filter(viewPredicate);
+      var entries = viewEntries;
+      if (hasQuery) {
+        var headMatch = matcher(g.name);
+        entries = headMatch
+          ? viewEntries.filter(function(e) { return !matcher.excluded(e.title); })
+          : viewEntries.filter(function(e) { return matcher(e.title); });
+      }
+      // rawTotal (unfiltered by view/channel) tells the empty-state
+      // message WHY a group has nothing to show: a real, uncatalogued
+      // folder (rawTotal 0) reads differently from one that only looks
+      // empty because the active view/channel filter hid everything in
+      // it (rawTotal > 0). See emptyMessage() below.
+      return { id: g.id, name: g.name, gaKey: g.gaKey, rsarchiveUrl: g.rsarchiveUrl, entries: entries, rawTotal: g.entries.length };
+    }).filter(function(g) { return hasQuery ? g.entries.length > 0 : true; });
+  }
+
+  function entryHtml(e) {
+    var badges = '<span class="rspa-badge rspa-badge-channel">' + esc(e.badge) + '</span>' +
+      (e.isAudiobook ? '<span class="rspa-badge rspa-badge-audiobook">Audiobook</span>' : '');
+    return '<li><a class="rspa-out-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">' +
+           esc(e.title) + '<span class="rspa-out-arrow" aria-hidden="true">&#8599;</span></a>' + badges + '</li>';
+  }
+
+  // Two distinct empty states, not one blanket "no entries" line:
+  //   - rawTotal === 0: this folder has no links in EITHER channel yaml at
+  //     all, regardless of which view/filter is active -- a genuinely
+  //     uncatalogued (scaffolding) folder. Source folders shouldn't stay
+  //     in this state long-term, but the message still needs to be
+  //     accurate on a page rendered before that catch-up happens.
+  //   - rawTotal > 0: this folder DOES have entries, just none that match
+  //     the current view/channel filter -- e.g. "Channel 2" selected on a
+  //     folder that only has Channel 1 links. That's not "no entries",
+  //     it's "hidden by your filter", and the message says so and offers
+  //     the one-click way out.
+  function emptyMessage(g) {
+    if (g.rawTotal === 0) {
+      return 'No recordings catalogued in this folder yet.';
+    }
+    var activeBtn = DATA.viewButtons.filter(function(b) { return b.key === state.view; })[0];
+    var activeLabel = activeBtn ? activeBtn.label : 'current';
+    var pronoun = g.rawTotal === 1 ? 'it' : 'them';
+    return 'Hidden by the &ldquo;' + esc(activeLabel) + '&rdquo; filter &mdash; <button type="button" data-view="all">switch to ' +
+      esc((DATA.viewButtons[0] || { label: 'View All' }).label) + '</button> to see ' + pronoun + '.';
+  }
+
+  function groupHtml(g) {
+    var archiveLink = g.rsarchiveUrl
+      ? '<a class="rspa-archive-link" href="' + esc(g.rsarchiveUrl) + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">rsarchive.org GA ' + esc(g.gaKey) + ' &#8599;</a>'
+      : '';
+    var body = g.entries.length
+      ? '<ul class="rspa-list">' + g.entries.map(entryHtml).join('') + '</ul>'
+      : '<div class="rspa-group-empty">' + emptyMessage(g) + '</div>';
+    return '<details class="rspa-group" id="' + esc(g.id) + '"' + (collapsed ? '' : ' open') + '>' +
+             '<summary class="rspa-group-heading">' + esc(g.name) +
+               ' <span class="rspa-count">(' + g.entries.length + ')</span>' + archiveLink +
+             '</summary>' + body +
+           '</details>';
+  }
+
+  function render() {
+    if (!DATA) return;
+    var groups = filterGroups(DATA.groups);
+    var shown = groups.reduce(function(n, g) { return n + g.entries.length; }, 0);
+    statsEl.innerHTML = query
+      ? '<b>' + shown + '</b> of ' + DATA.totalEntries + ' entries match &ldquo;' + esc(filterInput.value.trim()) + '&rdquo;'
+      : '<b>' + DATA.totalEntries + '</b> entries &mdash; <b>' + DATA.totalGroups + '</b> groups';
+
+    if (!groups.length) {
+      mainEl.innerHTML = '<div class="li-empty-note">' +
+        (query ? 'No matches for &ldquo;' + esc(filterInput.value.trim()) + '&rdquo;.' : 'No entries yet.') + '</div>';
+      return;
+    }
+    mainEl.innerHTML = groups.map(groupHtml).join('');
+  }
+
+  function applyFilter() {
+    matcher = window.HSFilter.build(filterInput.value, matchMode);
+    query = matcher ? filterInput.value.trim().toLowerCase() : "";
+    render();
+  }
+  filterInput.addEventListener('input', applyFilter);
+  document.getElementById('hs-filter-mode').addEventListener('change', function(e) {
+    matchMode = e.target.value;
+    applyFilter();
+  });
+
+  // Exact GA jump: only fires when the trimmed query is a bare GA key
+  // (digits, optionally one trailing letter -- the same shape
+  // pipeline.rspa_catalog._GA_RE parses folders with) that matches
+  // exactly one group's own gaKey. Any other case -- no match, more than
+  // one candidate, a word query -- is a deliberate no-op; the live
+  // filter above has already done whatever it's going to do.
+  filterInput.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter' || !DATA) return;
+    var q = filterInput.value.trim().toLowerCase();
+    if (!/^\d+[a-z]?$/.test(q)) return;
+    var matches = DATA.groups.filter(function(g) { return g.gaKey === q; });
+    if (matches.length !== 1) return;
+    var el = document.getElementById(matches[0].id);
+    if (!el) return;
+    el.open = true;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Inline "switch to View All" link inside an empty group's own message
+  // (emptyMessage() above) -- reuses the same view-switch logic the chip
+  // bar's own click handler runs, just triggered from inside a group
+  // instead of from the bar itself.
+  mainEl.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-view]');
+    if (!btn) return;
+    state.view = btn.getAttribute('data-view');
+    buildViewBar();
+    render();
+  });
+
+  collapseBtn.addEventListener('click', function() {
+    collapsed = !collapsed;
+    collapseBtn.textContent = collapsed ? 'Expand all' : 'Collapse all';
+    document.querySelectorAll('#rspa-main details.rspa-group').forEach(function(d) { d.open = !collapsed; });
+  });
+
+  var backBtn = document.getElementById('liBackTop');
+  window.addEventListener('scroll', function() {
+    backBtn.classList.toggle('show', window.scrollY > 480);
+  }, { passive: true });
+  backBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  fetch("/The-Home-Scholar-Library/assets/rspa-index-data.json?v=20261002-120004").then(function(r) { return r.json(); }).then(function(data) {
+    DATA = data;
+    state.view = data.defaultView || "custom";
+    buildViewBar();
+    render();
+  }).catch(function(err) {
+    statsEl.textContent = "Could not load the Rudolf Steiner Lectures index.";
+    mainEl.innerHTML = '<div class="li-empty-note">Could not load the index (' + esc(err && err.message) + ').</div>';
+  });
+})();
+</script>
+
+</div>
+<script src="/The-Home-Scholar-Library/assets/backgrounds/generators/common.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/library.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/dark.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/deep-sky-locked.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/starfield.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/solar-system.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/rudolf-steiner-audio/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json?v=20261002-120004';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      // Gutenberg Select hits (gs_library_design.md §8): a GS entry's
+      // url is an outgoing gutenberg.org link, not a page on this site --
+      // open in a new tab so a search click never navigates the visitor
+      // away from the site entirely, same as every other outbound link
+      // convention already in play (e.g. meta.yaml link cards).
+      if (item.source === "gs") {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      a.appendChild(title);
+      if (item.source === "gs") {
+        var pill = document.createElement("span");
+        pill.className = "site-search-result-gs-pill";
+        pill.textContent = "Gutenberg Select ↗";
+        a.appendChild(pill);
+      }
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

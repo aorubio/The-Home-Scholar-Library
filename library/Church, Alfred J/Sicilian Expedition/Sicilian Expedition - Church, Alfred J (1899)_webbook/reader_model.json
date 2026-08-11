@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "book_title": "Sicilian Expedition",
+  "profile": "heritage_history",
+  "pages": [
+    {
+      "path": "pages/p0001.html",
+      "default_label": "Cover",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/cover.xhtml",
+          "label": "Sicilian Expedition",
+          "synthetic": true,
+          "role": "cover"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0002.html",
+      "default_label": "Front Matter",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/front-matter.html",
+          "label": "Front Matter",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0003.html",
+      "default_label": "Statesman and Citizen",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/statesman.html",
+          "label": "Statesman and Citizen",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0004.html",
+      "default_label": "Soldier",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/soldier.html",
+          "label": "Soldier",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0005.html",
+      "default_label": "Peace Maker",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/peace.html",
+          "label": "Peace Maker",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0006.html",
+      "default_label": "The Great Scheme",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/scheme.html",
+          "label": "The Great Scheme",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0007.html",
+      "default_label": "An Ill-Omened Start",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/start.html",
+          "label": "An Ill-Omened Start",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0008.html",
+      "default_label": "At Syracuse",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/syracuse.html",
+          "label": "At Syracuse",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0009.html",
+      "default_label": "Energy of the Athenians",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/energy.html",
+          "label": "Energy of the Athenians",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0010.html",
+      "default_label": "Sparta to the Rescue",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/sparta.html",
+          "label": "Sparta to the Rescue",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0011.html",
+      "default_label": "Decline of the Athenians",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/decline.html",
+          "label": "Decline of the Athenians",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0012.html",
+      "default_label": "Help from Athens",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/help.html",
+          "label": "Help from Athens",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0013.html",
+      "default_label": "The New Armament",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/armament.html",
+          "label": "The New Armament",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0014.html",
+      "default_label": "The Last Struggle",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/struggle.html",
+          "label": "The Last Struggle",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0015.html",
+      "default_label": "The End",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/end.html",
+          "label": "The End",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    }
+  ]
+}

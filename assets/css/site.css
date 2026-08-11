@@ -1,2 +1,36 @@
-/* placeholder stylesheet */
-body { font-family: sans-serif; }
+/* pipeline/assets/css/site.css
+   ==============================
+   Sitewide stylesheet -- every page template links this FIRST in <head>,
+   before its own inline <style> block (see config.py's SITE_FONT_FAMILY
+   comment and pipeline.site_nav.site_nav_style()'s --site-font custom
+   property). This file used to be a one-line placeholder ("body {
+   font-family: sans-serif; }") -- nobody had come back to finish it, which
+   silently broke the site's own typography setting: config.SITE_FONT_FAMILY
+   has asked for 'EB Garamond' (every page's body reads it via
+   var(--site-font)) since that constant was written, but the actual
+   webfont was never loaded anywhere, so every browser was silently
+   falling through the stack to Georgia/system-ui instead. That's the
+   single biggest reason the site (About page included) read as "plain":
+   the intended literary serif never actually rendered.
+
+   Fixed here, in the one place config.py's own comment already said this
+   belonged ("ASSETS_DIR's site.css is the natural place"). Weights: 400/
+   700 upright (body text / **bold**), 400/700 italic (*emphasis* /
+   ***bold italic*** -- content/*.md's blockquoted pull-quotes are
+   authored in that combined form), 600 upright (chapter-style h1
+   headings in templates/page.html). display=swap so text is never
+   invisible while the font loads. */
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: sans-serif; /* overridden by var(--site-font) in each page's own body{} rule --
+                               kept as the literal fallback here so this file still degrades
+                               gracefully even if a future template forgets to reference the
+                               custom property. */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: #cfe0f5; color: #0d2c52; }
