@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html data-reader-size="m" data-reader-font="original" data-reader-images="on">
+<head>
+    <title>The Last Struggle — Sicilian Expedition</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../images/r0004.css"/>
+<link rel="stylesheet" type="text/css" href="../images/r0003.css"/>
+  <script>
+(function () {
+  var html = document.documentElement;
+  try {
+    var raw = localStorage.getItem("webbook-reader-prefs-v1");
+    var prefs = raw ? JSON.parse(raw) : {};
+    html.setAttribute("data-reader-size", prefs.size || "m");
+    html.setAttribute("data-reader-font", prefs.font || "original");
+    html.setAttribute("data-reader-images", prefs.images || "on");
+    if (prefs.background && prefs.background !== "auto") {
+      html.setAttribute("data-bg-override", prefs.background);
+      var MODE_COLORS = {"library": {"reader": "#f3eadc", "ink": "#332f2d"}, "dark": {"reader": "#151b23", "ink": "#d9e0e8"}, "deep-sky": {"reader": "#101722", "ink": "#d9e0ea"}, "starfield": {"reader": "#080b12", "ink": "#d8dde7"}, "solar-system": {"reader": "#101722", "ink": "#d8dde7"}};
+      var c = MODE_COLORS[prefs.background];
+      if (c) {
+        html.style.setProperty("--hs-reader-bg", c.reader);
+        html.style.setProperty("--hs-reader-ink", c.ink);
+        html.style.setProperty("--hs-outer-bg", c.reader);
+      }
+    }
+  } catch (e) { /* ignore (private browsing, malformed storage, etc.) --
+                     page renders at its ordinary static/server defaults. */ }
+})();
+</script>
+  <link rel="stylesheet" type="text/css" href="../reader_theme.css"/>
+  <link rel="stylesheet" type="text/css" href="../reader_controls.css"/>
+  <style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+  <style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="calibre1">
+<div id="hs-background" aria-hidden="true"></div><div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="book-page" id="reader-page-start">
+
+<div class="reader-source-unit" data-reader-member="0">
+
+<div class="calibre2"><h1 class="calibre5"><span class="calibre12">The Last Struggle</span></h1></div>
+<p class="calibre13">
+The Syracusans, we may be sure, were well aware that
+the invading force intended to go but had delayed the
+execution of their purpose. Such an intention was a
+clear confession of defeat and inferiority, and it
+naturally encouraged the victorious side to push their
+success to the furthest. The Athenians must not be
+allowed to take up another position where they could be
+more free to do mischief; on the contrary, they must be
+attacked where they were, and destroyed. Gylippus
+accordingly had the ships-of-war exercised for a few
+days till the crews were, he thought, sufficiently
+perfect in their duties. This done, he made a
+demonstration of his land forces against the Athenian
+lines, but without obtaining, or indeed aiming at, any
+important result. On the day after, a great and
+practically decisive
+battle was fought. The whole of the Syracusan army
+marched out of the city and took up a position
+threatening the Athenian lines; the whole of the fleet
+ranged itself outside the stockade within which was the
+Athenian ships-of-war. In numbers there was no very
+considerable difference, the Syracusans having
+seventy-six triremes, the Athenians eighty-six. In
+efficiency the advantage was largely on the side of the
+former. The crews were at their full complement,
+fresh, vigorous, and made efficient by practice.
+Eurymedon, who was in command of the Athenian right
+wing, endeavoured to outflank the squadron opposed to
+him. This was doubtless a favourite manœuvre with
+Athenian seamen, but it required more space than the
+Great Harbour afforded. The enemy, who had by this time
+broken through the Athenians' centre, replied by a
+movement directed against Eurymedon's own left, and
+ultimately hemmed him and his squadron in a recess of
+the harbour, known by the name of Dascon. Eurymedon was
+slain and his squadron destroyed. The same fate nearly
+overtook the whole, or nearly the whole, of the
+Athenian fleet. Few of the ships were able to get back
+to the stockade;
+by far the greater part were driven ashore or grounded
+by their own crews at various points in the Great
+Harbour, where they were liable to attack by the land
+forces of the enemy. Gylippus saw his opportunity and
+hurried down with his troops to the water's edge, his
+object being to prevent the escape of the crews of the
+stranded ships, and at the same time to give the
+Syracusan captains time to secure the ships themselves.
+But the haste with which the troops moved threw them
+into confusion. Some Etrurians,
+who were on guard along the Athenian lines, sallied out
+against the foremost as they passed and routed them. As
+others arrived the men from within the line came out in
+greater numbers. A general battle followed, and the
+victory remained with the Athenians, who were able to
+save the ships and the crews. As it was, eighteen
+vessels were lost, the whole of the crews being either
+slain or captured. An attempt to destroy the Athenian
+station by a fireship was made the same day, but
+failed.
+</p>
+<p class="calibre15">
+The Athenians were now almost in despair, for they had
+been conclusively beaten on their own element. They now
+recognised how
+insane was the enterprise on which they were embarked.
+It was not only the strength of the cities which they
+had attacked that made them feel how hopeless was the
+undertaking, there was also the fact that these cities
+had a political constitution resembling their own. On
+this fact Thucydides insists, and it is, as I have
+pointed out before, a significant comment on the
+average morality of Greek politics. A democratic state
+attacking one that was governed by an oligarchy might
+count with certainty on finding allies in the party
+that was out of power. The experience was too common to
+call for comment. But in Syracuse the democracy was
+all powerful, and the democracy was fiercely hostile to
+Athens. The Syracusans, on the other hand, were full of
+exultation and pride. They began actually to take that
+wider outlook into the general affairs of Greece with
+which the Athenians had credited, or pretended to
+credit, them when they resolved on the expedition. 'We
+must attack and disable them,' had been the argument of
+Alcibiades and his friends, 'or they will come over
+here, and, by siding with our enemies, turn the scale
+of power greatly against us.' In all probability the
+Sicilian cities had never entertained any such purpose,
+though
+the thought may have crossed the mind of a far-seeing
+statesman such as was Brasidas. But the unprovoked
+attack that had been made upon them inevitably
+suggested it. Syracuse felt that she had earned the
+gratitude of the Greek cities, which her victory would
+most certainly liberate from Athenian domination—that
+Athens should still hold her own after the destruction
+of the Sicilian armament seemed impossible—and her
+ambition was flattered by the thought that hereafter
+she would share with Sparta and Athens the leadership
+of Greece.
+</p>
+<p class="calibre15">
+We have already heard of the magnificent scheme of
+conquest which Alcibiades entertained, or with which,
+anyhow, he credited himself, when he proposed the
+expedition against Syracuse to the Athenian Assembly.
+The actual scale of this conflict was scarcely inferior
+in magnitude. And not less remarkable than the number
+was the variety of the combatants, so many were the
+tribes engaged in the struggle, and so great the
+confusion of kinship among them. I have relegated to a
+note the remarkable passage in which Thucydides sets
+forth this state of things; it is too interesting to
+omit, but it would here interrupt the sequence of the
+narrative.
+</p>
+<p class="calibre15">
+The Syracusans now felt that the whole Athenian force
+was practically in their power, and they proceeded to
+secure it by blocking up the entrance to the Great
+Harbour, a space of about 1600 yards, with a small
+islet about half way. A line of ships-of-war, merchant
+vessels and craft of various kind, anchored and chained
+together, was constructed obliquely across it. The work
+took three days to complete, and apparently no attempt
+was made by the Athenians to interrupt it. When it was
+finished the necessity for immediate action became
+imperative. Only a small quantity of provisions was in
+stock. Further supplies had been countermanded in view
+of their intended departure. Countermanded or not, they
+could hardly have been introduced with the entrance to
+the harbour blockaded. Two alternatives were before
+them—to burn their ships and retreat by land, or to
+make an attempt to break the blockading line. The first
+approved itself to many, but it was reserved for the
+last effort; the ships were to be tried once more. The
+first step was to contract their lines within the
+narrowest compass. Only so much as was absolutely
+necessary to hold the troops was retained. The object
+was, to make as many men as
+possible available for manning the ships; the numbers
+detailed for guarding the walls being reduced to a very
+small amount. Every ship that was in any sense
+serviceable was to be utilised, and men of all ranks
+and arms were compelled to man them. Each vessel had a
+double complement, one being its usual crew and the
+other consisting of heavy-armed bowmen and
+javelin-throwers; the heavy-armed being stationed on
+the prow with grappling-irons. These they were to throw
+on to the enemy's ships as soon as collision had taken
+place, with the intention of holding them fast, and so
+preventing a second blow. Nicias reviewed his forces
+when they were prepared for action. He saw that they
+were eager to fight; they must either fight or be
+starved; but it was too evident that theirs was the
+eagerness of despair, not of confidence or hope. He did
+his best to encourage them.
+</p>
+<p class="calibre15">
+'You,' he said, 'are fighting for your lives and your
+country, as really as are the enemy. Unless you conquer
+you cannot see your homes again. Yet do not despair.
+You know the changes and chances of war. You have had
+many of its evil turns; look now for the good. We have
+provided against the advantage
+possessed by your enemies in their stronger ships, and
+in the narrow space where the battle will be fought.
+You are to be soldiers on shipboard rather than
+sailors. It is a sad change for Athenians, but you must
+adapt yourselves to it. You, heavy-armed men, grapple
+the enemy's ships and hold them fast till they have
+been boarded and captured. You, seamen and oarsmen, do
+your best. You are more numerous and you are better
+defended on deck than you were in the last battle.
+Allies, fight for the country which has made you share
+all the benefits of its empire. Athenians, remember
+that this is the last hope of your country. Here is its
+all. Win this battle, for the occasion can never
+return, either for Athens or for you.'
+</p>
+<p class="calibre15">
+Thucydides very probably received a report of this
+oration from one of those who heard it delivered. It is
+less easy to imagine how he became acquainted with the
+substance of what Gylippus, in Syracuse, said to his
+men. The topics on which he enlarged were such as would
+occur to a speaker on such an occasion. Former
+successes were a pledge of victory. They had vanquished
+the enemy when he was in the full tide of confidence;
+much more easily will they repeat the success when he
+is
+only thinking of escape. Now was the time to take a
+just revenge for a most wanton attack, and to ensure
+for the future that such an attack would never be
+repeated.
+</p>
+<p class="calibre15">
+Nicias took command of the forces that were retained to
+garrison the lines. The fleet he handed over to his
+colleagues—Demosthenes, Menander, Euthydemus. But
+before it started he made a special appeal to the
+captains. He knew that all depended on the result of
+that day's struggle, and he felt that no preparation
+could be sufficient, no exhortation to energy too
+urgent, when the issue was of so transcendent an
+importance. All the officers and citizens of high birth
+and station were personally known to him. He knew the
+parentage, the circumstances, and the personal record
+of each. To some he recalled their own achievements; to
+others he spoke of the achievements of their fathers
+and ancestors. To all he appealed by the memory of
+family, home and country, by all sacred associations,
+both human and divine.
+</p>
+<p class="calibre15">
+The battle that followed was fiercely fought; the
+numbers of the opposing fleets were much the same as
+they had been in the last conflict. Some of the
+Syracusan troops were told off to guard the line of
+blockading vessels; others were stationed about the
+harbour to act where they might be wanted. Volunteers
+from the city manned a number of smaller craft and took
+their share in the conflict, being especially useful in
+saving or destroying the crews of disabled triremes,
+according as they belonged to friends or enemies. The
+shore and the city walls were lined with crowds of
+spectators, who eagerly watched the varying fortunes
+of the fight. The Athenian ships steered straight for
+the mouth of the harbour. There was an open space in
+the barrier, left, doubtless, for the passage of ships.
+Against this they directed their attack. So energetic
+was it that the line of ships set to guard the barrier
+was broken through, and the Athenian crews began to
+destroy it. But the other squadrons crowded in upon
+them, and compelled them to desist in order to defend
+themselves. For a time the struggle was something like
+that which was usually seen in a naval battle. The
+oarsmen rowed with all their might, the steersmen used
+all their skill. But it seldom happened that when one
+ship met another in conflict that they became separated
+again. While they were approaching
+each other the slingers and archers were busy; once
+locked together by the grappling irons, it was the
+heavy-armed that took up the struggle. Sometimes one
+ship would be engaged with a single adversary,
+sometimes with two or more. Sometimes the conflict was
+of her own choosing, sometimes it came about by
+accident. It was a sailor's or rather a soldier's
+battle. There was no manœuvring, no room for the skill
+of the officer who commanded the squadron, or the
+captain who had the single ship in charge. All over the
+harbour there were 200 ships engaged in a narrow space
+of scarcely two square miles—a number of furious
+struggles, each like a small pitched battle, were
+taking place.
+</p>
+<p class="calibre15">
+A battle in which the combatants were so numerous,
+which could be seen from so small a distance, and of
+which the issues were so momentous, was watched by the
+spectators on the shore with breathless interest. With
+the Athenians it was a matter of life and death. Had it
+been a mere spectacle, it would have had an entrancing
+interest; what it was to men whose all depended upon
+it, can hardly be imagined, certainly not described.
+The historian tells us how they shouted encouragement
+when
+they saw their own side victorious, how they cried
+aloud and wailed when they witnessed the defeat of
+countrymen and friends; how, while they watched some
+struggle not yet decided, they showed, by swaying their
+bodies to and fro, how intensely they sympathised with
+each variation of the strife.
+</p>
+<p class="calibre15">
+At last it became evident with whom the victory was to
+remain. All the Athenian ships were beaten back; some
+were able to get to the stockade which protected them;
+others were captured before they reached it; many had
+already been sunk. The loss on the Athenian side was a
+loss of 56 ships out of a total of 116; the Syracusans
+had 50 left out of 76. So overwhelming was the blow
+that the defeated did not even beg a truce for the
+burial of their dead. Even the pious Nicias had no
+thoughts to spare for this duty, one of the most solemn
+obligations that the Greek mind recognised.
+</p>
+<p class="calibre15">
+Demosthenes, however, had not lost his energy. He
+proposed to Nicias that with the sixty ships remaining
+they should make another effort to break the barrier.
+Nicias consented, but the soldiers flatly refused to
+embark again. Their one hope now was to escape by land.
+</p>
+
+</div>
+</div>
+<nav class="book-nav"><a href="p0013.html" class="prev-link">&larr; Previous</a><a href="../index.html" class="toc-link">Table of Contents</a><a href="p0015.html" class="next-link">Next &rarr;</a><span class="settings-slot"></span></nav>
+</div>
+<script src="../engine/generators/common.js"></script><script src="../engine/generators/library.js"></script><script src="../engine/generators/dark.js"></script><script src="../engine/generators/deep-sky-locked.js"></script><script src="../engine/generators/starfield.js"></script><script src="../engine/generators/solar-system.js"></script><script src="../engine/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Church%2C%20Alfred%20J/Sicilian%20Expedition/~archive/Sicilian%20Expedition%20-%20Church%2C%20Alfred%20J%20%281899%29_webbook/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script src="../reader_controls.js"></script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

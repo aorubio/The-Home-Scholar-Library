@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html data-reader-size="m" data-reader-font="original" data-reader-images="on">
+<head>
+    <title>Peace Maker — Sicilian Expedition</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../images/r0004.css"/>
+<link rel="stylesheet" type="text/css" href="../images/r0003.css"/>
+  <script>
+(function () {
+  var html = document.documentElement;
+  try {
+    var raw = localStorage.getItem("webbook-reader-prefs-v1");
+    var prefs = raw ? JSON.parse(raw) : {};
+    html.setAttribute("data-reader-size", prefs.size || "m");
+    html.setAttribute("data-reader-font", prefs.font || "original");
+    html.setAttribute("data-reader-images", prefs.images || "on");
+    if (prefs.background && prefs.background !== "auto") {
+      html.setAttribute("data-bg-override", prefs.background);
+      var MODE_COLORS = {"library": {"reader": "#f3eadc", "ink": "#332f2d"}, "dark": {"reader": "#151b23", "ink": "#d9e0e8"}, "deep-sky": {"reader": "#101722", "ink": "#d9e0ea"}, "starfield": {"reader": "#080b12", "ink": "#d8dde7"}, "solar-system": {"reader": "#101722", "ink": "#d8dde7"}};
+      var c = MODE_COLORS[prefs.background];
+      if (c) {
+        html.style.setProperty("--hs-reader-bg", c.reader);
+        html.style.setProperty("--hs-reader-ink", c.ink);
+        html.style.setProperty("--hs-outer-bg", c.reader);
+      }
+    }
+  } catch (e) { /* ignore (private browsing, malformed storage, etc.) --
+                     page renders at its ordinary static/server defaults. */ }
+})();
+</script>
+  <link rel="stylesheet" type="text/css" href="../reader_theme.css"/>
+  <link rel="stylesheet" type="text/css" href="../reader_controls.css"/>
+  <style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+  <style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="calibre1">
+<div id="hs-background" aria-hidden="true"></div><div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="book-page" id="reader-page-start">
+
+<div class="reader-source-unit" data-reader-member="0">
+
+<div class="calibre2"><h1 class="calibre5"><span class="calibre12">Peace Maker</span></h1></div>
+<p class="calibre13">
+Cleon's success at Sphacteria put an end for the time
+to all hopes of peace. Athens, now encouraged to fresh
+hopes and ambitions, began the eighth year of the war
+with new attempts to carry hostilities into the country
+of her adversaries. She made an attack on Megara, and,
+though failing to capture the city itself, got
+possession of the harbour. This was followed up by the
+invasion of Bœotia. Thirty-three years before Athens
+had acquired, and had retained for nine years, an
+ascendency over this country. This ascendency she had
+never given up the hope of regaining, a hope that was
+built, it must be remembered, not so much on
+superiority of force as on the enmity of the Bœotian
+towns to Thebes. Here, as almost everywhere else in
+Greece, party divisions counted for much. Thebes was
+governed by an oligarchy; in each dependent town there
+was a democratic party anxious for its downfall, and
+looking to Athens to effect it. It is not within my
+province to
+tell the story of the campaign. It will suffice to say
+that the attempt failed, and failed disastrously. The
+Athenians were defeated in a great battle at Delium,
+with the loss of the general in command and a thousand
+heavy-armed troops. Later on in the same year they
+suffered greatly in Thrace, where, through the
+energetic action of Brasidas, by far the ablest Spartan
+of the time, they lost many valuable dependencies, the
+most important of which was Amphipolis.
+</p>
+<p class="calibre15">
+It will be easily imagined that a year which had opened
+with such high hopes found the Athenians at its close
+in a very different temper of mind. The war party was
+greatly discouraged; the friends of peace, of whom, it
+will be remembered, Nicias was the leader, were
+proportionately strengthened. Sparta was still anxious
+to bring the war to an end. Its government had
+sanctioned the expedition of Brasidas against the
+Athenian dominion in Thrace in the hope that if it
+should be successful it might work for peace. Its
+dominant motive was the desire to recover the Spartan
+prisoners at Athens. Many of these belonged
+to the first families in the state, and had powerful
+friends, who were ready to use every means to bring
+about their release. Brasidas, on the other hand, full
+as he was of ambitious schemes, and Cleon, who may
+possibly have hoped, on the strength of his success at
+Sphacteria, for military distinctions in the future,
+were strongly opposed to peace.
+</p>
+<p class="calibre15">
+Grote thinks, and very likely is right in thinking,
+that both the political leaders at Athens were wrong;
+Cleon in advising the people to insist on terms which
+it was impossible for Sparta to grant, Nicias in
+failing to urge them to make a vigorous effort to save
+what remained, and to recover what had been lost, of
+their dominion in Thrace. The terrible loss at Delium,
+falling largely, as it did, on Athenian citizens, made
+vigorous counsels unwelcome, and Nicias, who, though
+personally brave, had but little moral courage, was not
+the man to give them.
+</p>
+<p class="calibre15">
+The immediate result was a compromise. It was not found
+possible, at least for the time, to agree upon terms of
+peace, but a truce for a year was made. This was sworn
+in what in our calendar is March.
+Two days afterwards the
+Athenian dependency of Scioné in Thrace revolted to
+Brasidas. This general had just made arrangements to
+secure his new ally, when commissioners arrived to
+announce to him the conclusion of the truce. The news
+was most unwelcome to him. Scioné he aboslutely refused
+to surrender, and, to justify his refusal, positively
+asserted that it had revolted <i class="calibre14">before</i>  the truce
+was sworn. The Athenian commissioner, however, had no
+difficulty in satisfying himself of the real facts of
+the case, and he sent home a despatch in which he
+stated them.
+</p>
+<p class="calibre15">
+A fierce and, it must be allowed, a perfectly
+justifiable outburst of anger was the result. There was
+no desire to disturb the working of the truce
+elsewhere, but at the same time there was a resolute
+determination to recover Scioné, and to punish it
+severely for its revolt, Cleon proposing that, in the
+event of its recapture, all the male inhabitants should
+be put to death. Popular feeling was further
+exasperated by the news of the revolt of another town
+in Thrace, Mendé by name. The recovery of these towns
+was a matter on which all parties were bound to agree.
+Nicias was for the time on the same side as Cleon, and
+went out in command of the expedition, a certain
+Nicostratus being
+his colleague. They had with them fifty ships of war,
+1000 heavy-armed troops; about as many light-armed, and
+1000 Thracian mercenaries. Mendé was recovered. An
+assault failed, Nicias, who led one of the attacking
+parties, being wounded; but, soon afterwards, a popular
+movement put the place into the hands of the Athenians.
+The majority of the inhabitants had been adverse to the
+revolt. Scioné was closely invested, and Nicias,
+leaving a division to guard the lines, returned with
+the armament to Athens.
+</p>
+<p class="calibre15">
+In March 421 the year's truce expired. The condition of
+affairs in Thrace made peace impossible, but there was
+no immediate resumption of hostilities. In August,
+however, Cleon prevailed upon the Athenians to make a
+vigorous effort to recover what had been lost in
+Thrace. Nicias, we may he sure, led the opposition.
+Whether, as Grote supposes, he was one of the generals
+of the year, and refused to serve when the Assembly
+resolved on sending an expedition, is more doubtful. It
+can hardly be supposed that the generals had it in
+their power to go or not to go as they pleased. The
+case of Sphacteria was evidently exceptional,
+something, we may almost say, of a huge practical joke.
+It is more likely that
+Cleon was in office, and that he hoped, though hardly,
+I should suppose, without misgivings, that he might be
+victorious. It is not part of my task to give the
+details of the campaign. The result was that the
+Athenians suffered a crushing defeat, losing 600
+heavy-armed in killed and missing. Cleon was among
+them. On the other side there were but seven men
+killed, but one of the seven was Brasidas.
+</p>
+<p class="calibre15">
+The death of these two men removed the principal
+obstacles to peace. Sparta was still as anxious as ever
+for it, and Athens, after this second disaster, which
+was scarcely less damaging than the defeat at Delium,
+had begun to look upon it as a necessity. A conference
+of the allies of Sparta was held at that city, and this
+was attended by envoys from Athens, among whom Nicias
+was the most important and influential. The discussion
+was prolonged. At first both sides made impossible
+demands, and at one time the prospects of a successful
+conclusion were so small that the Spartan government
+made, or, at least, threatened to make, preparations
+for an invasion of Attica in the spring. The point
+chiefly in dispute was the territory acquired during
+the war.	Finally, it was agreed that each party
+should surrender what
+it had acquired by force. On the term 'force' a narrow
+interpretation was put. Platæa, which had surrendered,
+was not given back to Athens; Athens, on the other
+hand, kept the Megarian and Corinthian towns which had
+capitulated to her. A peace for fifty years was
+concluded in March 421. Nicias was one of the Athenian
+commissioners who swore to it, and it was generally
+known as the 'Peace of Nicias.'
+</p>
+<p class="calibre15">
+Some of the allies of Sparta were discontented with the
+terms agreed upon, and refused to accept the vote of
+the majority. For this and for other reasons it was
+soon made evident that the arrangement was far from
+satisfactory. Difficulties started up at once. It had
+been agreed to decide by lot which of the two
+contracting parties should be the first to fulfill its
+part of the conditions. Athens gained the choice, an
+advantage so great that Nicias is accused by
+Theophrastus
+of having secured the result by a bribe. The Spartans
+immediately released all the Athenian prisoners in
+their possession, and sent envoys to Clearidas, their
+commander in Thrace, with directions that Amphipolis
+and the other revolted dependencies of Athens should be
+delivered up to that state.
+Clearidas declared that it was not in his power to
+fulfill this stipulation, and went back with the envoys
+to explain the situation. He was sent again with
+peremptory orders to carry out his instructions. If the
+towns still refused to submit, he was to remove the
+Lacedæmonian garrisons. This he did, but Athens did not
+recover her Thracian possessions. At the same time the
+dissatisfied allies of Sparta came back with fresh
+instructions from home to protest against the peace.
+</p>
+<p class="calibre15">
+Sparta was now in a very embarrassing position. She
+could not fulfill her part of the terms, and
+consequently she could not ask for the prisoners. At
+the same time she dreaded a new combination of parties.
+Argos had stood aloof from the war, and was now, with
+her strength unimpaired, a formidable power. A thirty
+years' truce that she had concluded with Sparta was
+drawing to an end. If she was to ally herself with
+Athens, the consequences might be serious. The Spartan
+government now proposed a new arrangement to Nicias and
+his colleagues (they had remained in Sparta, waiting,
+it would seem, for the fulfillment of the conditions).
+Let Athens and Sparta come closer together—become, in
+fact, allies. And this was done. A defensive alliance
+was formed; each
+party bound itself to assist the other in case it
+should be attacked. This was the single provision of
+the treaty. It was specified, however, as a case coming
+under this provision, that the Athenians should give
+their most energetic help in repressing any
+insurrection of the Helots that might take place in
+Laconia. A further condition, not expressed in the
+treaty, but secretly agreed upon, was that the
+Sphacterian prisoners should be at once given up. This
+last was immediately carried out.
+</p>
+<p class="calibre15">
+Nicias has been severely criticised for having been a
+party to the conclusion of a peace so little
+advantageous to his country. And it must be confessed
+that the criticism is just. He and his colleagues ought
+to have insisted, as a necessary preliminary, on the
+restoration of the Thracian towns. It might be true
+that the Spartan force in those regions was not strong
+enough to compel the towns to return to their Athenian
+allegiance; but if, as Grote urges, Sparta and Athens
+had combined in an energetic effort to compel
+submission, the towns could not have long resisted.
+From this point of view, the withdrawal of the
+garrisons was a mistake. With a besieging force
+outside, and a garrison within, under peremptory orders
+to assist not the defence but the attack, surrender
+would have been inevitable. We can only suppose that
+Nicias and his friends fairly lost their heads when
+they saw a chance of what they had never ventured to
+hope for—an actual alliance with Sparta. After this,
+they may well have thought, perpetual peace was almost
+assured. As a matter of fact, the peace and the treaty
+which followed it were doomed from the beginning to a
+speedy end.
+</p>
+<p class="calibre15">
+It is needless to describe the obscure and perverse
+politics which occupied the Greek States during the
+period that followed the conclusion of the peace of
+Nicias. There was little or no inclination in either
+Athens or Sparta honestly to fulfill their obligations.
+If there had been, it would probably have been defeated
+by the unprincipled action of statesmen seeking to
+advance personal or party aims. It is possible, for
+instance, that Sparta intended to do right when she
+sent envoys to Athens to discuss, and, if possible, to
+arrange the matters in dispute, though one at least of
+their demands was highly unreasonable.
+ But they were shamefully tricked by Alcibiades, with
+the result of making
+them seem absolutely unworthy of trust. Nicias had
+introduced them to the Senate. There they had declared
+that they came with full powers to settle, and had made
+a very favourable impression by their moderation and
+reasonableness. Alcibiades, whose object it was to ally
+Athens with Argos, began to fear that an arrangement
+might be made with Sparta. Accordingly, he went to one
+of the envoys, with whose family he had an hereditary
+friendship. 'You will find,' he said, 'the Assembly far
+less reasonable than the Senate. If it is known that
+you have full powers to treat, it will seek to
+intimidate you, and to extort, by fear or force,
+concessions which you are not authorised to make. It
+will be better, therefore, to say that you have come
+with no powers, but only to explain and discuss. The
+people will listen calmly and quietly. I myself will
+support you as strongly as I can, and have no doubt
+that I shall be able to obtain the consent of the
+Assembly on the doubtful point of Pylos.' The envoys
+naturally fell into the trap, not saying a word about
+the matter to Nicias, though he was certainly the
+foremost friend of Sparta in Athens, and was probably,
+as Grote suggests, their own host. The Assembly met. Do
+you come with powers to treat?' asked
+Alcibiades of the envoys. They answered as they had
+been instructed, 'No; only to discuss and explain.'
+Nicias, the Senate which had heard from the men's own
+lips an exactly contrary statement, and the Assembly
+generally, which had in fact met under the impression
+that the affair could be settled then and there, were
+astonished and indignant. Alcibiades himself made a
+furious speech denouncing Spartan duplicity, and seized
+the opportunity of proposing that the envoys from Argos
+should be called in. This would have been done, had
+there not occurred at the moment the shock of an
+earthquake. On this the Assembly was, as usual,
+dismissed. Of the conduct of Alcibiades it is needless
+to speak. The Spartans, though, perhaps, more sinned
+against than sinning, gave another proof of the bad
+faith which was characteristic of their diplomacy. As
+for Nicias, his reputation as a sagacious politician
+must have suffered greatly. He was disgraced along with
+the clients whose cause he had espoused.
+</p>
+<p class="calibre15">
+With this unpopularity may be connected a curious
+incident which occurred about this time. The demagogue
+Hyperbolus, a feeble successor of Cleon, conceived the
+idea that one or other of the two politicians with whom
+he contended
+on unequal terms might be got rid of by the method of
+ostracism.
+But he was 'hoist with his own petard.' The persons
+threatened combined against their adversary, and when
+the votes were counted it was found that the person
+named was Hyperbolus himself. He was banished
+accordingly, but it was felt that he was too
+insignificant a person to have so formidable an engine
+directed against him. The engine itself was
+discredited, and was never again employed in Athenian
+politics.
+</p>
+
+</div>
+</div>
+<nav class="book-nav"><a href="p0004.html" class="prev-link">&larr; Previous</a><a href="../index.html" class="toc-link">Table of Contents</a><a href="p0006.html" class="next-link">Next &rarr;</a><span class="settings-slot"></span></nav>
+</div>
+<script src="../engine/generators/common.js"></script><script src="../engine/generators/library.js"></script><script src="../engine/generators/dark.js"></script><script src="../engine/generators/deep-sky-locked.js"></script><script src="../engine/generators/starfield.js"></script><script src="../engine/generators/solar-system.js"></script><script src="../engine/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Church%2C%20Alfred%20J/Sicilian%20Expedition/~archive/Sicilian%20Expedition%20-%20Church%2C%20Alfred%20J%20%281899%29_webbook/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script src="../reader_controls.js"></script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

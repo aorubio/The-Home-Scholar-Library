@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vol 06 Davila - Home Scholar Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/The-Home-Scholar-Library/assets/css/site.css">
+<style>
+
+
+  /* font-family reads the shared --site-font custom property (config.
+     SITE_FONT_FAMILY) -- affects this shared chrome (breadcrumb,
+     general body text) on BOTH pages that use _SHARED_STYLE.
+     Deliberately does NOT touch fbundle_viewer_live.html's own quote-
+     card typography (.fbundle-text-block/.fbundle-mark etc., Iowan Old
+     Style/Palatino/Georgia) -- those set their own font-family at
+     higher specificity and stay locked to that already-completed
+     design regardless of this value, same "leave the deliberate
+     typography alone" rule the home page's hero gets. */
+  body { font-family: var(--site-font, system-ui, sans-serif); max-width: 60rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
+  .breadcrumb { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .breadcrumb a { color: var(--muted); }
+  .top-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .top-row-left { display: flex; align-items: center; gap: 12px; }
+  h1 { margin-top: 0; }
+  .btn { display: inline-block; padding: 8px 16px; border-radius: 6px; background: var(--accent); color: #fff;
+         text-decoration: none; font-size: 0.9rem; border: none; cursor: pointer; }
+  .btn:hover { filter: brightness(0.9); }
+  .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .btn.secondary { background: var(--card-bg); color: var(--fg); border: 1px solid var(--border); }
+  .btn.secondary:hover { filter: none; background: var(--border); }
+
+  /* CRITICAL: every hidden-toggled overlay/panel on both viewer pages
+     (gallery's #preview-overlay/.gallery-slideshow/.slideshow-nav-group,
+     fbundle's .fbundle-author-row/.fbundle-thumbs) also sets its own
+     `display:` rule for when it's SHOWN -- which ties in specificity
+     with the browser's built-in `[hidden]{display:none}` rule, and
+     author CSS loaded after the UA stylesheet wins that tie. This is
+     the actual, full explanation for the original bug report, "gallery
+     page opens with 'Preparing download...' visible": that one rule
+     previously lived only in PREVIEW_WIDGET_STYLE (catalog_renderer's
+     node-page template) -- it was never in THIS shared style, which is
+     the only stylesheet _page_shell()-based pages (gallery, fbundle)
+     actually use, so the gallery page's own #zip-progress element --
+     `display: flex` + `hidden` in the markup -- was visible from first
+     paint on every gallery page the whole time. !important beats the
+     tie unconditionally, so this belongs here, not just in the module
+     that happened to need it first. (#zip-progress itself no longer
+     exists -- build_design.md §8.2.6, resolved 2026-09-11, retired the
+     client-side JSZip "download all" it belonged to, see pipeline/
+     gallery_zips.py and pipeline/templates/gallery_viewer.html -- but
+     this rule stays load-bearing for every other hidden-toggled element
+     still listed above, so the history here is kept, not deleted.) */
+  [hidden] { display: none !important; }
+
+  :root { --bg: #fdfdfc; --fg: #222; --muted: #666; --card-bg: #f7f7f5; --border: #ddd; --accent: #1a5fb4; }
+  [data-theme="dark"] { --bg: #16171a; --fg: #e8e8e6; --muted: #9a9a96; --card-bg: #212226; --border: #3a3b3f; --accent: #6ea3e0; }
+  [data-theme="library"] { --bg: #f4ecd8; --fg: #3b2f22; --muted: #7a6a55; --card-bg: #ece0c4; --border: #cdbb92; --accent: #8c3b2e; }
+  html, body { background: var(--bg); color: var(--fg); }
+  a { color: var(--accent); }
+
+
+
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+
+
+
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}
+
+  /* Background System plugin (pipeline.backgrounds), wired into this page
+     new this pass (library-owner instruction: fbundle pages should get
+     the site's "library" decorative background, same as the library
+     index/every node page, instead of nothing at all -- see
+     pipeline.backgrounds' own module docstring, which had left fbundle/
+     gallery pages out of that wiring on purpose until this request).
+     This page keeps its own fixed, fit-to-viewport flex layout (top-row
+     + fbundle-bundle, sized in vh units down to the pixel) rather than
+     the generic scrolling "reading card" every other Background-wired
+     page uses -- so the background style block's own .hs-content rule (the
+     padded/rounded/shadowed card look) is neutralized back to a plain,
+     transparent flex wrapper here, keeping ONLY the position:relative;
+     z-index:1 it exists for in the first place: raising this page's real
+     content above the fixed, z-index:0 #hs-background layer so the
+     decorative artwork paints BEHIND it, not over it (see
+     pipeline.backgrounds.render_tokens()'s own comment on why that rule
+     is needed at all). Turned into a flex container filling the body
+     exactly the way .top-row/.fbundle-bundle used to fill body directly,
+     so their own flex:0 0 auto / flex:1 1 auto rules keep working
+     unchanged one level down. */
+  .hs-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    /* BUG FIX (fbundle dark-mode text unreadable, 2026-09-12): the
+       comment below says this block neutralizes the background style's
+       own .hs-content rule back to "keeping ONLY the position:relative;
+       z-index:1 it exists for in the first place" -- but it only ever
+       reset background/padding/border-radius/box-shadow, never `color`.
+       pipeline.backgrounds._card_style() sets `.hs-content { color:
+       var(--hs-reader-ink); }`, and --hs-reader-ink is baked from
+       ENGINE_COLORS for THIS page's own server-resolved decorative-
+       background mode ("library" for every fbundle page, per
+       render_fbundle_page()'s data_type="library" -- a completely
+       different concept from THIS toggle's light/dark theme, see
+       _theme_toggle_assets()'s own docstring) -- it never changes when
+       the theme toggle below switches to "dark", so it was left
+       cascading down, uninterrupted, into every element here that
+       doesn't set its own `color` (.fbundle-text included, via ordinary
+       inheritance). In library mode --hs-reader-ink (#332f2d) happens to
+       look close enough to this page's real --fg (#2E2416) that the bug
+       was invisible; in dark mode the card background correctly goes
+       near-black via --card-bg but the text stayed pinned at that same
+       dark #332f2d -- dark text on a near-black card, unreadable, which
+       is what actually produced the "neither library nor dark, like a
+       filter" look. Anchoring color to THIS page's own --fg (already
+       correctly switched by the toggle below, and already the one
+       source of truth every other element here inherits from) removes
+       the leak instead of relying on --hs-reader-ink ever being kept in
+       sync with it. */
+    color: var(--fg);
+  }
+
+  /* FIX (BUGLIST 2026-09-11, "visual interference in the fbundle text
+     box"): this page's theme toggle (pipeline.viewers._theme_toggle_assets,
+     called from render_fbundle_page() with default_theme="library") sets
+     data-theme="library" -- the identifier was renamed from "sepia" to
+     "library" so the CSS/JS/button label would all agree (see that
+     function's own docstring), but this template's selector was never
+     updated to match. With no rule matching data-theme="library", every
+     token below (--bg/--card-bg/--fg/--muted/--accent/--border/--shadow)
+     was undefined except --mark-opacity, which made .fbundle-card's
+     background/border/box-shadow and .fbundle-text-fade's gradient all
+     invalid-at-computed-value-time (falling back to transparent/none) --
+     the quote card rendered with no real background or border, and the
+     fade gradient (which needs var(--card-bg) as its end color) had
+     nothing real to fade INTO, showing whatever happened to be visible
+     underneath instead. Renaming this selector to match what the JS
+     actually sets is the fix -- default (":root") already carries no
+     color tokens of its own, so a library owner should never see this
+     theme render unstyled again regardless of which one the toggle is on. */
+  :root { --mark-opacity: 0.24; }
+  [data-theme="library"] { --bg: #ECE0C4; --card-bg: #F8F1DE; --fg: #2E2416; --muted: #6E5D42; --accent: #9C6B2E; --border: #D9C69B; --shadow: rgba(46,36,22,0.16); --mark-opacity: 0.24; }
+  [data-theme="dark"] { --bg: #16130D; --card-bg: #221C13; --fg: #EFE3C7; --muted: #A7967A; --accent: #D6A64C; --border: #392F1F; --shadow: rgba(0,0,0,0.45); --mark-opacity: 0.30; }
+
+  html, body { height: 100%; }
+  body { margin: 0; padding: 20px; max-width: none; display: flex; flex-direction: column;
+          overflow: hidden; box-sizing: border-box;
+          font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+          transition: background 0.35s ease, color 0.35s ease; }
+  .top-row { flex: 0 0 auto; }
+
+  .fbundle-bundle { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;
+                      max-width: 700px; width: 100%; margin: 0 auto; } /* was 560px */
+
+  .fbundle-card { position: relative; flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;
+                    background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px;
+                    overflow: hidden; box-shadow: 0 10px 30px var(--shadow); }
+
+  .fbundle-text-block { position: relative; flex: 0 0 auto; padding: 32px 36px 20px; box-sizing: border-box; }
+  .fbundle-mark { position: absolute; top: -4px; left: 16px; font-size: 64px; line-height: 1;
+                    color: var(--accent); opacity: var(--mark-opacity); font-family: Georgia, serif;
+                    pointer-events: none; user-select: none; }
+
+  /* display: flow-root gives this wrapper its own Block Formatting Context.
+     Without it, .fbundle-text's bottom margin (margin: 0 0 16px) collapses
+     straight through this wrapper's bottom edge instead of being contained
+     inside it, so the wrapper's measured height comes up 16px short of
+     "text + its own margin." Since .fbundle-text-fade is `position: absolute;
+     bottom: 16px;` *inside this wrapper*, that shortfall drags the fade band
+     up and away from the text's true bottom edge -- landing mid-text instead
+     of hugging the last line, which is what produced the "gradient/film"
+     artifact appearing to slide through the quote text near the scrollbar. */
+  .fbundle-quote-wrap { position: relative; display: flow-root; }
+  .fbundle-text { position: relative; font-size: 19px; line-height: 1.55; font-style: italic;
+                    white-space: pre-line; margin: 0 0 16px; max-height: 24vh; overflow-y: auto;
+                    scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+  .fbundle-text::-webkit-scrollbar { width: 6px; }
+  .fbundle-text::-webkit-scrollbar-track { background: transparent; }
+  .fbundle-text::-webkit-scrollbar-thumb { background: var(--accent); opacity: 0.4; border-radius: 999px; }
+  .fbundle-text-fade { position: absolute; left: 0; right: 6px; bottom: 16px; height: 36px;
+                         background: linear-gradient(to bottom, transparent, var(--card-bg));
+                         pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
+  .fbundle-quote-wrap.overflowing .fbundle-text-fade { opacity: 1; }
+
+  .fbundle-author-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+  .fbundle-author-rule { flex: 1 1 auto; height: 1px; background: var(--border); }
+  .fbundle-author { flex: 0 0 auto; font-style: normal; font-size: 13px; letter-spacing: 0.04em;
+                      color: var(--muted); white-space: nowrap; }
+
+  .fbundle-image-wrap { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center;
+                          background: var(--bg); border-top: 1px solid var(--border); }
+  .fbundle-image { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+
+  /* Layout swap (new, 2026-09-12): purely ergonomic/visual toggle,
+     mirrors the same feature on the offline/standalone viewer
+     (templates/fbundle_viewer.html) -- lets the image sit on top and
+     the quote text underneath instead of the default text-on-top/
+     image-on-bottom stacking. .fbundle-card is already a column
+     flexbox with .fbundle-text-block then .fbundle-image-wrap as its
+     two children in that fixed DOM order, so reversing the visual
+     stacking is just flex-direction: column-reverse -- no DOM
+     reshuffling needed (unlike the offline viewer, this page's markup
+     is static, so the toggle script below just flips this class, no
+     re-render). The one thing that DOES need to move is
+     .fbundle-image-wrap's own border: it's border-top so it reads as
+     "top of the image, bottom of the text" in the default order;
+     reversed, that same seam is the image's BOTTOM edge, so this swaps
+     it there instead of leaving a stray line at the outer top edge of
+     .fbundle-card. */
+  .fbundle-card.swapped { flex-direction: column-reverse; }
+  .fbundle-card.swapped .fbundle-image-wrap { border-top: none; border-bottom: 1px solid var(--border); }
+
+  /* Multi-image row (design_2 §2.3, revived compact) -- only shown for
+     a pair with more than one image (JS sets `hidden`), slim (half the
+     control bar's own height) since real estate here is tight; space
+     for it comes out of the quote box above (24vh, down from 32vh) per
+     that tradeoff. Horizontal-scrolling filmstrip, not a wrap, so an
+     unusually large image count (design_2: ~2-10 typical) never grows
+     the row's height -- it only ever gets wider than the viewport,
+     which the scrollbar/scroll handles. */
+  .fbundle-thumbs { flex: 0 0 auto; display: flex; gap: 4px; overflow-x: auto; overflow-y: hidden;
+                      padding: 2px 2px 6px; margin-top: 8px;
+                      scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+  .fbundle-thumbs::-webkit-scrollbar { height: 5px; }
+  .fbundle-thumbs::-webkit-scrollbar-track { background: transparent; }
+  .fbundle-thumbs::-webkit-scrollbar-thumb { background: var(--accent); opacity: 0.4; border-radius: 999px; }
+  .fbundle-thumb-tile { flex: 0 0 auto; height: 22px;
+                          width: 22px; border: none; padding: 0;
+                          cursor: pointer; border-radius: 3px; overflow: hidden; opacity: 0.6; }
+  .fbundle-thumb-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fbundle-thumb-tile.active { opacity: 1; outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .fbundle-empty { text-align: center; color: var(--muted); font-style: italic; padding: 80px 0; }
+
+  /* Segmented control bar -- Prev, count, Next, Random, Mode, in that
+     exact order (matches the standalone after direct iteration on this
+     point). flex: 0 0 auto keeps it pinned at natural size so it can
+     never be pushed below the fold; body's own overflow:hidden means
+     only .fbundle-text scrolls, never the page. */
+  .fbundle-controls { flex: 0 0 auto; display: flex; align-items: stretch; justify-content: center; gap: 1px;
+                        margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+                        background: var(--border); }
+  .fbundle-controls button, .fbundle-controls a, .fbundle-controls .fbundle-count {
+    flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 8px;
+    border: none; background: var(--card-bg); color: var(--muted); text-decoration: none;
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 13px; letter-spacing: 0.03em;
+  }
+  .fbundle-controls button, .fbundle-controls a { cursor: pointer; transition: background 0.2s ease, color 0.2s ease; }
+  .fbundle-controls button:hover, .fbundle-controls a:hover { background: var(--bg); color: var(--fg); }
+  .fbundle-controls .fbundle-count { flex: 0 0 auto; min-width: 56px; white-space: nowrap; }
+  .fbundle-controls svg { width: 16px; height: 16px; stroke: currentColor; fill: none; flex: 0 0 auto; }
+  .fbundle-controls .label { display: none; }
+  @media (min-width: 700px) { .fbundle-controls .label { display: inline; } } /* was 560px */
+
+  /* Fullscreen mode (new, 2026-09-12; width-cap removal reverted
+     2026-09-12): gives the reading card MORE VERTICAL ROOM to expand
+     into -- both a real Fullscreen API request on <html> (see the
+     script below) AND, whether or not the browser grants that (some
+     embeds/iframes refuse it outright), this class drops every bit of
+     chrome ABOVE the card that isn't the card itself: .top-row
+     (breadcrumb + theme toggle) and body's own 20px padding. The
+     control bar (Prev/count/Next/Random/Download/Fullscreen) stays put
+     -- it's the only way back out short of Esc, and it's already
+     flex:0 0 auto so it costs the same sliver of height it always did.
+
+     Deliberately does NOT touch .fbundle-bundle's own max-width: 700px
+     -- an earlier version of this rule also set max-width: none here,
+     which stretched the card edge-to-edge across the whole screen
+     (border-radius/shadow vanishing at 0 margin, the empty image area
+     ballooning) instead of just letting the SAME card grow taller into
+     the space .top-row/padding freed up. "The viewer must remain
+     intact" -- same card, same proportions, just more headroom -- so
+     the width cap stays exactly as it is outside fullscreen too. */
+  body.fbundle-fullscreen { padding: 0; }
+  body.fbundle-fullscreen .top-row { display: none; }
+
+  /* Status line (spinner/error) -- flex: 0 0 auto so it never grows,
+     contributes ~0 height while hidden (the default state). */
+  .fbundle-status { flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+                      gap: 10px; margin-top: 8px; font-size: 0.85rem; color: var(--muted); }
+  .fbundle-error button { margin-left: 6px; }
+
+</style>
+</head>
+<body>
+<div id="hs-background" aria-hidden="true"></div>
+<div class="hs-content">
+<div class="top-row">
+  <div class="top-row-left"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><div class="breadcrumb"><a href="/The-Home-Scholar-Library/library/">Home Scholar Library</a> / <a href="/The-Home-Scholar-Library/library/Facebook%20Pages/">Facebook Pages</a> / <a href="/The-Home-Scholar-Library/library/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/">The Authentic Reactionary, Nicolas Gomez Davila, 13 Vols</a> / <a href="/The-Home-Scholar-Library/library/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/">Vol 06 Davila</a></div></div>
+  <button type="button" class="btn secondary" id="theme-toggle" data-default="library" data-alt="dark" data-to-alt-label="🌙 Dark mode" data-to-default-label="📚 Library mode"><span id="theme-toggle-label">🌙 Dark mode</span></button>
+</div>
+
+<div class="fbundle-bundle" id="fbundle-bundle">
+  <div class="fbundle-card">
+    <div class="fbundle-text-block">
+      <div class="fbundle-mark">“</div>
+      <div class="fbundle-quote-wrap" id="fb-quote-wrap">
+        <div class="fbundle-text" id="fb-text">Loading…</div>
+        <div class="fbundle-text-fade"></div>
+      </div>
+      <div class="fbundle-author-row" id="fb-author-row" hidden>
+        <div class="fbundle-author-rule"></div>
+        <div class="fbundle-author" id="fb-author"></div>
+      </div>
+    </div>
+    <div class="fbundle-image-wrap"><img id="fb-image" class="fbundle-image" src="" alt=""></div>
+  </div>
+  <div class="fbundle-thumbs" id="fb-thumbs" hidden></div>
+  <div class="fbundle-controls">
+    <button type="button" id="fb-prev"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg><span class="label">Prev</span></button>
+    <div class="fbundle-count" id="fb-count"></div>
+    <button type="button" id="fb-next"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg><span class="label">Next</span></button>
+    <button type="button" id="fb-random"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg><span class="label">Random</span></button>
+    <button type="button" id="fb-fullscreen"></button>
+    <button type="button" id="fb-swap"></button>
+    <a id="fb-download" href="https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip" download><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 21h14"></path></svg><span class="label">Download</span></a>
+  </div>
+  <div class="fbundle-status">
+    <span id="fb-spinner" hidden>Loading…</span>
+    <span id="fb-error" class="fbundle-error" hidden>Couldn't load this one.
+      <button type="button" id="fb-retry">Retry</button>
+    </span>
+  </div>
+</div>
+</div>
+
+
+<script>
+(function() {
+  var PAIRS = [{"enumeration": "1070", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1070%20The%20intelligent%20leftist%20admits%20that%20his%20generation%20will%20not%20construct.txt", "text_name": "1070 The intelligent leftist admits that his generation will not construct.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1070.jpg"]}, {"enumeration": "1071", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1071%20Slandered%2C%20like%20a%20reactionary.txt", "text_name": "1071 Slandered, like a reactionary.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1071%20oedipus_and_sphinx.jpg"]}, {"enumeration": "1081", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1081%20It%20is%20not%20a%20restoration%20for%20which%20the%20reactionary%20yearns%2C%20but%20for%20a%20new.txt", "text_name": "1081 It is not a restoration for which the reactionary yearns, but for a new.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1081%200b35b2a28b6.jpg"]}, {"enumeration": "1082", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1082%20Only%20the%20soul%20anchored%20in%20the%20past%20is%20not%20shipwrecked%20in%20night%20winds.txt", "text_name": "1082 Only the soul anchored in the past is not shipwrecked in night winds.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1082%20Storm.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1082.jpg"]}, {"enumeration": "1085", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1085%20Civilization%20always%20consists%20in%20dressing%20oneself%2C%20not%20undressing.txt", "text_name": "1085 Civilization always consists in dressing oneself, not undressing.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1085%20f8b767d5d0f415bc05.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1085%20perseus_armed_by_mercury_0.jpg"]}, {"enumeration": "1087", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1087%20Modern%20man%27s%20misfortune%20lies%20not%20in%20having%20to%20live%20a%20mediocre%20life.txt", "text_name": "1087 Modern man's misfortune lies not in having to live a mediocre life.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1087.jpg"]}, {"enumeration": "1088", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1088%20Democracy%20is%20the%20political%20regime%20in%20which%20the%20citizen%20entrusts%20the.txt", "text_name": "1088 Democracy is the political regime in which the citizen entrusts the.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1088%20addressing-the-senate.jpg"]}, {"enumeration": "1089", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1089%20Every%20work%20of%20art%20speaks%20to%20us%20of%20God.txt", "text_name": "1089 Every work of art speaks to us of God.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1089.jpg"]}, {"enumeration": "1090", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1090%20Happily%2C%20the%20world%20cannot%20be%20explained.txt", "text_name": "1090 Happily, the world cannot be explained.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1090.jpg"]}, {"enumeration": "1091", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1091%20Engaging%20in%20dialogue%20with%20those%20who%20do%20not%20share%20our%20postulates%20is.txt", "text_name": "1091 Engaging in dialogue with those who do not share our postulates is.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1091%20Hector_Censuring_Helen_and_Paris%2C_by_F._Hendrickx%2C_Dutch%2C_c._1820.jpg"]}, {"enumeration": "1092", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1092%20The%20dissemination%20of%20culture%20has%20had%20the%20effect%20of%20enabling%20the%20fool%20to.txt", "text_name": "1092 The dissemination of culture has had the effect of enabling the fool to.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1092%20Duck-Soup.jpg"]}, {"enumeration": "1093", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1093%20Common%20good%2C%20general%20will%2C%20historical%20necessity.txt", "text_name": "1093 Common good, general will, historical necessity.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1093%20circle_of_louis-leopold_boilly_jean-jacques_rousseau_and_rene_louis_de.jpg"]}, {"enumeration": "1095", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1095%20To%20discover%20the%20fool%20there%20is%20no%20better%20reagent%20than%20the%20word%20medieval.txt", "text_name": "1095 To discover the fool there is no better reagent than the word medieval.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1095%20Giorgio_Vasari_-_Six_Tuscan_Poets.jpg"]}, {"enumeration": "1101", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1101%20The%2019th%20century%20did%20not%20live%20with%20more%20anguish%20because%20of%20its%20sexual.txt", "text_name": "1101 The 19th century did not live with more anguish because of its sexual.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1101%20dante.jpg"]}, {"enumeration": "1102", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1102%20Being%20a%20reactionary%20is%20not%20about%20believing%20in%20certain%20solutions.txt", "text_name": "1102 Being a reactionary is not about believing in certain solutions.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1102%20verona-2835356_1280.jpg"]}, {"enumeration": "1103", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1103%20Capitalist%20society%20became%20wealthy%20by%20joining%20the%20ignorance%20of%20an%20astute.txt", "text_name": "1103 Capitalist society became wealthy by joining the ignorance of an astute.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1103.jpg"]}, {"enumeration": "1104", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1104%20Statistics%20do%20not%20replace%20intuition.txt", "text_name": "1104 Statistics do not replace intuition.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1104%20Brain-of-britain.jpg"]}, {"enumeration": "1110", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1110%20Frustration%20is%20the%20distinctive%20psychological%20characteristic%20of.txt", "text_name": "1110 Frustration is the distinctive psychological characteristic of.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1110%20Burghers%20of%20Calais.jpg"]}, {"enumeration": "1112", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1112%20Fools%20believe%20that%20humanity%20only%20now%20knows%20certain%20important%20things.txt", "text_name": "1112 Fools believe that humanity only now knows certain important things.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1112%20Canto%204%20Dante%20and%20Virgil%20Visit%20the%20Great%20Poets%20of%20Antiquity%20in%20Limbo.jpg"]}, {"enumeration": "1116", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1116%20Man%20is%20not%20imprisoned%3B%20he%20imprisons%20himself.txt", "text_name": "1116 Man is not imprisoned; he imprisons himself.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1116%20Ugolino%2C_his_sons_and_grandsons_in_a_cell_facing_death_by_st_Wellcome.jpg"]}, {"enumeration": "1120", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1120%20Youths%20sail%20in%20a%20sea%20of%20conformity%20without%20noticing%20it.txt", "text_name": "1120 Youths sail in a sea of conformity without noticing it.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1120%20William%20Russell%20Flint%20-%20Greek%20myts%2001.jpg"]}, {"enumeration": "1124", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1124%20To%20deny%20that%20a%20human%20nature%20exists%20is%20the%20ideological%20trick%20the.txt", "text_name": "1124 To deny that a human nature exists is the ideological trick the.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1124%20andromache-intercepting-hector-at-the-scaean-gate-by-fernando.jpg"]}, {"enumeration": "1126", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1126%20If%20man%20ever%20managed%20to%20fabricate%20a%20man%2C%20the%20enigma%20of%20man%20will%20not%20have.txt", "text_name": "1126 If man ever managed to fabricate a man, the enigma of man will not have.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1126.jpg"]}, {"enumeration": "1127", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1127%20Whoever%20fights%20against%20the%20process%20of%20aging%20merely%20ages%20without%20ever.txt", "text_name": "1127 Whoever fights against the process of aging merely ages without ever.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1127.jpg"]}, {"enumeration": "1129", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1129%20At%20times%20we%20doubt%20the%20sincerity%20of%20someone%20who%20flatters%20us%2C%20but%20never.txt", "text_name": "1129 At times we doubt the sincerity of someone who flatters us, but never.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1129.jpg"]}, {"enumeration": "1130", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1130%20A%20civilization%27s%20memory%20resides%20in%20the%20continuity%20of%20its%20institutions.txt", "text_name": "1130 A civilization's memory resides in the continuity of its institutions.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1130.jpg"]}, {"enumeration": "1136", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1136%20The%20people%20were%20spiritually%20rich%20until%20the%20semi-educated%20decided%20to.txt", "text_name": "1136 The people were spiritually rich until the semi-educated decided to.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1136%204b798c10e00d7dbf00f.jpg"]}, {"enumeration": "1139", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1139%20An%20irreligious%20society%20cannot%20endure%20the%20truth%20of%20the%20human%20condition.txt", "text_name": "1139 An irreligious society cannot endure the truth of the human condition.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1139%20prohibitionlead-1579289071.jpg"]}, {"enumeration": "1140", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1140%20The%20only%20man%20who%20thanks%20life%20for%20what%20it%20gives%20him%20is%20the%20man%20who%20does.txt", "text_name": "1140 The only man who thanks life for what it gives him is the man who does.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1140%20Diogenes.jpg"]}, {"enumeration": "1141", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1141%20Unless%20we%20inherit%20a%20spiritual%20tradition%20to%20interpret%20it%2C%20life.txt", "text_name": "1141 Unless we inherit a spiritual tradition to interpret it, life.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1141%20Kids%20on%20smartphones%2C%20Rijksmuseum.jpg"]}, {"enumeration": "1145", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1145%20Sub-literature%20is%20the%20group%20of%20worthy%20books%20that%20each%20new%20generation.txt", "text_name": "1145 Sub-literature is the group of worthy books that each new generation.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1145.jpg"]}, {"enumeration": "1150", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1150%20We%20mediocre%20men%20are%20saved%20when%20we%20are%20so%20mediocre%20that%20we%20succeed%20in.txt", "text_name": "1150 We mediocre men are saved when we are so mediocre that we succeed in.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1150%20flandrinpurgatory.jpg"]}, {"enumeration": "1151", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1151%20Material%20prosperity%20corrupts%20less%20than%20the%20intellectual.txt", "text_name": "1151 Material prosperity corrupts less than the intellectual.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1151%20Jan_Gossaert_-_Portrait_of_a_Merchant.jpg"]}, {"enumeration": "1153", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1153%20We%20can%20beg%20for%20mercy.%20%20But%20with%20what%20right%20do%20we%20demand%20justice.txt", "text_name": "1153 We can beg for mercy.  But with what right do we demand justice.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1153%20Canto%205%20King%20Minos%2C%20Judge%20of%20the%20Damned.jpg"]}, {"enumeration": "1154", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1154%20The%20people%2C%20after%20a%20few%20years%2C%20would%20forget%20the%20names%20of%20illustrious.txt", "text_name": "1154 The people, after a few years, would forget the names of illustrious.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1154.jpg"]}, {"enumeration": "1156", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1156%20The%20writer%20who%20does%20not%20offer%20intellectual%20trifles%20for%20sale%20cannot.txt", "text_name": "1156 The writer who does not offer intellectual trifles for sale cannot.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1156%20Ilya_yefimovich_repin-portrait_of_writer_vsevolod_mikhailovich_garshin.jpg"]}, {"enumeration": "1159", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1159%20Between%20animal%20and%20man%20there%20is%20no%20barrier%20but%20a%20palisade%20of%20taboos.txt", "text_name": "1159 Between animal and man there is no barrier but a palisade of taboos.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1159%20255707-1330621480.jpg"]}, {"enumeration": "1167", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1167%20A%20cultured%20soul%20is%20one%20in%20which%20the%20din%20of%20the%20living%20does%20not%20drown.txt", "text_name": "1167 A cultured soul is one in which the din of the living does not drown.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1167%20Apollo%27s_enchantment%2C_by_Henry_Howard_%28British%29.jpg"]}, {"enumeration": "1170", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1170%20Nations%20have%20two%20noble%20modes%20of%20existence%20--%20ascent%20or%20decadence%20--%20and.txt", "text_name": "1170 Nations have two noble modes of existence -- ascent or decadence -- and.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1170%20Virgil%20And%20Dante%20In%20Union%20Square1932%20by%20Isabel%20Bishop.jpg"]}, {"enumeration": "1175", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1175%20Loyalty%20is%20the%20noblest%20music%20on%20earth.txt", "text_name": "1175 Loyalty is the noblest music on earth.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1175%20Briton%20Riviere-bloodhound.%20a%20visual%20metaphor%20for%20honor%2C%20valor%20and%20faith.jpg"]}, {"enumeration": "1179", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1179%20Civilizations%20are%20mortal.txt", "text_name": "1179 Civilizations are mortal.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1179%20Triumph_of_faith_by_Eugene_Thirion.jpg"]}, {"enumeration": "1180", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1180%20Reason%2C%20Progress%2C%20and%20Justice%20are%20the%20three%20theological%20virtues%20of%20the.txt", "text_name": "1180 Reason, Progress, and Justice are the three theological virtues of the.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1180%20Maximilien-Robespierre-guillotine-July-28-1794.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1180.jpg"]}, {"enumeration": "1182", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1182%20Where%20it%20is%20possible%20to%20say%20whatever%20one%20wants%2C%20no%20one%20makes%20the%20effort.txt", "text_name": "1182 Where it is possible to say whatever one wants, no one makes the effort.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1182.jpg"]}, {"enumeration": "1184", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1184%20Opinions%2C%20customs%2C%20institutions%2C%20cities%20--%20everything%20has%20become%20vulgar.txt", "text_name": "1184 Opinions, customs, institutions, cities -- everything has become vulgar.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1184%20pandora.jpg"]}, {"enumeration": "1185", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1185%20To%20be%20modern%20is%20not%20to%20have%20overcome%20yesterday%27s%20problems%3B%20it%20is%20to.%20.txt", "text_name": "1185 To be modern is not to have overcome yesterday's problems; it is to. .txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1185%20122157032_o.jpg"]}, {"enumeration": "1188", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1188%20Modern%20society%20is%20abolishing%20prostitution%20by%20means%20of%20promiscuity.txt", "text_name": "1188 Modern society is abolishing prostitution by means of promiscuity.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1188.jpg"]}, {"enumeration": "1189", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1189%20The%20jurist%2C%20in%20democracies%2C%20is%20not%20an%20expert%20in%20laws%20but%20in%20government.txt", "text_name": "1189 The jurist, in democracies, is not an expert in laws but in government.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1189%20Skitse_til_DEn_grundlovgivende_Rigsforsamling_1848.jpg"]}, {"enumeration": "1190", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1190%20The%20tissues%20of%20society%20become%20cancerous.txt", "text_name": "1190 The tissues of society become cancerous.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1190%20Odysseus%20and%20Nausicaa%20by%20Charles%20Gleyre.jpg"]}, {"enumeration": "1191", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1191%20A%20fight%20between%20democratic%20sects%20temporarily%20distracts%20them%20from%20the.txt", "text_name": "1191 A fight between democratic sects temporarily distracts them from the.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1191%20Eteocles%20and%20Polynices%2C%20will%20die%20of%20mutually%20inflicted%20wounds.jpg"]}, {"enumeration": "1192", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1192%20Either%20we%20learn%20from%20Greek%20tragedy%20how%20to%20read%20human%20history%2C%20or%20we.txt", "text_name": "1192 Either we learn from Greek tragedy how to read human history, or we.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1192%201884%20An%20Audience%20in%20Athens%20during%20the%20Representation%20of%20Agamemnon%20by.jpg"]}, {"enumeration": "1193", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1193%20No%20paradise%20will%20arise%20within%20the%20bounds%20of%20time.txt", "text_name": "1193 No paradise will arise within the bounds of time.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1193%20max_liebermann-12.jpg"]}, {"enumeration": "1194", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1194%20What%20is%20called%20the%20modern%20mentality%20is%20the%20process%20of%20exonerating%20the.txt", "text_name": "1194 What is called the modern mentality is the process of exonerating the.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1194%20nA.jpg"]}, {"enumeration": "1195", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1195%20The%20simplistic%20ideas%20in%20which%20the%20unbeliever%20ends%20up%20believing%20are%20his.txt", "text_name": "1195 The simplistic ideas in which the unbeliever ends up believing are his.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1195%20f4ac223c050.jpg"]}, {"enumeration": "1196", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1196%20Boredom%20is%20the%20antonym%20of%20solitude.txt", "text_name": "1196 Boredom is the antonym of solitude.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1196%203416ec239b061815d42336c9814c88d7.jpg"]}, {"enumeration": "1202", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1202%20With%20the%20appearance%20of%20rational%20relations%20among%20individuals%20begins.txt", "text_name": "1202 With the appearance of rational relations among individuals begins.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1202%20the-call-for-the-last-victims-of-the-terror-79-thermidor-year-2.jpg"]}, {"enumeration": "1203", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1203%20To%20be%20modern%20is%20to%20view%20another%27s%20death%20without%20emotion%20and%20never%20to.txt", "text_name": "1203 To be modern is to view another's death without emotion and never to.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1203%20Edouard-debat-ponsan-one-morning-at-the-door-of-the-louvre.jpg"]}, {"enumeration": "1207", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1207%20Revolutions%20destroy%20nothing%20of%20nations%20except%20their%20souls.txt", "text_name": "1207 Revolutions destroy nothing of nations except their souls.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1207.jpg"]}, {"enumeration": "1208", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1208%20Today%27s%20conservatives%20are%20nothing%20more%20than%20liberals%20who%20have%20been.txt", "text_name": "1208 Today's conservatives are nothing more than liberals who have been.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1208%20Frederick-Trevelyan-Goodall-The-Deserter.jpg"]}, {"enumeration": "1214", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1214%20Progress%20is%20the%20offspring%20of%20knowledge%20of%20nature.txt", "text_name": "1214 Progress is the offspring of knowledge of nature.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1214%20american-progress-poster-print-by-john-gast.jpg"]}, {"enumeration": "1216", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1216%20Nothing%20guarantees%20man%20that%20what%20he%20invents%20will%20not%20kill%20him.txt", "text_name": "1216 Nothing guarantees man that what he invents will not kill him.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1216%20o76744hueo941.jpg"]}, {"enumeration": "1217", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1217%20The%20modem%20world%20appears%20invincible.%20%20Like%20the%20extinct%20dinosaurs.txt", "text_name": "1217 The modem world appears invincible.  Like the extinct dinosaurs.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1217%20brachyceratops.jpg"]}, {"enumeration": "1219", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1219%20Ideologies%20were%20invented%20so%20that%20men%20who%20do%20not%20think%20can%20give%20their.txt", "text_name": "1219 Ideologies were invented so that men who do not think can give their.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1219%20fmg5e61f36bdcb576.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1219%20french%20revolution.jpg"]}, {"enumeration": "1225", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1225%20Evil%20promises%20what%20it%20cannot%20deliver%20on.txt", "text_name": "1225 Evil promises what it cannot deliver on.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1225%20David%20Delivers%20Goliaths%20Head.jpg"]}, {"enumeration": "1230", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1230%20The%20media%20today%20allow%20the%20modern%20citizen%20to%20find%20out%20about%20everything.txt", "text_name": "1230 The media today allow the modern citizen to find out about everything.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1230%20wall-street-2.jpg"]}, {"enumeration": "1252", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1252%20Stupidity%20fuels%20revolutions.txt", "text_name": "1252 Stupidity fuels revolutions.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1252%201967-Pentagon-protest.jpg"]}, {"enumeration": "1255", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1255%20Democrats%20can%20be%20divided%20into%20those%20who%20believe%20wickedness%20is%20curable.txt", "text_name": "1255 Democrats can be divided into those who believe wickedness is curable.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1255%20Angel-Ramiro-Sanchez-Midnight.jpg"]}, {"enumeration": "1256", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1256%20Literature%20does%20not%20die%20because%20nobody%20writes%2C%20but%20when%20everybody.txt", "text_name": "1256 Literature does not die because nobody writes, but when everybody.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1256%20Marat--Lucien-Etienne_Melingue.jpg"]}, {"enumeration": "1257", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1257%20We%20only%20know%20how%20to%20carry%20ourselves%20with%20decency%20in%20front%20of%20the%20world.txt", "text_name": "1257 We only know how to carry ourselves with decency in front of the world.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1257%20Lord_frederic_leighton-dante_in_exile.jpg"]}, {"enumeration": "1258", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1258%20One%20must%20learn%20to%20be%20partial%20without%20being%20unjust.txt", "text_name": "1258 One must learn to be partial without being unjust.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1258%20judgment%20of%20solomon.jpg"]}, {"enumeration": "1265", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1265%20The%20religious%20problem%20grows%20worse%20each%20day%20because%20the%20faithful%20are%20not.txt", "text_name": "1265 The religious problem grows worse each day because the faithful are not.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1265%20st%20augustine.jpg"]}, {"enumeration": "1266", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1266%20For%20the%20democrat%20it%20is%20not%20enough%20that%20we%20respect%20what%20he%20wants%20to%20do.txt", "text_name": "1266 For the democrat it is not enough that we respect what he wants to do.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1266.jpg"]}, {"enumeration": "1275", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1275%20Only%20the%20soul%20of%20the%20contemplative%20does%20not%20die%20before%20the%20body.txt", "text_name": "1275 Only the soul of the contemplative does not die before the body.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1275%20St.%20Jerome.%201739.Pierre%20Subleyras.%20French%201699-1749.jpg"]}, {"enumeration": "1279", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1279%20Where%20is%20the%20world%20headed.txt", "text_name": "1279 Where is the world headed.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1279%20Ulysses%20And%20The%20Sirens%20by%20L%C3%A9on%20Belly.jpg"]}, {"enumeration": "1281", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1281%20Everything%20that%20interrupts%20a%20tradition%20obliges%20us%20to%20start%20over.txt", "text_name": "1281 Everything that interrupts a tradition obliges us to start over.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1281%20Thomas%20Cole%20-%20The%20Course%20of%20Empire.jpg"]}, {"enumeration": "1292", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1292%20The%20intelligent%20man%20quickly%20reaches%20reactionary%20conclusions.txt", "text_name": "1292 The intelligent man quickly reaches reactionary conclusions.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1292%20Peter%20Denies%20Christ.jpg"]}, {"enumeration": "1297", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1297%20The%20reactionary%20does%20not%20yearn%20for%20the%20futile%20restoration%20of%20the%20past%2C.txt", "text_name": "1297 The reactionary does not yearn for the futile restoration of the past,.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1297%20scale_1200%20%284%29.jpg"]}, {"enumeration": "1310", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1310%20The%20recluse%20is%20humanity%27s%20delegate%20to%20what%20is%20important.txt", "text_name": "1310 The recluse is humanity's delegate to what is important.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1310%20bangkok-1808265.jpg"]}, {"enumeration": "1325", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1325%20Reactionaries%20are%20recruited%20from%20among%20the%20front-row%20spectators%20of%20a.txt", "text_name": "1325 Reactionaries are recruited from among the front-row spectators of a.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1325.jpg"]}, {"enumeration": "1329", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1329%20Each%20day%20we%20demand%20more%20from%20society%20so%20that%20we%20can%20demand%20less%20from.txt", "text_name": "1329 Each day we demand more from society so that we can demand less from.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1329.jpg"]}, {"enumeration": "1336", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1336%20Intellectual%20honesty%20is%20a%20virtue%20which%20every%20successive%20generation.txt", "text_name": "1336 Intellectual honesty is a virtue which every successive generation.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1336%20For%20which%20of%20my%20bad%20parts%20didst%20thou%20first%20fall%20in%20love%20with.jpg"]}, {"enumeration": "1337", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1337%20The%20rapid%20evolution%20of%20a%20society%20destroys%20its%20customs.txt", "text_name": "1337 The rapid evolution of a society destroys its customs.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1337%20Visit%20to%20the%20Lawyer%20%281913%29.%20Frederick%20William%20Elwell.jpg"]}, {"enumeration": "1343", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1343%20The%20new%20left%20gathers%20together%20those%20who%20acknowledge%20the%20ineffectiveness.txt", "text_name": "1343 The new left gathers together those who acknowledge the ineffectiveness.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1343%20La_nuit_du_9_au_10_thermidor_an_II_%281794%29_d%C3%A9tail.jpg"]}, {"enumeration": "1345", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1345%20Modern%20man%20accepts%20any%20yoke%2C%20as%20long%20as%20the%20hand%20imposing%20it%20is.txt", "text_name": "1345 Modern man accepts any yoke, as long as the hand imposing it is.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1345%20Zack%20Zdrale4.jpg"]}, {"enumeration": "1347", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1347%20It%20is%20never%20too%20late%20for%20anything%20truly%20important.txt", "text_name": "1347 It is never too late for anything truly important.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1347%20Anker-_Die_Andacht_des_Grossvaters_1893.jpg"]}, {"enumeration": "1349", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1349%20As%20long%20as%20the%20entertainment%20is%20sufficiently%20vulgar%2C%20nobody%20protests.txt", "text_name": "1349 As long as the entertainment is sufficiently vulgar, nobody protests.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1349%20Burlesque%20by%20Thomas%20Hart%20Benton%20%281889-1975%2C%20United%20States%29.jpg"]}, {"enumeration": "1350", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1350%20Let%20us%20not%20complain%20of%20the%20soil%20in%20which%20we%20were%20born%2C%20but%20rather%20of.txt", "text_name": "1350 Let us not complain of the soil in which we were born, but rather of.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1350%20The%20Old%20Man.%201861.%20Leon%20Bazile%20Perrault.%20French%201832-1908.%20oilcanvas.jpg"]}, {"enumeration": "1351", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1351%20Order%20is%20a%20deception.txt", "text_name": "1351 Order is a deception.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1351%2032691153764_fe41a5b20c_b.jpg"]}, {"enumeration": "1352", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1352%20If%20men%20were%20born%20equal%2C%20they%20would%20invent%20inequality%20to%20kill%20boredom.txt", "text_name": "1352 If men were born equal, they would invent inequality to kill boredom.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1352%2014613629948_2cf7d7645f_o.jpg"]}, {"enumeration": "1358", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1358%20On%20the%20wide-open%20steppe%20the%20individual%20finds%20no%20protection%20against%20the.txt", "text_name": "1358 On the wide-open steppe the individual finds no protection against the.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1358%20mob.jpg"]}, {"enumeration": "1361", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1361%20When%20he%20died%2C%20Christ%20did%20not%20leave%20behind%20documents%2C%20but%20disciples.txt", "text_name": "1361 When he died, Christ did not leave behind documents, but disciples.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1361%20cfc1951a5a06bb3f47c109ee5b6d3bbb.jpg"]}, {"enumeration": "1364", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1364%20A%20soul%20is%20noble%20not%20when%20nothing%20injures%20it%2C%20but%20when%20it%20heals%20quickly.txt", "text_name": "1364 A soul is noble not when nothing injures it, but when it heals quickly.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1364.jpg"]}, {"enumeration": "1365", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1365%20Culture%20presumes%20that%20we%20will%20die%20educating%20ourselves%2C%20at%20whatever%20age.txt", "text_name": "1365 Culture presumes that we will die educating ourselves, at whatever age.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1365%20the-death-of-seneca.jpg"]}, {"enumeration": "1366", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1366%20Man%20has%20as%20much%20of%20a%20soul%20as%20he%20believes%20he%20has.txt", "text_name": "1366 Man has as much of a soul as he believes he has.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1366%20BQZXjR.jpg"]}, {"enumeration": "1367", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1367%20By%20believing%20that%20the%20wax%20figures%20fabricated%20by%20psychology%20are%20alive%2C.txt", "text_name": "1367 By believing that the wax figures fabricated by psychology are alive,.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1367%201339609486-239786-371.jpg"]}, {"enumeration": "1369", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1369%20Modern%20society%20only%20respects%20science%20as%20an%20inexhaustible%20provider%20of.txt", "text_name": "1369 Modern society only respects science as an inexhaustible provider of.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1369%20Bauten_Maschinenhalle.jpg"]}, {"enumeration": "1370", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1370%20Artificially%20fomenting%20greed%2C%20in%20order%20to%20become%20rich%20by%20satisfying%20it%2C.txt", "text_name": "1370 Artificially fomenting greed, in order to become rich by satisfying it,.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle.zip/Davila%20Vol.06%20%281070-1370%29_fbundle/1370%20Robber-Barons-cartoon.jpg"]}];
+  var cache = {};        // enumeration -> { quote, author }
+  var current = 0;
+  var currentImage = null; // reset to null on navigation -> defaults to the pair's first image on render
+
+  var textEl = document.getElementById("fb-text");
+  var quoteWrapEl = document.getElementById("fb-quote-wrap");
+  var authorRowEl = document.getElementById("fb-author-row");
+  var authorEl = document.getElementById("fb-author");
+  var imageEl = document.getElementById("fb-image");
+  var thumbsEl = document.getElementById("fb-thumbs");
+  var countEl = document.getElementById("fb-count");
+  var spinnerEl = document.getElementById("fb-spinner");
+  var errorEl = document.getElementById("fb-error");
+
+  // ---- quote parsing (§2.1/§2.2, same fallback rule as
+  // pipeline.fbundles._parse_quote_file()) ------------------------------
+  function parseQuote(text) {
+    var lines = text.split(/\r?\n/);
+    var authorRe = /^--\s*(.*)$/;
+    for (var i = 0; i < lines.length; i++) {
+      var m = authorRe.exec(lines[i].trim());
+      if (m) {
+        return { quote: lines.slice(0, i).join("\n").trim(), author: (m[1].trim() || null) };
+      }
+    }
+    return { quote: text.trim(), author: null };
+  }
+
+  function fetchText(pair) {
+    return fetch(pair.text_url).then(function(r) {
+      if (!r.ok) throw new Error("fetch failed");
+      return r.text();
+    }).then(parseQuote);
+  }
+
+  function prefetchFirstImage(pair) {
+    if (!pair || !pair.images.length) return;
+    var img = new Image();
+    img.src = pair.images[0];
+  }
+
+  // ---- themed scrollbar + fade for a long quote, capped at 24vh --
+  // only shown/scrollable when the text actually overflows. -----------
+  //
+  // BUGLIST fix ("visual interference in the fbundle text box"): this
+  // used to check only textEl.scrollHeight > textEl.clientHeight -- IS
+  // there more text than fits, at all -- which is true for the entire
+  // life of a long quote, including after the visitor has scrolled all
+  // the way down to read its last line. The fade/shadow (.fbundle-text-
+  // fade, opacity toggled by the "overflowing" class) therefore never
+  // went away for a long quote -- it sat over the bottom of the text
+  // permanently, looking like leftover visual debris rather than the
+  // "more below, scroll for it" cue it's meant to be. Fixed to match
+  // the standalone/offline viewer's own already-correct logic
+  // (templates/fbundle_viewer.html's updateOverflowFade()): the real
+  // question is whether there's more content BELOW THE CURRENT SCROLL
+  // POSITION (scrollHeight - scrollTop - clientHeight), not just
+  // whether the box overflows at all -- so the fade now correctly
+  // disappears once scrolled to the bottom, and reappears if scrolled
+  // back up. Needs its own "scroll" listener on textEl (added below,
+  // next to the existing "resize" one) since scrolling the text changes
+  // scrollTop without firing a resize event.
+  function updateTextOverflow() {
+    var hasMoreBelow = textEl.scrollHeight - textEl.scrollTop - textEl.clientHeight > 4;
+    quoteWrapEl.classList.toggle("overflowing", hasMoreBelow);
+  }
+
+  // ---- shared "make this image the active one" step -- used both by
+  // clicking a thumbnail directly and by fb-next's image-then-quote
+  // cycling below, so the main-image swap + active-thumb highlight
+  // never has to be kept in sync in two places. ------------------------
+  function setActiveImage(url) {
+    currentImage = url;
+    imageEl.src = url;
+    var tiles = thumbsEl.querySelectorAll(".fbundle-thumb-tile");
+    for (var i = 0; i < tiles.length; i++) {
+      var isActive = tiles[i].dataset.url === url;
+      tiles[i].classList.toggle("active", isActive);
+      if (isActive) tiles[i].scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+  }
+
+  function renderPair(parsed) {
+    var pair = PAIRS[current];
+    textEl.textContent = parsed.quote;
+    textEl.scrollTop = 0;
+    updateTextOverflow();
+
+    if (parsed.author) {
+      authorEl.textContent = "\u2014 " + parsed.author;
+      authorRowEl.hidden = false;
+    } else {
+      authorRowEl.hidden = true;
+    }
+
+    if (currentImage === null) currentImage = pair.images[0] || null;
+    imageEl.src = currentImage || "";
+    imageEl.alt = parsed.quote.slice(0, 60);
+
+    // ---- multi-image row (design_2 §2.3, compact) -- only for a pair
+    // with more than one image; clicking a tile swaps the main image
+    // without touching the quote/text or re-fetching anything. --------
+    if (pair.images.length > 1) {
+      thumbsEl.hidden = false;
+      thumbsEl.innerHTML = "";
+      pair.images.forEach(function(url) {
+        var tile = document.createElement("button");
+        tile.type = "button";
+        tile.dataset.url = url;
+        tile.className = "fbundle-thumb-tile" + (url === currentImage ? " active" : "");
+        tile.innerHTML = '<img src="' + url + '" alt="" loading="lazy">';
+        tile.addEventListener("click", function() { setActiveImage(this.dataset.url); });
+        thumbsEl.appendChild(tile);
+      });
+    } else {
+      thumbsEl.hidden = true;
+      thumbsEl.innerHTML = "";
+    }
+
+    countEl.textContent = (current + 1) + " / " + PAIRS.length;
+  }
+
+  // ---- direct/blocking fetch with 1-2 silent retries before a visible
+  // error state (§2.4) --------------------------------------------------
+  function loadPair(index, attempt) {
+    attempt = attempt || 0;
+    current = index;
+    currentImage = null;
+    var pair = PAIRS[current];
+    var cached = cache[pair.enumeration];
+
+    errorEl.hidden = true;
+
+    if (cached) {
+      spinnerEl.hidden = true;
+      renderPair(cached);
+      prefetchNeighbors();
+      return;
+    }
+
+    spinnerEl.hidden = false;
+    fetchText(pair).then(function(parsed) {
+      cache[pair.enumeration] = parsed;
+      spinnerEl.hidden = true;
+      if (current === index) renderPair(parsed);
+      prefetchNeighbors();
+    }).catch(function() {
+      if (attempt < 2) {
+        loadPair(index, attempt + 1);
+      } else {
+        spinnerEl.hidden = true;
+        errorEl.hidden = false;
+      }
+    });
+  }
+
+  function prefetchNeighbors() {
+    prefetchFirstImage(PAIRS[(current + 1) % PAIRS.length]);
+    prefetchFirstImage(PAIRS[(current - 1 + PAIRS.length) % PAIRS.length]);
+  }
+
+  // ---- Next cycles through the current pair's remaining images first
+  // (mirrors clicking through its own thumbnail row left-to-right),
+  // only advancing to the next quote once its last image is already
+  // showing. A single-image pair -- or a multi-image one already on its
+  // last image -- behaves exactly as before and goes straight to the
+  // next pair. --------------------------------------------------------
+  function advanceToNextImage() {
+    var pair = PAIRS[current];
+    if (!pair || !pair.images || pair.images.length < 2) return false;
+    var idx = pair.images.indexOf(currentImage);
+    if (idx === -1 || idx >= pair.images.length - 1) return false;
+    setActiveImage(pair.images[idx + 1]);
+    return true;
+  }
+
+  document.getElementById("fb-prev").addEventListener("click", function() {
+    loadPair((current - 1 + PAIRS.length) % PAIRS.length);
+  });
+  document.getElementById("fb-next").addEventListener("click", function() {
+    if (advanceToNextImage()) return;
+    loadPair((current + 1) % PAIRS.length);
+  });
+  document.getElementById("fb-random").addEventListener("click", function() {
+    if (PAIRS.length < 2) return;
+    var next;
+    do { next = Math.floor(Math.random() * PAIRS.length); } while (next === current);
+    loadPair(next);
+  });
+  document.getElementById("fb-retry").addEventListener("click", function() { loadPair(current); });
+  window.addEventListener("resize", updateTextOverflow);
+  textEl.addEventListener("scroll", updateTextOverflow);
+
+  if (PAIRS.length) {
+    loadPair(0);
+  } else {
+    document.getElementById("fbundle-bundle").innerHTML = '<div class="fbundle-empty">No quotes in this bundle.</div>';
+  }
+})();
+</script>
+
+<!-- Fullscreen mode (new, 2026-09-12): "give the viewer maximum
+     vertical space" -- requests the real Fullscreen API on <html> where
+     the browser allows it, and either way toggles body.fbundle-
+     fullscreen (see that class's own CSS comment above) so the top-row
+     (breadcrumb + theme toggle) and body's outer padding drop out,
+     letting .fbundle-bundle grow to fill what's left. Listens for the
+     browser's own fullscreenchange event (every vendor-prefixed variant
+     still in real-world use) rather than only reacting to its own
+     click, so the CSS class stays in sync when the visitor exits with
+     Esc, a browser/OS fullscreen shortcut, or any other route that
+     bypasses this button entirely -- exactly the same "don't trust your
+     own click handler as the only source of truth" reasoning
+     _theme_toggle_assets() already applies to data-theme. Falls back to
+     the CSS-only maximize (no real Fullscreen API call) when the API
+     doesn't exist or a request is refused (sandboxed iframes commonly
+     block it) -- "maximum vertical space" still means something even
+     when true fullscreen isn't available. -->
+<script>
+(function() {
+  var btn = document.getElementById("fb-fullscreen");
+  if (!btn) return;
+  var ICONS = {
+    enter: '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M16 3h3a2 2 0 0 1 2 2v3"></path><path d="M8 21H5a2 2 0 0 1-2-2v-3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg><span class="label">Fullscreen</span>',
+    exit: '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3a2 2 0 0 1-2 2H4"></path><path d="M15 3v3a2 2 0 0 0 2 2h3"></path><path d="M9 21v-3a2 2 0 0 0-2-2H4"></path><path d="M15 21v-3a2 2 0 0 1 2-2h3"></path></svg><span class="label">Exit fullscreen</span>'
+  };
+
+  function isFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+  }
+  // CSS-only maximize also stays on while genuinely fullscreen (a
+  // request can succeed without the class ever having been set by a
+  // fallback path), so this OR's the two together rather than trusting
+  // just one.
+  function isMaximized() {
+    return isFullscreen() || document.body.classList.contains("fbundle-fullscreen");
+  }
+  function syncButton() {
+    btn.innerHTML = isMaximized() ? ICONS.exit : ICONS.enter;
+  }
+  function syncFromBrowser() {
+    // Only follows the BROWSER's own fullscreen state here -- the CSS-
+    // only fallback (no real Fullscreen API involved) is added/removed
+    // directly by the click handler below, not by this listener.
+    if (isFullscreen()) document.body.classList.add("fbundle-fullscreen");
+    else if (!document.body.dataset.fbFullscreenFallback) document.body.classList.remove("fbundle-fullscreen");
+    syncButton();
+  }
+
+  btn.innerHTML = ICONS.enter;
+  btn.addEventListener("click", function() {
+    if (!isMaximized()) {
+      var el = document.documentElement;
+      var request = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (request) {
+        Promise.resolve(request.call(el)).catch(function() {
+          // Refused (common in a sandboxed iframe) -- fall back to the
+          // CSS-only maximize instead of leaving the click looking like
+          // it did nothing.
+          document.body.dataset.fbFullscreenFallback = "1";
+          document.body.classList.add("fbundle-fullscreen");
+          syncButton();
+        });
+      } else {
+        document.body.dataset.fbFullscreenFallback = "1";
+        document.body.classList.add("fbundle-fullscreen");
+        syncButton();
+      }
+    } else if (isFullscreen()) {
+      var exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if (exit) exit.call(document);
+    } else {
+      delete document.body.dataset.fbFullscreenFallback;
+      document.body.classList.remove("fbundle-fullscreen");
+      syncButton();
+    }
+  });
+  document.addEventListener("fullscreenchange", syncFromBrowser);
+  document.addEventListener("webkitfullscreenchange", syncFromBrowser);
+  document.addEventListener("msfullscreenchange", syncFromBrowser);
+})();
+</script>
+
+<!-- Layout swap (new, 2026-09-12; default flipped 2026-09-13):
+     ergonomic/visual-only toggle between the original text-on-top/
+     image-on-bottom stacking and image-on-top/text-on-bottom -- the
+     latter ("swapped") is now what a first-time visitor sees; clicking
+     the button goes back to text-on-top. Unlike the offline viewer
+     (templates/fbundle_viewer.html), this page's card markup is static
+     rather than rebuilt per quote, so the toggle is just a class flip on
+     .fbundle-card -- no re-render, and it survives Prev/Next/Random
+     (loadPair()/renderPair() never touch this class). Persisted under
+     its own storage key, separate from the theme toggle above. -->
+<script>
+(function() {
+  var btn = document.getElementById("fb-swap");
+  var card = document.querySelector(".fbundle-card");
+  if (!btn || !card) return;
+  var ICON_SWAP = '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v14"></path><path d="M4 7l4-4 4 4"></path><path d="M16 21V7"></path><path d="M12 17l4 4 4-4"></path></svg>';
+
+  function isSwapped() {
+    return card.classList.contains("swapped");
+  }
+  function syncButton() {
+    var label = isSwapped() ? "Text on top" : "Image on top";
+    btn.innerHTML = ICON_SWAP + '<span class="label">' + label + "</span>";
+  }
+  function apply(swapped) {
+    card.classList.toggle("swapped", swapped);
+    syncButton();
+    try { localStorage.setItem("fbundle-layout", swapped ? "swapped" : "default"); } catch (e) {}
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem("fbundle-layout"); } catch (e) {}
+  // Default flipped 2026-09-13: image-on-top ("swapped") now ships as
+  // the default -- anything other than an explicit, previously-saved
+  // "default" lands there, mirroring the offline viewer's own
+  // initLayout() (templates/fbundle_viewer.html).
+  apply(saved !== "default");
+
+  btn.addEventListener("click", function() { apply(!isSwapped()); });
+})();
+</script>
+
+<!-- BUG FIX (fbundle dark-mode background never syncs, 2026-09-12):
+     pipeline.viewers._theme_toggle_assets()'s own docstring already says
+     "the caller's template must place backgrounds.render_tokens()'s own
+     <script src="/The-Home-Scholar-Library/assets/backgrounds/generators/common.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/library.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/dark.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/deep-sky-locked.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/starfield.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/solar-system.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script> BEFORE this script in the page (so
+     #hs-background's data-identity is already set by the time this
+     script runs)" -- this template had THEME_SCRIPT first and
+     BACKGROUND_SCRIPT last, the reverse of that documented requirement.
+     THEME_SCRIPT's init IIFE calls apply(savedTheme) synchronously as
+     soon as it runs, which calls applyBackgroundMode(savedTheme) --
+     that bails out immediately ("if (!mode || !window.
+     HomeScholarBackgrounds) return;") because window.HomeScholarBackgrounds
+     doesn't exist yet (it's defined by BACKGROUND_SCRIPT's own <script
+     src> tags, further down the page and not yet reached). Net effect:
+     on every load the decorative artwork stayed on this page's
+     server-resolved default ("library") regardless of a saved "dark"
+     preference -- it only ever caught up after a click, once
+     HomeScholarBackgrounds had already loaded. Moving BACKGROUND_SCRIPT
+     first means it's already loaded (and #hs-background's data-identity
+     already set by its own init script) by the time THEME_SCRIPT's
+     apply(savedTheme) runs, so the decorative background is correct
+     from first paint, matching the quote card's own colors. -->
+<script src="/The-Home-Scholar-Library/assets/backgrounds/generators/common.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/library.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/dark.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/deep-sky-locked.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/starfield.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/solar-system.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Facebook%20Pages/The%20Authentic%20Reactionary%2C%20Nicolas%20Gomez%20Davila%2C%2013%20Vols/Vol%2006%20Davila/Davila%20Vol.06%20%281070-1370%29_fbundle/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+
+<script>
+
+
+(function() {
+  var KEY = "viewer-theme-fbundle";
+  var DEFAULT_THEME = "library";
+  var PREVIEW_COLORS = {"library": {"bg": "#ECE0C4", "fg": "#2E2416"}, "dark": {"bg": "#16130D", "fg": "#EFE3C7"}};
+  var BACKGROUND_MODES = {"library": "library", "dark": "dark"};
+  var btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+  var label = document.getElementById("theme-toggle-label");
+  function labelFor(theme) {
+    return theme === DEFAULT_THEME ? btn.dataset.toAltLabel : btn.dataset.toDefaultLabel;
+  }
+  // Re-invokes the SAME background runtime backgrounds.py's own
+  // init_script already called once on load, against the SAME
+  // #hs-background target/identity -- mirrors
+  // pipeline.webbook_nav.script()'s own applyBackgroundOverride(), just
+  // driven by this toggle instead of that reader-settings panel. A
+  // no-op wherever BACKGROUND_MODES is null (every caller but fbundle)
+  // or the runtime/target genuinely isn't on the page.
+  function applyBackgroundMode(theme) {
+    if (!BACKGROUND_MODES) return;
+    var mode = BACKGROUND_MODES[theme];
+    if (!mode || !window.HomeScholarBackgrounds) return;
+    var target = document.getElementById("hs-background");
+    if (!target) return;
+    var identity = target.dataset.identity;
+    if (!identity) return;
+    var result;
+    try {
+      result = window.HomeScholarBackgrounds.render({
+        target: target,
+        mode: mode,
+        identity: identity,
+        date: new Date().toISOString().slice(0, 10)
+      });
+    } catch (e) { return; }
+    if (result) {
+      var root = document.documentElement.style;
+      if (result.reader) {
+        root.setProperty("--hs-reader-bg", result.reader);
+        root.setProperty("--hs-outer-bg", result.reader);
+      }
+      if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+    }
+  }
+  function apply(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    label.textContent = labelFor(theme);
+    if (PREVIEW_COLORS) {
+      // colored as a literal preview of the DESTINATION theme (the one
+      // a click will switch to), not the one currently showing.
+      var dest = theme === DEFAULT_THEME ? btn.dataset.alt : btn.dataset.default;
+      var c = PREVIEW_COLORS[dest];
+      if (c) { btn.style.background = c.bg; btn.style.color = c.fg; btn.style.borderColor = c.fg; }
+    }
+    applyBackgroundMode(theme);
+  }
+  // BUG FIX (fbundle init mismatch, 2026-09-12): this used to trust
+  // whatever localStorage held outright ("saved = localStorage.getItem(KEY)
+  // || DEFAULT_THEME"), with no check that the stored value is actually
+  // one of THIS toggle's two known themes (btn.dataset.default/.alt). A
+  // visitor who saved a theme under an earlier identifier -- e.g.
+  // "sepia", fbundle's OWN default_theme value before the 2026-09-11
+  // rename documented on fbundle_viewer_live.html's [data-theme="library"]
+  // rule -- keeps that stale value in localStorage across the rename, so
+  // apply() below was setting data-theme="sepia" on load: a value neither
+  // [data-theme="library"] nor [data-theme="dark"] matches, so every
+  // themed custom property fell back to unset/transparent (the page
+  // rendered in neither mode) while the label, driven by the SAME
+  // mismatch (saved !== DEFAULT_THEME), read "Library mode" -- the button
+  // offering the one theme it wasn't already showing. Clicking it called
+  // apply(btn.dataset.default) and self-healed, which is what made the
+  // bug look click-fixable instead of permanently broken. Validating
+  // against the button's own two real values here (matching the offline
+  // standalone viewer's already-correct `saved === "dark" ? "dark" :
+  // "library"` fallback in templates/fbundle_viewer.html) means an
+  // unrecognized/stale value is discarded in favor of DEFAULT_THEME
+  // instead of being applied verbatim.
+  var saved = DEFAULT_THEME;
+  try {
+    var stored = localStorage.getItem(KEY);
+    if (stored === btn.dataset.default || stored === btn.dataset.alt) saved = stored;
+  } catch (e) {}
+  apply(saved);
+  btn.addEventListener("click", function() {
+    var current = document.documentElement.getAttribute("data-theme") || DEFAULT_THEME;
+    var next = current === btn.dataset.default ? btn.dataset.alt : btn.dataset.default;
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+    apply(next);
+  });
+})();
+
+</script>
+
+<script>
+
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+</script>
+</body>
+</html>

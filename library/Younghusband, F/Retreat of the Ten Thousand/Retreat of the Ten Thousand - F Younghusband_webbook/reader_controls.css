@@ -1,0 +1,140 @@
+
+.hs-content .book-page, .hs-content .toc-page { background: transparent !important; color: inherit !important; }
+
+/* ---- Text size / font / images -- unchanged behavior from the old per-book copy ---- */
+html[data-reader-size="m"]   .book-page { font-size: 1.125rem; }
+html[data-reader-size="l"]   .book-page { font-size: 1.35rem; }
+html[data-reader-size="xl"]  .book-page { font-size: 1.6rem; }
+html[data-reader-size="xxl"] .book-page { font-size: 1.9rem; }
+html[data-reader-font="times"]    .book-page { font-family: "Times New Roman", Times, serif; }
+html[data-reader-font="georgia"]  .book-page { font-family: Georgia, "Times New Roman", serif; }
+html[data-reader-font="garamond"] .book-page { font-family: "EB Garamond", Garamond, "Palatino Linotype", serif; }
+html[data-reader-font="sans"]     .book-page { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+html[data-reader-font="dyslexic"] .book-page { font-family: "OpenDyslexic", "Comic Sans MS", sans-serif; }
+html[data-reader-font="original"] .toc-page { font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+html[data-reader-images="off"] .book-page img,
+html[data-reader-images="off"] .toc-page img { display: none !important; }
+
+/* ---- Settings: right-edge trigger tab + full-height drawer ----
+   Both track the active background engine's own reader/ink colors by
+   reading --hs-reader-bg/--hs-reader-ink directly -- the same two custom
+   properties .hs-content itself uses (see this function's own docstring)
+   -- with fallbacks matched to the OLD fixed chrome for a page with no
+   themed surface at all (backgrounds disabled, or portable). */
+.reader-settings-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 101;
+  /* Doubled (2026-09-04 request) -- box and glyph both, so the icon
+     actually reads as bigger rather than just overflowing a same-sized
+     box: width/height/font-size are each 2x their old 2.1rem/3.6rem/
+     1.05rem values. */
+  width: 4.2rem;
+  height: 7.2rem;
+  border: none;
+  border-radius: 10px 0 0 10px;
+  background: var(--hs-reader-bg, rgba(60, 60, 64, 0.9));
+  color: var(--hs-reader-ink, #eee);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.1rem;
+  opacity: 0.75;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.25);
+  transition: opacity 0.2s ease, width 0.15s ease, background-color 0.3s ease, color 0.3s ease;
+}
+.reader-settings-toggle:hover,
+.reader-settings-toggle:focus-visible,
+.reader-settings-toggle[aria-expanded="true"] {
+  opacity: 1;
+  width: 5rem;
+}
+
+/* Second entry point to the SAME panel, sitting in .book-nav's own
+   settings-slot (script() injects it there -- see render_book_nav()'s
+   docstring). Exists because the always-visible edge tab above is
+   small and easy to miss entirely; this one lives in the one place a
+   reader's eye already goes to turn pages, click-only (no hover-open --
+   see script()'s own comment on why this one deliberately skips it).
+   No fixed positioning, no own background/shape -- it's meant to read
+   as an ordinary nav-bar control, so it inherits .book-nav's existing
+   look (color: inherit picks up .book-nav's own `color: var(--nav-ink,
+   ...) !important`, set by webbook.py's reader_theme.css, the same way
+   .book-nav's prev/toc/next links already do) rather than following
+   --hs-reader-bg/--hs-reader-ink the way the edge tab and the panel
+   itself do. */
+.book-nav-settings-toggle {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  /* Doubled alongside .reader-settings-toggle above (2026-09-04
+     request) -- same gear glyph, same "make it easier to notice" ask. */
+  font-size: 2rem;
+  line-height: 1;
+}
+.book-nav-settings-toggle:hover, .book-nav-settings-toggle:focus-visible { opacity: 0.8; }
+
+.reader-settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(300px, 86vw);
+  transform: translateX(100%);
+  background: var(--hs-reader-bg, rgba(60, 60, 64, 0.9));
+  color: var(--hs-reader-ink, #eee);
+  box-shadow: -6px 0 30px rgba(0,0,0,0.3);
+  z-index: 100;
+  overflow-y: auto;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.85rem;
+  padding: 3.25rem 1.25rem 1.5rem;
+  transition: transform 0.22s ease, background-color 0.3s ease, color 0.3s ease;
+}
+.reader-settings-panel.open { transform: translateX(0); }
+.reader-settings-close {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.65;
+  cursor: pointer;
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0.3rem 0.6rem;
+}
+.reader-settings-close:hover, .reader-settings-close:focus-visible { opacity: 1; }
+.reader-settings-panel h3 { margin: 0 0 0.6rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.6; }
+.reader-settings-group { margin-bottom: 1.1rem; }
+.reader-settings-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+/* currentColor-derived border (color-mix) instead of a fixed rgba(0,0,0,..):
+   the panel now renders on anything from a cream day page to a near-black
+   night one, and a border pinned to black would all but disappear on the
+   dark engines. Plain rgba fallback declared first for older engines that
+   don't understand color-mix(); the color-mix rule after it wins wherever
+   supported (same progressive-enhancement pattern webbook.py's own
+   @view-transition rule already uses). */
+.reader-settings-row button {
+  flex: 1 1 auto;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid rgba(128,128,128,0.35);
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: inherit;
+}
+.reader-settings-row button.active { background: #8a6d3b; color: #fff; border-color: transparent; }
+.reader-settings-row.font-row { flex-direction: column; }
+.reader-settings-row.font-row button { text-align: left; }
+@media (max-width: 420px) {
+  .reader-settings-toggle { width: 3.6rem; height: 6.4rem; }
+}

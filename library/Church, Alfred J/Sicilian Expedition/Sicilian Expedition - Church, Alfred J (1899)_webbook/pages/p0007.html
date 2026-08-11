@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html data-reader-size="m" data-reader-font="original" data-reader-images="on">
+<head>
+    <title>An Ill-Omened Start — Sicilian Expedition</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../images/r0004.css"/>
+<link rel="stylesheet" type="text/css" href="../images/r0003.css"/>
+  <script>
+(function () {
+  var html = document.documentElement;
+  try {
+    var raw = localStorage.getItem("webbook-reader-prefs-v1");
+    var prefs = raw ? JSON.parse(raw) : {};
+    html.setAttribute("data-reader-size", prefs.size || "m");
+    html.setAttribute("data-reader-font", prefs.font || "original");
+    html.setAttribute("data-reader-images", prefs.images || "on");
+    if (prefs.background && prefs.background !== "auto") {
+      html.setAttribute("data-bg-override", prefs.background);
+      var MODE_COLORS = {"library": {"reader": "#f3eadc", "ink": "#332f2d"}, "dark": {"reader": "#151b23", "ink": "#d9e0e8"}, "deep-sky": {"reader": "#101722", "ink": "#d9e0ea"}, "starfield": {"reader": "#080b12", "ink": "#d8dde7"}, "solar-system": {"reader": "#101722", "ink": "#d8dde7"}};
+      var c = MODE_COLORS[prefs.background];
+      if (c) {
+        html.style.setProperty("--hs-reader-bg", c.reader);
+        html.style.setProperty("--hs-reader-ink", c.ink);
+        html.style.setProperty("--hs-outer-bg", c.reader);
+      }
+    }
+  } catch (e) { /* ignore (private browsing, malformed storage, etc.) --
+                     page renders at its ordinary static/server defaults. */ }
+})();
+</script>
+  <link rel="stylesheet" type="text/css" href="../reader_theme.css"/>
+  <link rel="stylesheet" type="text/css" href="../reader_controls.css"/>
+  <style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+  <style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="calibre1">
+<div id="hs-background" aria-hidden="true"></div><div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="book-page" id="reader-page-start">
+
+<div class="reader-source-unit" data-reader-member="0">
+
+<div class="calibre2"><h1 class="calibre5"><span class="calibre12">An Ill-Omened Start</span></h1></div>
+<p class="calibre13">
+Preparations for the expedition went briskly on, and
+were not far from their completion, when Athens was
+shocked by an extraordinary outrage. Among the
+multiplicity of religious images and symbols which so
+struck the attention of St Paul when he traversed the
+streets of Athens, the <i class="calibre14">Hermæ</i>  were conspicuous.
+These were four-sided pillars of stone surmounted by a
+human head, neck and bust, and stood in the doorways of
+many private homes and of the temples. All these, with
+a few exceptions, according to one account, with but
+one according to another, were mutilated in a single
+night. The city was thrown into a frenzy of rage and
+terror. That the religious feelings of the people were
+deeply wounded it is easy to understand. We can imagine
+what the feelings of London would be if every church
+and chapel within its borders were simultaneously
+disfigured. We
+all can also realise, though less vividly, the fear
+that would be felt of divine anger, of the vengeance
+which the tutelary dieties thus insulted would take
+upon a guilty city. But the most general and the
+strongest apprehension was one into which we are but
+little capable of entering. This outrage seemed to
+threaten revolution. There was, it seemed, a party,
+active and numerous—it could not but be such if so much
+was done in a single night—which was hostile to the
+established order of things. It might be expected at
+any time to break out into open violence.
+</p>
+<p class="calibre15">
+If the act was anything beyond a piece of reckless
+folly, there are two objects which it may be supposed
+to have had; it is probable that it was intended to
+delay, or even altogether to prevent, the expedition;
+it is certain that it was specially aimed at
+Alcibiades. His notorious recklessness of demeanour at
+once suggested his name as one of the guilty parties,
+and he lost no time in endeavouring to free himself
+from the charge. He demanded that he should be put on
+his trial at once, not only for this but for a kindred
+accusation that he had, in company with some of his
+friends, celebrated a profane travesty of the
+mysteries. His enemies demurred. Their real reason was
+that the popular feeling ran
+strongly in favour of the accused. The reason which
+they alleged, putting it into the mouths of speakers
+whom they employed for the occasion, and on whom they
+enjoined a studied moderation of tone, was that the
+trial which Alcibiades demanded could not fail to delay
+the starting of the expedition and greatly diminish its
+chances of success. This argument prevailed and the
+trial was postponed. That this course was unjust, is
+manifest; we shall see, as we proceed, that its effects
+were fatal.
+</p>
+<p class="calibre15">
+It was midsummer when the start took place. The
+gathering place of the whole armament had been fixed at
+Corcyra, but the contingent that sailed from Athens was
+imposingly great and splendid. There were a hundred
+ships-of-war, sixty of which were equipped for naval
+action, while forty were to be used as transports. The
+heavy-armed soldiers numbered close upon 3000; 1500 of
+these were from the muster-roll of Athenian citizens;
+700 were of the poorer class, whose arms and armour
+were furnished by the state, and 750 were a contingent
+from Argos and Mantinea. (These last served for pay but
+were attracted by the personal influence of
+Alcibiades.) The force of cavalry was but weak, for it
+required only a single transport. But it was not only
+the number of the ships and the men,
+it was also the splendour of the equipment that was
+remarkable. Never before had the wealthy citizens of
+Athens shown their patriotism more conspicuously. They
+vied with each other in supplementing to the utmost out
+of their private means the state allowances, in
+providing gorgeous figure-heads for the ships, and
+attracting by extra pay strong rowers for what may be
+called the labour-oars.
+As it was the greatest expedition that Athens had ever
+sent out, and its aims the most ambitious, so it was
+the most splendidly equipped.
+</p>
+<p class="calibre15">
+At dawn on the appointed day, the whole population of
+the city, native and foreign, flocked down to the
+Peiræus, to see the embarkation of the troops. Many
+were parting with friends and kinsfolk; all were
+attracted by the magnificence of the spectacle. The
+embarkation concluded, a trumpet gave the signal for
+silence. A herald then pronounced the prayers that were
+customarily offered before setting out to sea, and the
+whole armament repeated the words after him. The crews,
+the soldiers, and the officers offered libations out of
+cups of gold and silver. The crowd on the shore joined
+in
+these acts of devotion. Then the pan or war-song was
+sung; finally the ships moved in line out of harbour.
+Once outside, they raced to Ægina.
+</p>
+<p class="calibre15">
+At Corcyra the force was reviewed and carefully
+organised in three divisions, with a special view to
+making it more easy to provision. Three swift ships
+were also sent in advance to arrange for such friendly
+accommodation as the Greek cities in Italy might be
+disposed to afford. The total numbers were now—134
+triremes and two fifty-oared ships from Corcyra (the 34
+being furnished by Chios and other independent allies);
+5100 heavy-armed soldiers; 480 archers (the 80 being
+from Crete); 700 slingers from Rhodes; 120 light-armed
+troops (exiles from Megara). There were also 30 store
+ships carrying cargoes of provisions, and with them
+bakers, masons and carpenters, and 100 smaller vessels
+attending on them, besides a larger number owned by
+traders, who followed the expedition in hopes of
+profit.
+</p>
+<p class="calibre15">
+The armament sailed across to the coast of Italy. It
+met with a discouraging reception. Not one of the
+cities would admit the newcomers within its walls, or
+allow them to buy food. Tarentum and Locri would not
+even allow them
+anchor off their shore, or supply themselves with
+water. Rhegium, the nearest point to Sicily, was
+somewhat more hospitable. It allowed them to buy food
+and to beach their ships. Here they received the
+unwelcome news that the reported wealth of Egesta was a
+fraud. A council of war followed. The opinions given
+were as follows:—
+</p>
+<p class="calibre15">
+NICIAS.—'Let us sail to Selinus. This is our main
+business. If Egesta can furnish pay for the whole
+armament, we will reconsider our action; if not, we
+will demand the pay for the sixty ships for which they
+asked, and, on receiving it, either compel or persuade
+Selinus to make restitution. That done, we will make a
+demonstration of our force. Should, however, Leontini
+by any chance give us any help or any new alliance
+present itself, then again we will consider the case.'
+</p>
+<p class="calibre15">
+ALCIBIADES.—'It would be disgraceful when we have
+collected such a force to go back without doing
+anything. Let us approach the other cities in Sicily,
+and see which will range themselves on our side. If we
+can secure Messené, it would be specially convenient
+both for our army and our fleet. Let us see also what
+we can do with the native tribes. If they are friendly,
+we shall be well supplied with provisions. This done,
+we should at once attack
+Syracuse. Of course, if Syracuse will restore Leontini,
+and Selinus come to terms with Egesta, the objects of
+our expedition will have been obtained.'
+</p>
+<p class="calibre15">
+LAMACHUS.—'My voice is for attacking Syracuse at once,
+while it is unprepared and panic-stricken. The first
+impression made by a great armament is the strongest;
+so we shall find it. If we go now, we shall find many
+of the citizens still outside the walls, and secure a
+great amount of property; and Megara, which is now
+deserted, and is close to Syracuse, will be a
+convenient headquarters with its town and harbour.'
+</p>
+<p class="calibre15">
+As the opinion of Lamachus found no favour with either
+of his colleagues, he withdrew it and voted with
+Alcibiades. There can be but little doubt that here a
+great opportunity was lost. It is highly probable that
+if the Athenians had attacked Syracuse at once they
+would have captured it, just as the allied armies in
+the Crimea would have been spared the long and tedious
+siege, costly both in lives and money, if they had
+marched on Sebastopol immediately after the victory of
+the Alma.
+</p>
+<p class="calibre15">
+Alcibiades now began to put the plan which he had
+proposed into operation. He sailed to Messené, but,
+though allowed to address the
+Assembly, he could not obtain anything beyond
+permission to buy provisions, etc., outside the walls.
+Naxos accepted the proposal of alliance; Catana was
+gained by an accident. While Alcibiades was addressing
+the Assembly, some soldiers broke open an unguarded
+postern gate, and entered the town. The leaders of the
+anti-Athenian party were glad to escape, and Catana
+became an ally. Camarina preferred to remain neutral.
+Meanwhile a squadron of ten ships had been sent into
+the great harbour of Syracuse. From the deck of one of
+them a herald proclaimed, 'All citizens of Leontini
+that are in Syracuse may come out without fear and join
+their friends and benefactors, the Athenians.'
+</p>
+<p class="calibre15">
+On the return of the fleet to Catana they found one of
+the state ships awaiting them with a summons to
+Alcibiades and some others to go back to Athens and
+stand their trial on charges of having profaned the
+mysteries and mutilated the Hermæ. The accused appeared
+to obey, and started, Alcibiades traveling with his
+friends in his own ship—the officers had been
+instructed not to arrest him. When they arrived at
+Thurii, they left the ship and went into hiding.
+Shortly after, Alcibiades betook himself to Sparta. He
+was condemned to death in his absence. 'I will show
+them that I am
+alive,' he remarked, when he heard of the sentence; and
+he set himself with all his powers and with a fatal
+success to make good his threat.
+</p>
+<p class="calibre15">
+Nothing more of importance was done during what
+remained of the usual season for campaigning.
+Fruitless attempts were made to gain over Himera and
+Hybla, and a native
+town, Hyccara by name, was captured, and its
+inhabitants sold as slaves, realising 120 talents.
+</p>
+
+</div>
+</div>
+<nav class="book-nav"><a href="p0006.html" class="prev-link">&larr; Previous</a><a href="../index.html" class="toc-link">Table of Contents</a><a href="p0008.html" class="next-link">Next &rarr;</a><span class="settings-slot"></span></nav>
+</div>
+<script src="../engine/generators/common.js"></script><script src="../engine/generators/library.js"></script><script src="../engine/generators/dark.js"></script><script src="../engine/generators/deep-sky-locked.js"></script><script src="../engine/generators/starfield.js"></script><script src="../engine/generators/solar-system.js"></script><script src="../engine/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Church%2C%20Alfred%20J/Sicilian%20Expedition/~archive/Sicilian%20Expedition%20-%20Church%2C%20Alfred%20J%20%281899%29_webbook/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script src="../reader_controls.js"></script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

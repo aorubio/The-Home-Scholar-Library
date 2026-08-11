@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html data-reader-size="m" data-reader-font="original" data-reader-images="on">
+<head>
+    <title>The End — Sicilian Expedition</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../images/r0004.css"/>
+<link rel="stylesheet" type="text/css" href="../images/r0003.css"/>
+  <script>
+(function () {
+  var html = document.documentElement;
+  try {
+    var raw = localStorage.getItem("webbook-reader-prefs-v1");
+    var prefs = raw ? JSON.parse(raw) : {};
+    html.setAttribute("data-reader-size", prefs.size || "m");
+    html.setAttribute("data-reader-font", prefs.font || "original");
+    html.setAttribute("data-reader-images", prefs.images || "on");
+    if (prefs.background && prefs.background !== "auto") {
+      html.setAttribute("data-bg-override", prefs.background);
+      var MODE_COLORS = {"library": {"reader": "#f3eadc", "ink": "#332f2d"}, "dark": {"reader": "#151b23", "ink": "#d9e0e8"}, "deep-sky": {"reader": "#101722", "ink": "#d9e0ea"}, "starfield": {"reader": "#080b12", "ink": "#d8dde7"}, "solar-system": {"reader": "#101722", "ink": "#d8dde7"}};
+      var c = MODE_COLORS[prefs.background];
+      if (c) {
+        html.style.setProperty("--hs-reader-bg", c.reader);
+        html.style.setProperty("--hs-reader-ink", c.ink);
+        html.style.setProperty("--hs-outer-bg", c.reader);
+      }
+    }
+  } catch (e) { /* ignore (private browsing, malformed storage, etc.) --
+                     page renders at its ordinary static/server defaults. */ }
+})();
+</script>
+  <link rel="stylesheet" type="text/css" href="../reader_theme.css"/>
+  <link rel="stylesheet" type="text/css" href="../reader_controls.css"/>
+  <style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+  <style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="calibre1">
+<div id="hs-background" aria-hidden="true"></div><div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="book-page" id="reader-page-start">
+
+<div class="reader-source-unit" data-reader-member="0">
+
+<div class="calibre2"><h1 class="calibre5"><span class="calibre12">The End</span></h1></div>
+<p class="calibre13">
+Escape might still have been possible, if all energy
+had not been beaten, so to speak, out of the defeated
+army. Once again the want of discipline which was so
+conspicuous in the citizen soldiers of Syracuse might
+have served the Athenians well. Hermocrates, who was
+evidently a man of remarkable ability, saw how
+inexpedient it was to allow an army which had done, and
+might do yet again, so much damage to Syracuse, to
+escape and renew the war from a position of greater
+advantage, say from the country of the independent
+native tribes. He strongly represented this view to the
+generals in command, urging them to occupy positions on
+the route which the Athenians would have to take in
+escaping. They thought that he was right, but were sure
+that the plan could not be carried out. They might
+order their troops to march, but the troops would
+certainly not obey. A great victory had been gained,
+finally delivering the city from a terrible danger
+which had been long hanging over it. The occasion was
+one that called for joyous celebration. It happened
+also to coincide with the great festival of Heracles,
+and the combined attraction to revelry was such as it
+would be useless to contend against. If the Athenian
+army had started that night, they might, for the time
+at least, have made their escape. But Hermocrates had
+recourse to a stratagem which, thanks to the credulity
+of Nicias, succeeded. He sent some friends of his own
+with a message to the Athenian generals, purporting to
+come from their correspondents within the city. This
+was to the effect that the Syracusan army had occupied
+some strong points on the route, and that the Athenians
+had better make proper preparations for overcoming this
+obstacle to their escape. Nicias, who had always been
+too ready to give credence to communications
+proceeding from this quarter, took the message as
+genuine, and acted upon it. The order to march, if
+indeed it had been given, was countermanded. Such
+delays, once permitted, are
+apt to be extended. The next day was also lost. There
+was indeed much to be done. It was only natural that
+the soldiers should try to select their most valuable
+and most portable property to take with them, and they
+had also to provision themselves for the march. At the
+same time the pitiable necessities of the situation
+tended to delay. The dead had to be left unburied; the
+sick and wounded had to be abandoned to the mercy, or
+rather the cruelty, of the enemy. Such resolutions, if
+time is once taken to think about them, are not carried
+out in a moment. If on the night of the battle in the
+Great Harbour all the able-bodied men had hurriedly
+crammed into their haversacks such food as came to
+their hands, and left everything else except their arms
+behind, the starting might have been effected in an
+hour. As it was, it did not take place till the morning
+of the second day after the battle.
+</p>
+<p class="calibre15">
+Thucydides draws a harrowing picture of the scene of
+departure. To leave the body of friend or comrade
+without due rites of sepulture was shocking to the best
+sentiments of the Greek. But when he had to desert the
+sick and the wounded, all of them bound to him by the
+associations of a common service,
+some of them friends, among them, it might well be, a
+kinsman, or a brother, even a father, or a son, it was
+a blow that struck deeper still. Those who were being
+left behind seemed to themselves to be losing a last
+hope of safety. It was not so in reality. The doom of
+such as were able to go was not less terrible or less
+instant than the doom of those who were compelled to
+remain. But these helpless ones did not think so, and
+they made piteous appeals to their more vigorous
+comrades not to desert them. Such as still possessed
+any feeble remnant of strength followed their departing
+friends as far as they could, and only dropped behind
+when they were utterly exhausted. If this was a
+deplorable spectacle, that of the army as it marched
+was not hopeful. A mixed multitude of forty thousand
+struggled along, loaded, many of them, to the utmost
+capacity of their strength with the property from which
+they could not bring themselves to part. These
+encumbrances diminished their fighting power. So also
+did the necessary burden of food which the horse
+soldiers and the heavy-armed were forced, contrary to
+habit, to carry; forced, because the slaves who usually
+were charged with this duty could not be trusted.
+It was a lamentable contrast between all this misery
+and the splendid, even boastful, promise with which,
+little more than two years before, the armament had
+sailed out of the Peiræus.
+</p>
+<p class="calibre15">
+All that was best and noblest in the character of
+Nicias made him rise to the occasion. He addressed the
+soldiers in words of sympathy, comfort and
+encouragement. 'Do not despair,' he said; 'men have
+been saved out of circumstances even worse than these.
+You see to what a condition my disease has reduced me;
+yet I, deprived though I am of all the advantages of
+prosperous fortune, and on a level with the meanest
+soldier, yet I still hope. And one of my reasons is
+this: I have never failed in my duty to the gods, and
+therefore I fear the dangers of the situation less than
+their magnitude might seem to warrant. Surely our
+enemies have had their full turn of good fortune, and
+we have suffered enough to have satisfied the jealous
+wrath of heaven. Remember, too—I speak to the
+heavy-armed—how many there are of you, and how
+excellent is your quality as soldiers. There is no
+city in this island that can repulse your attack, or
+drive you away if you are bent on remaining. Keep your
+firmness and order; let every man remember that the
+spot on
+which he stands is his fortress. We have but small
+store of food, therefore we must press on day and night
+till we reach the country of the friendly natives;
+friendly to us because they are bound to be enemies of
+Syracuse. We have sent a message to them, begging them
+to meet us with a supply of provisions. And now, bear
+yourselves like men if you would save your own lives
+and restore the falling fortunes of your country. There
+is no state to which you can flee for shelter; but the
+real essence of a state is not to be found in walls or
+ships, but in men.'
+</p>
+<p class="calibre15">
+The order of march was in squares, the heavy-armed
+enclosing the camp-followers and the rest of the
+multitude. Nicias led the van, Demosthenes the rear.
+The first incident was the passage of the Anapus. Here
+they found a force of Syracusans and allies posted, but
+were able to dislodge it and cross the river.
+Continuously attacked by the cavalry and skirmishers,
+they moved slowly, very slowly, on, the whole distance
+accomplished in the day being but five miles. Starting
+early next day they marched about two miles and a half.
+They had now but little food left, and as their march
+would be for some time to come over a country without
+springs
+or streams, they were obliged to provide themselves
+with water. While they were searching for these
+necessaries, the Syracusans occupied in force a pass
+through which they would have to make their way. The
+road here was over a steep hill, with precipices on
+either side. That day the Athenians made no further
+advance. On the morning of the third they attempted to
+move forward, but were so harassed by the cavalry and
+the light-armed troops of the enemy that after a day of
+incessant fighting they could do nothing but return to
+their encampment of the night before. On the fourth day
+they did succeed in, at least, approaching the
+fortified pass mentioned above. But they found a
+Syracusan force, many files deep, drawn up in front of
+it. It was in vain that they tried to force their way.
+The heavy-armed of the enemy formed a solid obstacle in
+their front, and they were incessantly harassed by the
+missiles showered upon them from the javelin-throwers,
+who occupied the rising ground on either side. Frequent
+thunderstorms completed their confusion and dismay. Two
+years before, as Grote remarks, they had viewed this
+phenomenon with indifference. Now, such
+was their depression, they regarded it as a sign of the
+anger of heaven. They defeated, indeed, an attempt to
+block their retreat, and made their way back again to
+the level ground on which they had encamped. The next
+day, the fifth, they again attempted to march, but
+suffered so much from the incessant attacks of the
+enemy that they could not accomplish even a mile, and
+returned to their encampment.
+</p>
+<p class="calibre15">
+That night Nicias and Demosthenes resolved on a change
+of plan. Their purpose hitherto had been to reach the
+interior, where they hoped to get help from the
+independent native tribes. They now altered the
+direction of their march, which was to be the southern
+coast of the island, to the neighbourhood of Camarina
+and Gela. Employing the familiar device of leaving
+their camp fires burning, they started that same night.
+The start was not made without much panic and
+disturbance. The van, under Nicias, was the more
+successful of the two divisions of the army in keeping
+together and in making progress. At dawn they reached
+the sea. Arrived at the river Cacyparis they found the
+ford staked and guarded by some Syracusan troops, but
+forced their way over, and reached another stream named
+the Erineus. Nicias's
+division had now got a start of about six miles over
+that of Demosthenes'. The latter had been overtaken by
+the Syracusans, who had started in pursuit of the
+Athenian army immediately on discovering the change of
+route. (Their first impulse had been to accuse Gylippus
+of a treacherous understanding with the enemy.) The
+Athenians turned to defend themselves. When they did
+so, a detachment of the enemy hurried forward and got
+between the two divisions of the retreating army.
+Demosthenes and his troops found what seemed a
+temporary shelter in an orchard of olive trees
+surrounded by a wall.  But the spot afforded no real
+protection, for the light-armed troops of the enemy
+occupied the walls and poured showers of missiles into
+the crowded ranks. When they sought to leave the
+enclosure, they found the exit strongly guarded. Late
+in the day Gylippus and his colleagues proclaimed that
+any islander in the Athenian army surrendering himself
+would be allowed to go free. Some few accepted the
+offer. Afterwards a general capitulation took place,
+the terms being that no prisoners should be executed or
+done to death by intolerable conditions of imprisonment
+or by starvation. Six thousand surrendered on these
+conditions. The prisoners gave up their
+money, of which they still had so much as to fill the
+hollows of four shields, and were escorted back to the
+city.
+</p>
+<p class="calibre15">
+The next day the Syracusan forces came up with Nicias,
+and summoned him to surrender on the terms which
+Demosthenes had accepted. He refused to believe what
+they told him, but sending, by permission, a horseman
+to ascertain the fact, found that it was true. He then
+offered, on behalf of Athens, to pay the whole expense
+of the war, and to leave, as a guarantee for payment, a
+number of hostages—one for each talent of the
+indemnity. These terms were refused, and an attack was
+commenced and continued till evening. The fugitives
+endeavoured to renew their retreat during the night,
+but, finding that the enemy had discovered their
+purpose, they abandoned it. Three hundred men, however,
+neglecting the order to stop, forced their way through
+and escaped. The next day at dawn Nicias altered his
+route somewhat so as to reach the river Assinarus. The
+thirst of the troops was such that it had to be
+satisfied at any cost. The river, once reached, became
+a scene of frightful confusion. The men rushed
+pell-mell into the stream, heedless of everything, so
+that they could get to the water. Many were slain by
+the enemy, who followed them even into the river; some
+were killed by the spears of their own comrades,
+against which they fell or were pushed; others were
+carried down by the stream. Even when the water was
+fouled with blood and dirt, the wretched fugitives
+still sought to relieve their thirst with, and even
+fought with each other for, the nauseous draught.
+Nothing was left but to surrender. Nicias gave himself
+up to Gylippus, begging that his helpless soldiers
+might be spared. The Spartan general issued an order
+that the massacre should cease, but many were slain
+before it reached the Syracusan troops. Few of the
+beaten army escaped, the 300 mentioned above being soon
+captured. Of Nicias's division only a thousand
+prisoners were saved for the state, the greater part
+were seized by private persons and sold for their own
+profit.
+</p>
+<p class="calibre15">
+It is not easy to estimate the Athenian loss in killed
+and wounded—the two words mean much the same in ancient
+warfare, where we are thinking of the defeated side.
+The state secured 7000 prisoners, private persons,
+perhaps, 3000 or 4000 more (chiefly, it would seem,
+from the detachment of Nicias). Few of those who
+remained with the main bodies till the end escaped, but
+many of those who had straggled
+away on the march were more fortunate. It is not
+improbable that half of the 40,000 perished during the
+six miserable days of this most disastrous retreat.
+</p>
+<p class="calibre15">
+The fate of the survivors was wretched in the extreme.
+Gylippus made an effort to save the lives of the two
+captive generals. He would dearly have liked, we may
+well imagine, to exhibit at Sparta the two most
+distinguished of Athenian soldiers—one notorious as
+Sparta's friend, the other as her enemy. But this was
+not permitted. The Syracusans insisted on their
+execution, and all that the liberal-minded Spartan
+could do was to give his prisoners an opportunity of
+putting an end to their own lives. The other prisoners
+were confined in certain stone quarries excavated in
+the southern cliffs of the Epipolæ. One pound of
+wheaten bread and half-a-pint of water was all the
+provision furnished to them. There they were kept for
+seventy days, and there they died in crowds. Released
+when the place became an intolerable nuisance and
+danger to the city, the survivors were sold for slaves.
+A few—only, we may well believe, a very few—got back to
+Athens. Some of them, we are told, won the favour of
+their masters by reciting the verses of Euripides, a
+favourite poet among cultured
+Sicilians.	This is the one bright spot in a story
+of unequalled gloom.
+</p>
+<p class="calibre15">
+Plutarch, who writes his Lives of Illustrious Men in
+pairs, gives a parallel to Nicias in Crassus, the third
+member of the so-called First Triumvirate. Some points
+of resemblance are sufficiently obvious. Both led
+invading armies; both had some reputation for military
+skill; both showed themselves incompetent, and both
+perished miserably, involving thousands of their
+countrymen in their fall. But the difference between
+the two is great. Crassus was largely responsible for a
+war which he had wantonly provoked; Nicias did his best
+to stop the fatal expedition, but used a method which
+had the effect of committing him hopelessly to it. As
+to private worth there is no comparison. Nicias is the
+most blameless as he is the most pathetic figure in the
+long list of Greek statesmen and soldiers.
+</p>
+<p class="calibre15">
+After remarking that the struggle at Syracuse involved
+a variety and number of combatants, surpassed only by
+the great catalogue of tribes and states that took part
+in the Peloponnesian war itself, Thucydides goes on to
+say:—
+</p>
+<p class="calibre15">
+'These many races that came to share in the conquest or
+in the defence of Syracuse ranged themselves on one
+side or the other, not from the sense of right or
+obligation of kinship, but from the accident of private
+interest or the constraint of superior force. That the
+Athenians, being of Ionic race, should attack Syracuse,
+a Dorian state, was natural enough, and with the
+Athenians, as using the same speech and institutions,
+came the men of Lemnos, of Imbros, of Ægina (as it then
+was), and of Histiæa in Eubœa, all of them Athenian
+colonists. Of the other combatants on this side, some
+were subjects, others self-governing allies, and
+others, again, mercenaries. Among the subjects and
+tributaries must be reckoned the men of the Eubœan
+cities, Eretria, Chalcis, Styria and Carystus;
+islanders from Ceos, Andros and Tenos; Ionians from
+Miletus, Samos and Chios. The Chians, however, were not
+tributaries; they furnished ships, and served as
+self-governing allies. Generally speaking, these were
+Ionic (with the exception of Carystus, which is Æolic)
+and of Athenian
+origin. Subjects they were, it is true, and acting
+under constraint, but still Ionians, fighting against a
+Dorian foe. With these were Æolic contingents from
+Methymna (which furnished ships but did not pay
+tribute), from Tenedos and from Ænos, tributary cities
+both of them. It was under constraint that these Æolic
+peoples fought against their own founders, the Æolic
+state of Bœotia, which was on the side of Syracuse. One
+Bœotian city, however, Platæa, ranged itself, in
+pursuance of an ancient feud, against its Bœotian
+kinsmen. Then there were two Dorian contingents, the
+men of Rhodes and of Cythera. The Cythereans were
+Lacedæmonian colonists, but bore arms on the Athenian
+side against the Lacedæmonians serving with Gylippus;
+the Rhodians, though Argive by descent, were now
+constrained to fight against the Dorian state of
+Syracuse, and against their own colonists of Gela, who
+were serving in the Syracusan ranks. With Athens also
+were contingents from the islands near the
+Peloponnese, Cephalonia and Zacynthus, both independent
+states, but practically compelled so to act by their
+position as islanders, in view of the Athenian command
+of the sea. With the Corcyreans it was otherwise.
+Dorians as they were, and not only Dorians but
+Corinthians, they openly bore arms against their
+mother-city of Corinth and their kinsfolk of Syracuse.
+They made constraint a pretext, but their action was
+really voluntary, for they hated the Corinthians. The
+Messenians, as the dwellers in Naupactus were then
+called, and from Pylos, which was then held by Athens,
+were enlisted on the Athenian side; so was a small
+company of exiles from Megara, who thus found
+themselves opposed to fellow Megarians in the people of
+Selinus. As to the other Dorian allies, their service
+was more entirely voluntary. There
+were the Argives, for instance; they were allies of
+Athens, it is true, but their real motive was either
+their enmity to Sparta or considerations of private
+gain. So, Dorians as they were, they fought, side by
+side with Ionians, against a Dorian antagonist. The
+Mantineans and the other Arcadian mercenaries fought,
+as is their habit, against those whom they were
+instructed for the time to regard as enemies, and were
+ready, on this occasion, so to regard the, other
+Arcadians who were in the pay of Corinth. It was for
+hire also that the Cretans and Ætolians served. The
+Cretans found themselves paid to fight against the men
+of Rhodes, a state associated with their own in the
+founding of Gela. As for the Acarnanians, some indeed
+served for pay, but most of them were brought by their
+regard for Demosthenes and their goodwill to Athens. So
+much for the nations that border the Ionian Sea. Of the
+Italian Greeks came the men of Thurii and Metapontum,
+acting under the necessities of domestic revolution. Of
+the Sicilian Greeks there were the inhabitants of Naxos
+and Catana. The barbarians of Egesta also were there—it
+was at their invitation that the expedition had
+come—and the majority of the Sicel tribes. From outside
+Sicily there were some Etrurians, always on bad terms
+with Syracuse, and some Iapygian mercenaries. These,
+then, were the people that fought for Athens.
+</p>
+<p class="calibre15">
+On the side of Syracuse was Camarina, its next
+neighbour, Gela, the nearest state beyond Camarina,
+and—Agrigentum, the next in order, being
+neutral—Selinus. These cities are on that coast of the
+island that faces Africa. From the coast facing the
+Etrurian Sea came the men of Himera, the only Greek
+city and only ally of Syracuse in that region. All
+these cities were Dorian, and all independent. Of the
+native Sicels they were but the few who did not ally
+themselves
+with the Athenian invader. Of the Greeks from outside
+Sicily there were the Lacedæmonians, who supplied a
+Spartan general and troops, both slave and freedmen.
+Corinth was the only state that furnished both a fleet
+and an army. With these came Leucadians and Ambraciots;
+Corinth also paid some Arcadian mercenaries, and
+compelled some natives of Sicyon to serve. From Greece
+outside the Peloponnese came the Bœotians.'
+</p>
+<p class="calibre15">
+It will be observed that the Syracusan catalogue is
+much shorter than the Athenian. But the historian tells
+us that any inferiority in this respect was made up by
+the wealth and populousness of the Sicilian cities.
+</p>
+</div>
+</div>
+<nav class="book-nav"><a href="p0014.html" class="prev-link">&larr; Previous</a><a href="../index.html" class="toc-link">Table of Contents</a><span class="next-slot" aria-hidden="true"></span><span class="settings-slot"></span></nav>
+</div>
+<script src="../engine/generators/common.js"></script><script src="../engine/generators/library.js"></script><script src="../engine/generators/dark.js"></script><script src="../engine/generators/deep-sky-locked.js"></script><script src="../engine/generators/starfield.js"></script><script src="../engine/generators/solar-system.js"></script><script src="../engine/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Church%2C%20Alfred%20J/Sicilian%20Expedition/~archive/Sicilian%20Expedition%20-%20Church%2C%20Alfred%20J%20%281899%29_webbook/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script src="../reader_controls.js"></script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

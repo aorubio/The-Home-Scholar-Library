@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vol 09. Philosopher Kings - Home Scholar Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/The-Home-Scholar-Library/assets/css/site.css">
+<style>
+
+
+  /* font-family reads the shared --site-font custom property (config.
+     SITE_FONT_FAMILY) -- affects this shared chrome (breadcrumb,
+     general body text) on BOTH pages that use _SHARED_STYLE.
+     Deliberately does NOT touch fbundle_viewer_live.html's own quote-
+     card typography (.fbundle-text-block/.fbundle-mark etc., Iowan Old
+     Style/Palatino/Georgia) -- those set their own font-family at
+     higher specificity and stay locked to that already-completed
+     design regardless of this value, same "leave the deliberate
+     typography alone" rule the home page's hero gets. */
+  body { font-family: var(--site-font, system-ui, sans-serif); max-width: 60rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
+  .breadcrumb { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .breadcrumb a { color: var(--muted); }
+  .top-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .top-row-left { display: flex; align-items: center; gap: 12px; }
+  h1 { margin-top: 0; }
+  .btn { display: inline-block; padding: 8px 16px; border-radius: 6px; background: var(--accent); color: #fff;
+         text-decoration: none; font-size: 0.9rem; border: none; cursor: pointer; }
+  .btn:hover { filter: brightness(0.9); }
+  .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .btn.secondary { background: var(--card-bg); color: var(--fg); border: 1px solid var(--border); }
+  .btn.secondary:hover { filter: none; background: var(--border); }
+
+  /* CRITICAL: every hidden-toggled overlay/panel on both viewer pages
+     (gallery's #preview-overlay/.gallery-slideshow/.slideshow-nav-group,
+     fbundle's .fbundle-author-row/.fbundle-thumbs) also sets its own
+     `display:` rule for when it's SHOWN -- which ties in specificity
+     with the browser's built-in `[hidden]{display:none}` rule, and
+     author CSS loaded after the UA stylesheet wins that tie. This is
+     the actual, full explanation for the original bug report, "gallery
+     page opens with 'Preparing download...' visible": that one rule
+     previously lived only in PREVIEW_WIDGET_STYLE (catalog_renderer's
+     node-page template) -- it was never in THIS shared style, which is
+     the only stylesheet _page_shell()-based pages (gallery, fbundle)
+     actually use, so the gallery page's own #zip-progress element --
+     `display: flex` + `hidden` in the markup -- was visible from first
+     paint on every gallery page the whole time. !important beats the
+     tie unconditionally, so this belongs here, not just in the module
+     that happened to need it first. (#zip-progress itself no longer
+     exists -- build_design.md §8.2.6, resolved 2026-09-11, retired the
+     client-side JSZip "download all" it belonged to, see pipeline/
+     gallery_zips.py and pipeline/templates/gallery_viewer.html -- but
+     this rule stays load-bearing for every other hidden-toggled element
+     still listed above, so the history here is kept, not deleted.) */
+  [hidden] { display: none !important; }
+
+  :root { --bg: #fdfdfc; --fg: #222; --muted: #666; --card-bg: #f7f7f5; --border: #ddd; --accent: #1a5fb4; }
+  [data-theme="dark"] { --bg: #16171a; --fg: #e8e8e6; --muted: #9a9a96; --card-bg: #212226; --border: #3a3b3f; --accent: #6ea3e0; }
+  [data-theme="library"] { --bg: #f4ecd8; --fg: #3b2f22; --muted: #7a6a55; --card-bg: #ece0c4; --border: #cdbb92; --accent: #8c3b2e; }
+  html, body { background: var(--bg); color: var(--fg); }
+  a { color: var(--accent); }
+
+
+
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+
+
+
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}
+
+  /* Background System plugin (pipeline.backgrounds), wired into this page
+     new this pass (library-owner instruction: fbundle pages should get
+     the site's "library" decorative background, same as the library
+     index/every node page, instead of nothing at all -- see
+     pipeline.backgrounds' own module docstring, which had left fbundle/
+     gallery pages out of that wiring on purpose until this request).
+     This page keeps its own fixed, fit-to-viewport flex layout (top-row
+     + fbundle-bundle, sized in vh units down to the pixel) rather than
+     the generic scrolling "reading card" every other Background-wired
+     page uses -- so the background style block's own .hs-content rule (the
+     padded/rounded/shadowed card look) is neutralized back to a plain,
+     transparent flex wrapper here, keeping ONLY the position:relative;
+     z-index:1 it exists for in the first place: raising this page's real
+     content above the fixed, z-index:0 #hs-background layer so the
+     decorative artwork paints BEHIND it, not over it (see
+     pipeline.backgrounds.render_tokens()'s own comment on why that rule
+     is needed at all). Turned into a flex container filling the body
+     exactly the way .top-row/.fbundle-bundle used to fill body directly,
+     so their own flex:0 0 auto / flex:1 1 auto rules keep working
+     unchanged one level down. */
+  .hs-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    /* BUG FIX (fbundle dark-mode text unreadable, 2026-09-12): the
+       comment below says this block neutralizes the background style's
+       own .hs-content rule back to "keeping ONLY the position:relative;
+       z-index:1 it exists for in the first place" -- but it only ever
+       reset background/padding/border-radius/box-shadow, never `color`.
+       pipeline.backgrounds._card_style() sets `.hs-content { color:
+       var(--hs-reader-ink); }`, and --hs-reader-ink is baked from
+       ENGINE_COLORS for THIS page's own server-resolved decorative-
+       background mode ("library" for every fbundle page, per
+       render_fbundle_page()'s data_type="library" -- a completely
+       different concept from THIS toggle's light/dark theme, see
+       _theme_toggle_assets()'s own docstring) -- it never changes when
+       the theme toggle below switches to "dark", so it was left
+       cascading down, uninterrupted, into every element here that
+       doesn't set its own `color` (.fbundle-text included, via ordinary
+       inheritance). In library mode --hs-reader-ink (#332f2d) happens to
+       look close enough to this page's real --fg (#2E2416) that the bug
+       was invisible; in dark mode the card background correctly goes
+       near-black via --card-bg but the text stayed pinned at that same
+       dark #332f2d -- dark text on a near-black card, unreadable, which
+       is what actually produced the "neither library nor dark, like a
+       filter" look. Anchoring color to THIS page's own --fg (already
+       correctly switched by the toggle below, and already the one
+       source of truth every other element here inherits from) removes
+       the leak instead of relying on --hs-reader-ink ever being kept in
+       sync with it. */
+    color: var(--fg);
+  }
+
+  /* FIX (BUGLIST 2026-09-11, "visual interference in the fbundle text
+     box"): this page's theme toggle (pipeline.viewers._theme_toggle_assets,
+     called from render_fbundle_page() with default_theme="library") sets
+     data-theme="library" -- the identifier was renamed from "sepia" to
+     "library" so the CSS/JS/button label would all agree (see that
+     function's own docstring), but this template's selector was never
+     updated to match. With no rule matching data-theme="library", every
+     token below (--bg/--card-bg/--fg/--muted/--accent/--border/--shadow)
+     was undefined except --mark-opacity, which made .fbundle-card's
+     background/border/box-shadow and .fbundle-text-fade's gradient all
+     invalid-at-computed-value-time (falling back to transparent/none) --
+     the quote card rendered with no real background or border, and the
+     fade gradient (which needs var(--card-bg) as its end color) had
+     nothing real to fade INTO, showing whatever happened to be visible
+     underneath instead. Renaming this selector to match what the JS
+     actually sets is the fix -- default (":root") already carries no
+     color tokens of its own, so a library owner should never see this
+     theme render unstyled again regardless of which one the toggle is on. */
+  :root { --mark-opacity: 0.24; }
+  [data-theme="library"] { --bg: #ECE0C4; --card-bg: #F8F1DE; --fg: #2E2416; --muted: #6E5D42; --accent: #9C6B2E; --border: #D9C69B; --shadow: rgba(46,36,22,0.16); --mark-opacity: 0.24; }
+  [data-theme="dark"] { --bg: #16130D; --card-bg: #221C13; --fg: #EFE3C7; --muted: #A7967A; --accent: #D6A64C; --border: #392F1F; --shadow: rgba(0,0,0,0.45); --mark-opacity: 0.30; }
+
+  html, body { height: 100%; }
+  body { margin: 0; padding: 20px; max-width: none; display: flex; flex-direction: column;
+          overflow: hidden; box-sizing: border-box;
+          font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+          transition: background 0.35s ease, color 0.35s ease; }
+  .top-row { flex: 0 0 auto; }
+
+  .fbundle-bundle { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;
+                      max-width: 700px; width: 100%; margin: 0 auto; } /* was 560px */
+
+  .fbundle-card { position: relative; flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;
+                    background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px;
+                    overflow: hidden; box-shadow: 0 10px 30px var(--shadow); }
+
+  .fbundle-text-block { position: relative; flex: 0 0 auto; padding: 32px 36px 20px; box-sizing: border-box; }
+  .fbundle-mark { position: absolute; top: -4px; left: 16px; font-size: 64px; line-height: 1;
+                    color: var(--accent); opacity: var(--mark-opacity); font-family: Georgia, serif;
+                    pointer-events: none; user-select: none; }
+
+  /* display: flow-root gives this wrapper its own Block Formatting Context.
+     Without it, .fbundle-text's bottom margin (margin: 0 0 16px) collapses
+     straight through this wrapper's bottom edge instead of being contained
+     inside it, so the wrapper's measured height comes up 16px short of
+     "text + its own margin." Since .fbundle-text-fade is `position: absolute;
+     bottom: 16px;` *inside this wrapper*, that shortfall drags the fade band
+     up and away from the text's true bottom edge -- landing mid-text instead
+     of hugging the last line, which is what produced the "gradient/film"
+     artifact appearing to slide through the quote text near the scrollbar. */
+  .fbundle-quote-wrap { position: relative; display: flow-root; }
+  .fbundle-text { position: relative; font-size: 19px; line-height: 1.55; font-style: italic;
+                    white-space: pre-line; margin: 0 0 16px; max-height: 24vh; overflow-y: auto;
+                    scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+  .fbundle-text::-webkit-scrollbar { width: 6px; }
+  .fbundle-text::-webkit-scrollbar-track { background: transparent; }
+  .fbundle-text::-webkit-scrollbar-thumb { background: var(--accent); opacity: 0.4; border-radius: 999px; }
+  .fbundle-text-fade { position: absolute; left: 0; right: 6px; bottom: 16px; height: 36px;
+                         background: linear-gradient(to bottom, transparent, var(--card-bg));
+                         pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
+  .fbundle-quote-wrap.overflowing .fbundle-text-fade { opacity: 1; }
+
+  .fbundle-author-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+  .fbundle-author-rule { flex: 1 1 auto; height: 1px; background: var(--border); }
+  .fbundle-author { flex: 0 0 auto; font-style: normal; font-size: 13px; letter-spacing: 0.04em;
+                      color: var(--muted); white-space: nowrap; }
+
+  .fbundle-image-wrap { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center;
+                          background: var(--bg); border-top: 1px solid var(--border); }
+  .fbundle-image { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+
+  /* Layout swap (new, 2026-09-12): purely ergonomic/visual toggle,
+     mirrors the same feature on the offline/standalone viewer
+     (templates/fbundle_viewer.html) -- lets the image sit on top and
+     the quote text underneath instead of the default text-on-top/
+     image-on-bottom stacking. .fbundle-card is already a column
+     flexbox with .fbundle-text-block then .fbundle-image-wrap as its
+     two children in that fixed DOM order, so reversing the visual
+     stacking is just flex-direction: column-reverse -- no DOM
+     reshuffling needed (unlike the offline viewer, this page's markup
+     is static, so the toggle script below just flips this class, no
+     re-render). The one thing that DOES need to move is
+     .fbundle-image-wrap's own border: it's border-top so it reads as
+     "top of the image, bottom of the text" in the default order;
+     reversed, that same seam is the image's BOTTOM edge, so this swaps
+     it there instead of leaving a stray line at the outer top edge of
+     .fbundle-card. */
+  .fbundle-card.swapped { flex-direction: column-reverse; }
+  .fbundle-card.swapped .fbundle-image-wrap { border-top: none; border-bottom: 1px solid var(--border); }
+
+  /* Multi-image row (design_2 §2.3, revived compact) -- only shown for
+     a pair with more than one image (JS sets `hidden`), slim (half the
+     control bar's own height) since real estate here is tight; space
+     for it comes out of the quote box above (24vh, down from 32vh) per
+     that tradeoff. Horizontal-scrolling filmstrip, not a wrap, so an
+     unusually large image count (design_2: ~2-10 typical) never grows
+     the row's height -- it only ever gets wider than the viewport,
+     which the scrollbar/scroll handles. */
+  .fbundle-thumbs { flex: 0 0 auto; display: flex; gap: 4px; overflow-x: auto; overflow-y: hidden;
+                      padding: 2px 2px 6px; margin-top: 8px;
+                      scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+  .fbundle-thumbs::-webkit-scrollbar { height: 5px; }
+  .fbundle-thumbs::-webkit-scrollbar-track { background: transparent; }
+  .fbundle-thumbs::-webkit-scrollbar-thumb { background: var(--accent); opacity: 0.4; border-radius: 999px; }
+  .fbundle-thumb-tile { flex: 0 0 auto; height: 22px;
+                          width: 22px; border: none; padding: 0;
+                          cursor: pointer; border-radius: 3px; overflow: hidden; opacity: 0.6; }
+  .fbundle-thumb-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .fbundle-thumb-tile.active { opacity: 1; outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .fbundle-empty { text-align: center; color: var(--muted); font-style: italic; padding: 80px 0; }
+
+  /* Segmented control bar -- Prev, count, Next, Random, Mode, in that
+     exact order (matches the standalone after direct iteration on this
+     point). flex: 0 0 auto keeps it pinned at natural size so it can
+     never be pushed below the fold; body's own overflow:hidden means
+     only .fbundle-text scrolls, never the page. */
+  .fbundle-controls { flex: 0 0 auto; display: flex; align-items: stretch; justify-content: center; gap: 1px;
+                        margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+                        background: var(--border); }
+  .fbundle-controls button, .fbundle-controls a, .fbundle-controls .fbundle-count {
+    flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 8px;
+    border: none; background: var(--card-bg); color: var(--muted); text-decoration: none;
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 13px; letter-spacing: 0.03em;
+  }
+  .fbundle-controls button, .fbundle-controls a { cursor: pointer; transition: background 0.2s ease, color 0.2s ease; }
+  .fbundle-controls button:hover, .fbundle-controls a:hover { background: var(--bg); color: var(--fg); }
+  .fbundle-controls .fbundle-count { flex: 0 0 auto; min-width: 56px; white-space: nowrap; }
+  .fbundle-controls svg { width: 16px; height: 16px; stroke: currentColor; fill: none; flex: 0 0 auto; }
+  .fbundle-controls .label { display: none; }
+  @media (min-width: 700px) { .fbundle-controls .label { display: inline; } } /* was 560px */
+
+  /* Fullscreen mode (new, 2026-09-12; width-cap removal reverted
+     2026-09-12): gives the reading card MORE VERTICAL ROOM to expand
+     into -- both a real Fullscreen API request on <html> (see the
+     script below) AND, whether or not the browser grants that (some
+     embeds/iframes refuse it outright), this class drops every bit of
+     chrome ABOVE the card that isn't the card itself: .top-row
+     (breadcrumb + theme toggle) and body's own 20px padding. The
+     control bar (Prev/count/Next/Random/Download/Fullscreen) stays put
+     -- it's the only way back out short of Esc, and it's already
+     flex:0 0 auto so it costs the same sliver of height it always did.
+
+     Deliberately does NOT touch .fbundle-bundle's own max-width: 700px
+     -- an earlier version of this rule also set max-width: none here,
+     which stretched the card edge-to-edge across the whole screen
+     (border-radius/shadow vanishing at 0 margin, the empty image area
+     ballooning) instead of just letting the SAME card grow taller into
+     the space .top-row/padding freed up. "The viewer must remain
+     intact" -- same card, same proportions, just more headroom -- so
+     the width cap stays exactly as it is outside fullscreen too. */
+  body.fbundle-fullscreen { padding: 0; }
+  body.fbundle-fullscreen .top-row { display: none; }
+
+  /* Status line (spinner/error) -- flex: 0 0 auto so it never grows,
+     contributes ~0 height while hidden (the default state). */
+  .fbundle-status { flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+                      gap: 10px; margin-top: 8px; font-size: 0.85rem; color: var(--muted); }
+  .fbundle-error button { margin-left: 6px; }
+
+</style>
+</head>
+<body>
+<div id="hs-background" aria-hidden="true"></div>
+<div class="hs-content">
+<div class="top-row">
+  <div class="top-row-left"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><div class="breadcrumb"><a href="/The-Home-Scholar-Library/library/">Home Scholar Library</a> / <a href="/The-Home-Scholar-Library/library/Facebook%20Pages/">Facebook Pages</a> / <a href="/The-Home-Scholar-Library/library/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/">Philosopher Kings - 14 Vols</a> / <a href="/The-Home-Scholar-Library/library/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/">Vol 09. Philosopher Kings</a></div></div>
+  <button type="button" class="btn secondary" id="theme-toggle" data-default="library" data-alt="dark" data-to-alt-label="🌙 Dark mode" data-to-default-label="📚 Library mode"><span id="theme-toggle-label">🌙 Dark mode</span></button>
+</div>
+
+<div class="fbundle-bundle" id="fbundle-bundle">
+  <div class="fbundle-card">
+    <div class="fbundle-text-block">
+      <div class="fbundle-mark">“</div>
+      <div class="fbundle-quote-wrap" id="fb-quote-wrap">
+        <div class="fbundle-text" id="fb-text">Loading…</div>
+        <div class="fbundle-text-fade"></div>
+      </div>
+      <div class="fbundle-author-row" id="fb-author-row" hidden>
+        <div class="fbundle-author-rule"></div>
+        <div class="fbundle-author" id="fb-author"></div>
+      </div>
+    </div>
+    <div class="fbundle-image-wrap"><img id="fb-image" class="fbundle-image" src="" alt=""></div>
+  </div>
+  <div class="fbundle-thumbs" id="fb-thumbs" hidden></div>
+  <div class="fbundle-controls">
+    <button type="button" id="fb-prev"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg><span class="label">Prev</span></button>
+    <div class="fbundle-count" id="fb-count"></div>
+    <button type="button" id="fb-next"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"></path></svg><span class="label">Next</span></button>
+    <button type="button" id="fb-random"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg><span class="label">Random</span></button>
+    <button type="button" id="fb-fullscreen"></button>
+    <button type="button" id="fb-swap"></button>
+    <a id="fb-download" href="https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip" download><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 21h14"></path></svg><span class="label">Download</span></a>
+  </div>
+  <div class="fbundle-status">
+    <span id="fb-spinner" hidden>Loading…</span>
+    <span id="fb-error" class="fbundle-error" hidden>Couldn't load this one.
+      <button type="button" id="fb-retry">Retry</button>
+    </span>
+  </div>
+</div>
+</div>
+
+
+<script>
+(function() {
+  var PAIRS = [{"enumeration": "0381", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20article.THE%20WAR%20OF%20THE%20THREE%20HUMANISMS%20IRVING%20BABBITT%20AND%20THE%20RECOVERY.txt", "text_name": "0381 article.THE WAR OF THE THREE HUMANISMS IRVING BABBITT AND THE RECOVERY.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20gettyimages-464443639-1024x1024.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20Louis_david%2C_il_giuramento_degli_orazi%2C_1784%2C_04.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20maxresdefault%20%283%29.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20pinelli011a%20Strijd%20tussen%20de%20Horatii%20en%20de%20Curatii%2C%20Bartolomeo%20Pinelli%2C.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20Rehearsal_Horatii.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20Study_for_the_Oath_of_the_Horatii_the_Three_Horatii.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20The-Oath-Of-The-Horatii%2C-1791.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0381%20the-oath-of-the-horatii-detail-of-the-horatii-jacques-louis-david.jpg"]}, {"enumeration": "0382", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0382%20nietzche.All%20philosophers%20have%20the%20common%20defect%20that%20they%20start%20from.txt", "text_name": "0382 nietzche.All philosophers have the common defect that they start from.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0382%20nietzche.All%20philosophers%20have%20the%20common%20defect%20that%20they%20start%20from.jpg"]}, {"enumeration": "0383", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0383%200347%20There%20is%20no%20spiritual%20victory%20which%20need%20not%20be%20won%20anew%20each%20day.txt", "text_name": "0383 0347 There is no spiritual victory which need not be won anew each day.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0383%20Hercules%20fighting%20Archelaus.jpg"]}, {"enumeration": "0384", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0384%20What%20we%20need%20to%20plumb%20is%20the%20ignorance%20of%20the%20educated%20and%20the.txt", "text_name": "0384 What we need to plumb is the ignorance of the educated and the.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0384%20anon-a-school-of-monkeys.jpg"]}, {"enumeration": "0385", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0385%20We%20are%20so%20accustomed%20to%20disguising%20ourselves.txt", "text_name": "0385 We are so accustomed to disguising ourselves.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0385%200118.jpg"]}, {"enumeration": "0386", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0386%20Accordingly%20I%20went%20to%20one%20who%20had%20the%20reputation%20of%20wisdom.txt", "text_name": "0386 Accordingly I went to one who had the reputation of wisdom.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0386%20xwxrvtrsxyvnr7hqdpd4.jpg"]}, {"enumeration": "0387", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%20film.Moliere%202007.txt", "text_name": "0387 film.Moliere 2007.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%2023a17c4d6cd6525a60d89db415fcdacb.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%20227.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%20247.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%20253.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%202007_moliere_013.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%202016_PAR_12702_0057_000%28nicolas-andre_monsiau_moliere_lisant_sa_comedie.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%201541566.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%20film.Moliere%202007.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%20Moliere-2.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%20moliere.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0387%20moliere_1.jpg"]}, {"enumeration": "0388", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0388%20mises.Anarchism%20misunderstands%20the%20real%20nature%20of%20man.%20It%20would%20be.txt", "text_name": "0388 mises.Anarchism misunderstands the real nature of man. It would be.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0388%20publicdomainq-0005419nlxjdy.jpg"]}, {"enumeration": "0389", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0389%20The%20Sleep%20of%20Reason%20Produces%20Monsters.txt", "text_name": "0389 The Sleep of Reason Produces Monsters.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0389%20780526b0-2834-4fac-99c0-9924ddcd4ca8_rw_3840.jpg"]}, {"enumeration": "0390", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0390%20031%20Quickly%20done%20can%20be%20quickly.txt", "text_name": "0390 031 Quickly done can be quickly.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0390%20031%20statue-of-leonidas-thermopylae.jpg"]}, {"enumeration": "0391", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0391%2051%20Nothing%20prevents%20our%20being.txt", "text_name": "0391 51 Nothing prevents our being.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0391%2051%202918df8defc4.jpg"]}, {"enumeration": "0392", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%20durant.%5BVoltaire%5D%20theoretically%20prefers%20a%20republic%2C%20but%20he%20knows%20it.txt", "text_name": "0392 durant.[Voltaire] theoretically prefers a republic, but he knows it.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%208636eb1c9215635c30d07bd65592fb3f.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%20869209.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%20139176730376.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%20bf95f9d9e311.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%20cicero.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%20illustration-of-a-session-of-the-roman-senate-517212434-589a3b645f9b587.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%20IN15282374%20Credit%20Cicero%2010.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0392%20uRsKWCtQNYo.jpg"]}, {"enumeration": "0393", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0393%20The%20lotus-eater%20story--which%20stands%20for%20the%20perils%20of%20apathy%20and.txt", "text_name": "0393 The lotus-eater story--which stands for the perils of apathy and.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0393%20Odysseus%2C%20gri_33125001033857_0024.jpg"]}, {"enumeration": "0394", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0394%2017%20We%20become%20so%20accustomed%20to.txt", "text_name": "0394 17 We become so accustomed to.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0394%2017%201087N08712_5XSTQ.jpg"]}, {"enumeration": "0395", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0395%20The%20world%20is%20governed%20by%20very%20different%20personages.txt", "text_name": "0395 The world is governed by very different personages.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0395%20Banquet_des_Girondins.jpg"]}, {"enumeration": "0396", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0396%20Think%20not%20that%20I%20am%20come%20to%20send%20peace%20on%20earth.txt", "text_name": "0396 Think not that I am come to send peace on earth.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0396%205109650976_f751366f6e_o.jpg"]}, {"enumeration": "0397", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0397%20durant.Nature%20smiles%20at%20the%20union%20of%20freedom%20and%20equality%20in%20our%20ut.txt", "text_name": "0397 durant.Nature smiles at the union of freedom and equality in our ut.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0397%20DhIh4VWWAAAUZPl.jpg"]}, {"enumeration": "0398", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0398%20shakespeare.For%20which%20of%20my%20bad%20parts%20didst%20thou%20first%20fall%20in%20love.txt", "text_name": "0398 shakespeare.For which of my bad parts didst thou first fall in love.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0398%201349993972-0005330-www.nevsepic.com.ua.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0398%20shakespeare.For%20which%20of%20my%20bad%20parts%20didst%20thou%20first%20fall%20in%20love.jpg"]}, {"enumeration": "0399", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0399%20This%20age%20of%20ours%20has%20let%20fall%2C%20bit%20by%20bit%2C%20things%20of%20more%20value%20than.txt", "text_name": "0399 This age of ours has let fall, bit by bit, things of more value than.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0399%20Domenico_ghirlandaio%2C_cappella_Tornabuoni%2C_annuncio_dell%27angelo_a_zacca.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0399%20Francesco%20petrarca%2C%20petrarch%2C%20petrarch%2C%201304%2C%20arezzo%2C1374%2C%20italian%20poet.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0399%20Laura%20and%20Petrarch%281304-1374%29%20at%20the%20Fountain%20of%20Vaucluse.%20Painting%20by.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0399%20Petrarch%20introducing%20Francesco%20Novello%20da%20Carrara%20to%20the%20Doge%20of.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0399%20Portrait%20of%20Petrarch%20%28Francesco%20Petrarca%29%20%281304-1374%29%20italian%20poet.jpg"]}, {"enumeration": "0400", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0400%20augustus.When%20in%20Egypt%20he%20wished%20to%20see%20the%20sarcophagus%20and%20body%20of.txt", "text_name": "0400 augustus.When in Egypt he wished to see the sarcophagus and body of.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0400%20Augustus-before-the-Tomb-of-Alexander-Sebastien-Bourdon-Oil-Painting.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0400%20Royer_Auguste_au_tombeau_d%2527Alexandre.jpg"]}, {"enumeration": "0401", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0401%20How%20much%20easier%20it%20is%20to%20drip%20paint%20than%20to%20paint.txt", "text_name": "0401 How much easier it is to drip paint than to paint.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0401%20vSNu8to.jpg"]}, {"enumeration": "0402", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0402%20strauss.Liberal%20education%20is%20the%20counter-poison%20to%20mass%20culture.txt", "text_name": "0402 strauss.Liberal education is the counter-poison to mass culture.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0402%20strauss.Liberal%20education%20is%20the%20counter-poison%20to%20mass%20culture.jpg"]}, {"enumeration": "0403", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0403%20Man%20is%20at%20bottom%20a%20dreadful%20wild%20animal.%20We%20know%20this%20wild%20animal%20only.txt", "text_name": "0403 Man is at bottom a dreadful wild animal. We know this wild animal only.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0403%20A%20brawl%20in%20the%20Ukrainian%20parliament%20hall%202014%20b.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0403%20A%20brawl%20in%20the%20Ukrainian%20parliament%20hall%202014%20c.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0403%20A%20brawl%20in%20the%20Ukrainian%20parliament%20hall%202014.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0403%20After%20Sir%20Peter%20Paul%20Rubens%2C%20The%20Massacre%20of%20the%20Innocents%20.jpg"]}, {"enumeration": "0404", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0404%20MICHAEL%20MILLERMAN%2C%20Liberalism%20Ancient%20and%20Modern%20%28Millerman%20PRO%20Reading.txt", "text_name": "0404 MICHAEL MILLERMAN, Liberalism Ancient and Modern (Millerman PRO Reading.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0404%20978-0-226-77689-7-frontcover.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0404%20201407-w-most-beautiful-libraries-in-the-world-austrias-national-librar.jpg"]}, {"enumeration": "0405", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0405%20book.sayers.The%20Lost%20Tools%20of%20Learning.txt", "text_name": "0405 book.sayers.The Lost Tools of Learning.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0405%20book.sayers.The%20Lost%20Tools%20of%20Learning.jpg"]}, {"enumeration": "0406", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0406%20He%20who%20has%20learned%20to%20die%20has%20unlearned%20slavery.txt", "text_name": "0406 He who has learned to die has unlearned slavery.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0406%20maxresdefault%20%283%29.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0406%20monument-statue-louvre-sculpture-art-carving-stone-carving-spartacus-an.jpg"]}, {"enumeration": "0407", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0407%20havell.xenophon.From%20this%20moment%20the%20conspirators%20marched%20with%20rapid.txt", "text_name": "0407 havell.xenophon.From this moment the conspirators marched with rapid.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0407%20one-Critias-Theramenes-execution-Thirty-Tyrants-oligarchy-403-bce.jpg"]}, {"enumeration": "0408", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0408%2032%20The%20power%20of%20fortune%20is.txt", "text_name": "0408 32 The power of fortune is.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0408%2032%20Ds2RMEuW0AAiYmK.jpg"]}, {"enumeration": "0409", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0409%20But%20Socrates%20was%20the%20first%20who%20brought%20down%20philosophy%20from%20the%20heavens.txt", "text_name": "0409 But Socrates was the first who brought down philosophy from the heavens.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0409%201%20BSAV6TOeW37Q0T2Eq8U_rg.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0409%20113.jpg"]}, {"enumeration": "0410", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0410%20For%20this%20feeling%20of%20wonder%20shows%20that%20you%20are%20a%20philosopher%2C%20since.txt", "text_name": "0410 For this feeling of wonder shows that you are a philosopher, since.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0410%201_WhwpchI19e-O0fgGanqK5A.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0410%208035bb7d2a4b45eec4ef6c7c652f4816.jpg"]}, {"enumeration": "0411", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0411%20So%2C%20friend%2C%20you%20die%20also.%20Why%20all%20this%20clamour%20about%20it.txt", "text_name": "0411 So, friend, you die also. Why all this clamour about it.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0411%20ACHILLES-KILLING-HECTOR-Rafael-Tajeo-1875-careful-with-your-sword-Achil.jpg"]}, {"enumeration": "0412", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0412%20durant.In%20passing%20from%20the%20Age%20of%20Faith%20to%20the%20Renaissance%20we%20shall.txt", "text_name": "0412 durant.In passing from the Age of Faith to the Renaissance we shall.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0412%20durant.In%20passing%20from%20the%20Age%20of%20Faith%20to%20the%20Renaissance%20we%20shall.jpg"]}, {"enumeration": "0413", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0413%20It%20is%20unlikely%20that%20many%20of%20us%20will%20be%20famous.txt", "text_name": "0413 It is unlikely that many of us will be famous.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0413%20A_Young_Man_Reading_by_Candlelight_Matthias_Stom_catpage.jpg"]}, {"enumeration": "0414", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0414%20New%20Text%20Document%20%282%29.txt", "text_name": "0414 New Text Document (2).txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0414%2092db6535c46631e255e4cfc42526484906c3089026d5ecb18c28a59648e384af.jpg"]}, {"enumeration": "0415", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%20durant.Mob-rule%20is%20a%20rough%20sea%20for%20the%20ship%20of%20state%20to%20ride.txt", "text_name": "0415 durant.Mob-rule is a rough sea for the ship of state to ride.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%201_he0R8qYmoPepKPGRBnSohA.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%2042-46286648_1024x1024.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%20140L16034_93SXP.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%20173289f3.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%2020161117_213421.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%20arrest-Maximilien-Robespierre-July-27-1794.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%20joakim-ericsson6.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%20joakim-ericsson-guil9detail.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%20storm-with-a-shipwreck.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0415%20tumblr_pq63mh2GzJ1t43e29o1_1280.jpg"]}, {"enumeration": "0416", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20goethe.Of%20all%20peoples%20the%20Greeks%20have%20dreamt%20the%20dream%20of%20life%20best.txt", "text_name": "0416 goethe.Of all peoples the Greeks have dreamt the dream of life best.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20a25ef6a0bb1e5574b7a5080ac504eb95.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20apotheosis%20of%20Homer.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20Aristotle%20and%20bust%20of%20Homer.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20Auguste_Leloir_-_Hom%C3%A8re%20.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20Becker_%28attr%29_Homer_sings.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20EBPtf8RXYAArw5o.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20Guillaume-Guillon-Lethiere-Homer-Singing-His-Iliad-at-the-Gate-of-Athen.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20Leonidas%20and%20Spartans%20at%20Battle%20of%20Thermopylae.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20Pictorial_art_Lawrence_Alma-Tadema_Sappho_and_535497_7628x4172.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20Sir_Lawrence_Alma-Tadema%2C_English_%28born_Netherlands%29_-_A_Reading_from_H.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0416%20ulysses-and-nausicaa-charles-gleyre.jpg"]}, {"enumeration": "0417", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0417%20Be%20not%20conformed%20to%20this%20world.txt", "text_name": "0417 Be not conformed to this world.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0417%20392608603_13215c1032_k.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0417%20p085.00_Taygetos%20Monument%20in%20Thermopylae.%20Greece.jpg"]}, {"enumeration": "0418", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0418%20I%20was%20brought%20up%20in%20that%20state%20of%20civilization%20when%20it%20was%20everywhere.txt", "text_name": "0418 I was brought up in that state of civilization when it was everywhere.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0418%20I%20was%20brought%20up%20in%20that%20state%20of%20civilization%20when%20it%20was%20everywhere.jpg"]}, {"enumeration": "0419", "text_url": "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0419%20Equals%20with%20equals%2C%20according%20to%20the%20old%20proverb%2C%20most%20easily%20flock.txt", "text_name": "0419 Equals with equals, according to the old proverb, most easily flock.txt", "images": ["https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0419%20Dante%20Alighieri%20-%20Inferno%20-%20Canto%20IV%20-%20Limbo%2C%20Dante%20is%20accepted%20as%20an.jpg", "https://archive.org/download/home-scholar-archive/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle.zip/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/0419%20Dore%20-%20Dante%20Alighieri%20-%20Inferno%20-%20Canto%20IV%20-%20Limbo%2C%20Dante%20is%20accepted.jpg"]}];
+  var cache = {};        // enumeration -> { quote, author }
+  var current = 0;
+  var currentImage = null; // reset to null on navigation -> defaults to the pair's first image on render
+
+  var textEl = document.getElementById("fb-text");
+  var quoteWrapEl = document.getElementById("fb-quote-wrap");
+  var authorRowEl = document.getElementById("fb-author-row");
+  var authorEl = document.getElementById("fb-author");
+  var imageEl = document.getElementById("fb-image");
+  var thumbsEl = document.getElementById("fb-thumbs");
+  var countEl = document.getElementById("fb-count");
+  var spinnerEl = document.getElementById("fb-spinner");
+  var errorEl = document.getElementById("fb-error");
+
+  // ---- quote parsing (§2.1/§2.2, same fallback rule as
+  // pipeline.fbundles._parse_quote_file()) ------------------------------
+  function parseQuote(text) {
+    var lines = text.split(/\r?\n/);
+    var authorRe = /^--\s*(.*)$/;
+    for (var i = 0; i < lines.length; i++) {
+      var m = authorRe.exec(lines[i].trim());
+      if (m) {
+        return { quote: lines.slice(0, i).join("\n").trim(), author: (m[1].trim() || null) };
+      }
+    }
+    return { quote: text.trim(), author: null };
+  }
+
+  function fetchText(pair) {
+    return fetch(pair.text_url).then(function(r) {
+      if (!r.ok) throw new Error("fetch failed");
+      return r.text();
+    }).then(parseQuote);
+  }
+
+  function prefetchFirstImage(pair) {
+    if (!pair || !pair.images.length) return;
+    var img = new Image();
+    img.src = pair.images[0];
+  }
+
+  // ---- themed scrollbar + fade for a long quote, capped at 24vh --
+  // only shown/scrollable when the text actually overflows. -----------
+  //
+  // BUGLIST fix ("visual interference in the fbundle text box"): this
+  // used to check only textEl.scrollHeight > textEl.clientHeight -- IS
+  // there more text than fits, at all -- which is true for the entire
+  // life of a long quote, including after the visitor has scrolled all
+  // the way down to read its last line. The fade/shadow (.fbundle-text-
+  // fade, opacity toggled by the "overflowing" class) therefore never
+  // went away for a long quote -- it sat over the bottom of the text
+  // permanently, looking like leftover visual debris rather than the
+  // "more below, scroll for it" cue it's meant to be. Fixed to match
+  // the standalone/offline viewer's own already-correct logic
+  // (templates/fbundle_viewer.html's updateOverflowFade()): the real
+  // question is whether there's more content BELOW THE CURRENT SCROLL
+  // POSITION (scrollHeight - scrollTop - clientHeight), not just
+  // whether the box overflows at all -- so the fade now correctly
+  // disappears once scrolled to the bottom, and reappears if scrolled
+  // back up. Needs its own "scroll" listener on textEl (added below,
+  // next to the existing "resize" one) since scrolling the text changes
+  // scrollTop without firing a resize event.
+  function updateTextOverflow() {
+    var hasMoreBelow = textEl.scrollHeight - textEl.scrollTop - textEl.clientHeight > 4;
+    quoteWrapEl.classList.toggle("overflowing", hasMoreBelow);
+  }
+
+  // ---- shared "make this image the active one" step -- used both by
+  // clicking a thumbnail directly and by fb-next's image-then-quote
+  // cycling below, so the main-image swap + active-thumb highlight
+  // never has to be kept in sync in two places. ------------------------
+  function setActiveImage(url) {
+    currentImage = url;
+    imageEl.src = url;
+    var tiles = thumbsEl.querySelectorAll(".fbundle-thumb-tile");
+    for (var i = 0; i < tiles.length; i++) {
+      var isActive = tiles[i].dataset.url === url;
+      tiles[i].classList.toggle("active", isActive);
+      if (isActive) tiles[i].scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+  }
+
+  function renderPair(parsed) {
+    var pair = PAIRS[current];
+    textEl.textContent = parsed.quote;
+    textEl.scrollTop = 0;
+    updateTextOverflow();
+
+    if (parsed.author) {
+      authorEl.textContent = "\u2014 " + parsed.author;
+      authorRowEl.hidden = false;
+    } else {
+      authorRowEl.hidden = true;
+    }
+
+    if (currentImage === null) currentImage = pair.images[0] || null;
+    imageEl.src = currentImage || "";
+    imageEl.alt = parsed.quote.slice(0, 60);
+
+    // ---- multi-image row (design_2 §2.3, compact) -- only for a pair
+    // with more than one image; clicking a tile swaps the main image
+    // without touching the quote/text or re-fetching anything. --------
+    if (pair.images.length > 1) {
+      thumbsEl.hidden = false;
+      thumbsEl.innerHTML = "";
+      pair.images.forEach(function(url) {
+        var tile = document.createElement("button");
+        tile.type = "button";
+        tile.dataset.url = url;
+        tile.className = "fbundle-thumb-tile" + (url === currentImage ? " active" : "");
+        tile.innerHTML = '<img src="' + url + '" alt="" loading="lazy">';
+        tile.addEventListener("click", function() { setActiveImage(this.dataset.url); });
+        thumbsEl.appendChild(tile);
+      });
+    } else {
+      thumbsEl.hidden = true;
+      thumbsEl.innerHTML = "";
+    }
+
+    countEl.textContent = (current + 1) + " / " + PAIRS.length;
+  }
+
+  // ---- direct/blocking fetch with 1-2 silent retries before a visible
+  // error state (§2.4) --------------------------------------------------
+  function loadPair(index, attempt) {
+    attempt = attempt || 0;
+    current = index;
+    currentImage = null;
+    var pair = PAIRS[current];
+    var cached = cache[pair.enumeration];
+
+    errorEl.hidden = true;
+
+    if (cached) {
+      spinnerEl.hidden = true;
+      renderPair(cached);
+      prefetchNeighbors();
+      return;
+    }
+
+    spinnerEl.hidden = false;
+    fetchText(pair).then(function(parsed) {
+      cache[pair.enumeration] = parsed;
+      spinnerEl.hidden = true;
+      if (current === index) renderPair(parsed);
+      prefetchNeighbors();
+    }).catch(function() {
+      if (attempt < 2) {
+        loadPair(index, attempt + 1);
+      } else {
+        spinnerEl.hidden = true;
+        errorEl.hidden = false;
+      }
+    });
+  }
+
+  function prefetchNeighbors() {
+    prefetchFirstImage(PAIRS[(current + 1) % PAIRS.length]);
+    prefetchFirstImage(PAIRS[(current - 1 + PAIRS.length) % PAIRS.length]);
+  }
+
+  // ---- Next cycles through the current pair's remaining images first
+  // (mirrors clicking through its own thumbnail row left-to-right),
+  // only advancing to the next quote once its last image is already
+  // showing. A single-image pair -- or a multi-image one already on its
+  // last image -- behaves exactly as before and goes straight to the
+  // next pair. --------------------------------------------------------
+  function advanceToNextImage() {
+    var pair = PAIRS[current];
+    if (!pair || !pair.images || pair.images.length < 2) return false;
+    var idx = pair.images.indexOf(currentImage);
+    if (idx === -1 || idx >= pair.images.length - 1) return false;
+    setActiveImage(pair.images[idx + 1]);
+    return true;
+  }
+
+  document.getElementById("fb-prev").addEventListener("click", function() {
+    loadPair((current - 1 + PAIRS.length) % PAIRS.length);
+  });
+  document.getElementById("fb-next").addEventListener("click", function() {
+    if (advanceToNextImage()) return;
+    loadPair((current + 1) % PAIRS.length);
+  });
+  document.getElementById("fb-random").addEventListener("click", function() {
+    if (PAIRS.length < 2) return;
+    var next;
+    do { next = Math.floor(Math.random() * PAIRS.length); } while (next === current);
+    loadPair(next);
+  });
+  document.getElementById("fb-retry").addEventListener("click", function() { loadPair(current); });
+  window.addEventListener("resize", updateTextOverflow);
+  textEl.addEventListener("scroll", updateTextOverflow);
+
+  if (PAIRS.length) {
+    loadPair(0);
+  } else {
+    document.getElementById("fbundle-bundle").innerHTML = '<div class="fbundle-empty">No quotes in this bundle.</div>';
+  }
+})();
+</script>
+
+<!-- Fullscreen mode (new, 2026-09-12): "give the viewer maximum
+     vertical space" -- requests the real Fullscreen API on <html> where
+     the browser allows it, and either way toggles body.fbundle-
+     fullscreen (see that class's own CSS comment above) so the top-row
+     (breadcrumb + theme toggle) and body's outer padding drop out,
+     letting .fbundle-bundle grow to fill what's left. Listens for the
+     browser's own fullscreenchange event (every vendor-prefixed variant
+     still in real-world use) rather than only reacting to its own
+     click, so the CSS class stays in sync when the visitor exits with
+     Esc, a browser/OS fullscreen shortcut, or any other route that
+     bypasses this button entirely -- exactly the same "don't trust your
+     own click handler as the only source of truth" reasoning
+     _theme_toggle_assets() already applies to data-theme. Falls back to
+     the CSS-only maximize (no real Fullscreen API call) when the API
+     doesn't exist or a request is refused (sandboxed iframes commonly
+     block it) -- "maximum vertical space" still means something even
+     when true fullscreen isn't available. -->
+<script>
+(function() {
+  var btn = document.getElementById("fb-fullscreen");
+  if (!btn) return;
+  var ICONS = {
+    enter: '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M16 3h3a2 2 0 0 1 2 2v3"></path><path d="M8 21H5a2 2 0 0 1-2-2v-3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg><span class="label">Fullscreen</span>',
+    exit: '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v3a2 2 0 0 1-2 2H4"></path><path d="M15 3v3a2 2 0 0 0 2 2h3"></path><path d="M9 21v-3a2 2 0 0 0-2-2H4"></path><path d="M15 21v-3a2 2 0 0 1 2-2h3"></path></svg><span class="label">Exit fullscreen</span>'
+  };
+
+  function isFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+  }
+  // CSS-only maximize also stays on while genuinely fullscreen (a
+  // request can succeed without the class ever having been set by a
+  // fallback path), so this OR's the two together rather than trusting
+  // just one.
+  function isMaximized() {
+    return isFullscreen() || document.body.classList.contains("fbundle-fullscreen");
+  }
+  function syncButton() {
+    btn.innerHTML = isMaximized() ? ICONS.exit : ICONS.enter;
+  }
+  function syncFromBrowser() {
+    // Only follows the BROWSER's own fullscreen state here -- the CSS-
+    // only fallback (no real Fullscreen API involved) is added/removed
+    // directly by the click handler below, not by this listener.
+    if (isFullscreen()) document.body.classList.add("fbundle-fullscreen");
+    else if (!document.body.dataset.fbFullscreenFallback) document.body.classList.remove("fbundle-fullscreen");
+    syncButton();
+  }
+
+  btn.innerHTML = ICONS.enter;
+  btn.addEventListener("click", function() {
+    if (!isMaximized()) {
+      var el = document.documentElement;
+      var request = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (request) {
+        Promise.resolve(request.call(el)).catch(function() {
+          // Refused (common in a sandboxed iframe) -- fall back to the
+          // CSS-only maximize instead of leaving the click looking like
+          // it did nothing.
+          document.body.dataset.fbFullscreenFallback = "1";
+          document.body.classList.add("fbundle-fullscreen");
+          syncButton();
+        });
+      } else {
+        document.body.dataset.fbFullscreenFallback = "1";
+        document.body.classList.add("fbundle-fullscreen");
+        syncButton();
+      }
+    } else if (isFullscreen()) {
+      var exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if (exit) exit.call(document);
+    } else {
+      delete document.body.dataset.fbFullscreenFallback;
+      document.body.classList.remove("fbundle-fullscreen");
+      syncButton();
+    }
+  });
+  document.addEventListener("fullscreenchange", syncFromBrowser);
+  document.addEventListener("webkitfullscreenchange", syncFromBrowser);
+  document.addEventListener("msfullscreenchange", syncFromBrowser);
+})();
+</script>
+
+<!-- Layout swap (new, 2026-09-12; default flipped 2026-09-13):
+     ergonomic/visual-only toggle between the original text-on-top/
+     image-on-bottom stacking and image-on-top/text-on-bottom -- the
+     latter ("swapped") is now what a first-time visitor sees; clicking
+     the button goes back to text-on-top. Unlike the offline viewer
+     (templates/fbundle_viewer.html), this page's card markup is static
+     rather than rebuilt per quote, so the toggle is just a class flip on
+     .fbundle-card -- no re-render, and it survives Prev/Next/Random
+     (loadPair()/renderPair() never touch this class). Persisted under
+     its own storage key, separate from the theme toggle above. -->
+<script>
+(function() {
+  var btn = document.getElementById("fb-swap");
+  var card = document.querySelector(".fbundle-card");
+  if (!btn || !card) return;
+  var ICON_SWAP = '<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v14"></path><path d="M4 7l4-4 4 4"></path><path d="M16 21V7"></path><path d="M12 17l4 4 4-4"></path></svg>';
+
+  function isSwapped() {
+    return card.classList.contains("swapped");
+  }
+  function syncButton() {
+    var label = isSwapped() ? "Text on top" : "Image on top";
+    btn.innerHTML = ICON_SWAP + '<span class="label">' + label + "</span>";
+  }
+  function apply(swapped) {
+    card.classList.toggle("swapped", swapped);
+    syncButton();
+    try { localStorage.setItem("fbundle-layout", swapped ? "swapped" : "default"); } catch (e) {}
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem("fbundle-layout"); } catch (e) {}
+  // Default flipped 2026-09-13: image-on-top ("swapped") now ships as
+  // the default -- anything other than an explicit, previously-saved
+  // "default" lands there, mirroring the offline viewer's own
+  // initLayout() (templates/fbundle_viewer.html).
+  apply(saved !== "default");
+
+  btn.addEventListener("click", function() { apply(!isSwapped()); });
+})();
+</script>
+
+<!-- BUG FIX (fbundle dark-mode background never syncs, 2026-09-12):
+     pipeline.viewers._theme_toggle_assets()'s own docstring already says
+     "the caller's template must place backgrounds.render_tokens()'s own
+     <script src="/The-Home-Scholar-Library/assets/backgrounds/generators/common.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/library.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/dark.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/deep-sky-locked.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/starfield.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/solar-system.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script> BEFORE this script in the page (so
+     #hs-background's data-identity is already set by the time this
+     script runs)" -- this template had THEME_SCRIPT first and
+     BACKGROUND_SCRIPT last, the reverse of that documented requirement.
+     THEME_SCRIPT's init IIFE calls apply(savedTheme) synchronously as
+     soon as it runs, which calls applyBackgroundMode(savedTheme) --
+     that bails out immediately ("if (!mode || !window.
+     HomeScholarBackgrounds) return;") because window.HomeScholarBackgrounds
+     doesn't exist yet (it's defined by BACKGROUND_SCRIPT's own <script
+     src> tags, further down the page and not yet reached). Net effect:
+     on every load the decorative artwork stayed on this page's
+     server-resolved default ("library") regardless of a saved "dark"
+     preference -- it only ever caught up after a click, once
+     HomeScholarBackgrounds had already loaded. Moving BACKGROUND_SCRIPT
+     first means it's already loaded (and #hs-background's data-identity
+     already set by its own init script) by the time THEME_SCRIPT's
+     apply(savedTheme) runs, so the decorative background is correct
+     from first paint, matching the quote card's own colors. -->
+<script src="/The-Home-Scholar-Library/assets/backgrounds/generators/common.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/library.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/dark.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/deep-sky-locked.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/starfield.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/solar-system.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Facebook%20Pages/Philosopher%20Kings%20-%2014%20Vols/Vol%2009.%20Philosopher%20Kings/Philosopher%20Kings%20Vol.09%20%280381-0419%29_fbundle/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+
+<script>
+
+
+(function() {
+  var KEY = "viewer-theme-fbundle";
+  var DEFAULT_THEME = "library";
+  var PREVIEW_COLORS = {"library": {"bg": "#ECE0C4", "fg": "#2E2416"}, "dark": {"bg": "#16130D", "fg": "#EFE3C7"}};
+  var BACKGROUND_MODES = {"library": "library", "dark": "dark"};
+  var btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+  var label = document.getElementById("theme-toggle-label");
+  function labelFor(theme) {
+    return theme === DEFAULT_THEME ? btn.dataset.toAltLabel : btn.dataset.toDefaultLabel;
+  }
+  // Re-invokes the SAME background runtime backgrounds.py's own
+  // init_script already called once on load, against the SAME
+  // #hs-background target/identity -- mirrors
+  // pipeline.webbook_nav.script()'s own applyBackgroundOverride(), just
+  // driven by this toggle instead of that reader-settings panel. A
+  // no-op wherever BACKGROUND_MODES is null (every caller but fbundle)
+  // or the runtime/target genuinely isn't on the page.
+  function applyBackgroundMode(theme) {
+    if (!BACKGROUND_MODES) return;
+    var mode = BACKGROUND_MODES[theme];
+    if (!mode || !window.HomeScholarBackgrounds) return;
+    var target = document.getElementById("hs-background");
+    if (!target) return;
+    var identity = target.dataset.identity;
+    if (!identity) return;
+    var result;
+    try {
+      result = window.HomeScholarBackgrounds.render({
+        target: target,
+        mode: mode,
+        identity: identity,
+        date: new Date().toISOString().slice(0, 10)
+      });
+    } catch (e) { return; }
+    if (result) {
+      var root = document.documentElement.style;
+      if (result.reader) {
+        root.setProperty("--hs-reader-bg", result.reader);
+        root.setProperty("--hs-outer-bg", result.reader);
+      }
+      if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+    }
+  }
+  function apply(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    label.textContent = labelFor(theme);
+    if (PREVIEW_COLORS) {
+      // colored as a literal preview of the DESTINATION theme (the one
+      // a click will switch to), not the one currently showing.
+      var dest = theme === DEFAULT_THEME ? btn.dataset.alt : btn.dataset.default;
+      var c = PREVIEW_COLORS[dest];
+      if (c) { btn.style.background = c.bg; btn.style.color = c.fg; btn.style.borderColor = c.fg; }
+    }
+    applyBackgroundMode(theme);
+  }
+  // BUG FIX (fbundle init mismatch, 2026-09-12): this used to trust
+  // whatever localStorage held outright ("saved = localStorage.getItem(KEY)
+  // || DEFAULT_THEME"), with no check that the stored value is actually
+  // one of THIS toggle's two known themes (btn.dataset.default/.alt). A
+  // visitor who saved a theme under an earlier identifier -- e.g.
+  // "sepia", fbundle's OWN default_theme value before the 2026-09-11
+  // rename documented on fbundle_viewer_live.html's [data-theme="library"]
+  // rule -- keeps that stale value in localStorage across the rename, so
+  // apply() below was setting data-theme="sepia" on load: a value neither
+  // [data-theme="library"] nor [data-theme="dark"] matches, so every
+  // themed custom property fell back to unset/transparent (the page
+  // rendered in neither mode) while the label, driven by the SAME
+  // mismatch (saved !== DEFAULT_THEME), read "Library mode" -- the button
+  // offering the one theme it wasn't already showing. Clicking it called
+  // apply(btn.dataset.default) and self-healed, which is what made the
+  // bug look click-fixable instead of permanently broken. Validating
+  // against the button's own two real values here (matching the offline
+  // standalone viewer's already-correct `saved === "dark" ? "dark" :
+  // "library"` fallback in templates/fbundle_viewer.html) means an
+  // unrecognized/stale value is discarded in favor of DEFAULT_THEME
+  // instead of being applied verbatim.
+  var saved = DEFAULT_THEME;
+  try {
+    var stored = localStorage.getItem(KEY);
+    if (stored === btn.dataset.default || stored === btn.dataset.alt) saved = stored;
+  } catch (e) {}
+  apply(saved);
+  btn.addEventListener("click", function() {
+    var current = document.documentElement.getAttribute("data-theme") || DEFAULT_THEME;
+    var next = current === btn.dataset.default ? btn.dataset.alt : btn.dataset.default;
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+    apply(next);
+  });
+})();
+
+</script>
+
+<script>
+
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+</script>
+</body>
+</html>

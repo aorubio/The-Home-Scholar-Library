@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html data-reader-size="m" data-reader-font="original" data-reader-images="on">
+<head>
+    <title>Energy of the Athenians — Sicilian Expedition</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../images/r0004.css"/>
+<link rel="stylesheet" type="text/css" href="../images/r0003.css"/>
+  <script>
+(function () {
+  var html = document.documentElement;
+  try {
+    var raw = localStorage.getItem("webbook-reader-prefs-v1");
+    var prefs = raw ? JSON.parse(raw) : {};
+    html.setAttribute("data-reader-size", prefs.size || "m");
+    html.setAttribute("data-reader-font", prefs.font || "original");
+    html.setAttribute("data-reader-images", prefs.images || "on");
+    if (prefs.background && prefs.background !== "auto") {
+      html.setAttribute("data-bg-override", prefs.background);
+      var MODE_COLORS = {"library": {"reader": "#f3eadc", "ink": "#332f2d"}, "dark": {"reader": "#151b23", "ink": "#d9e0e8"}, "deep-sky": {"reader": "#101722", "ink": "#d9e0ea"}, "starfield": {"reader": "#080b12", "ink": "#d8dde7"}, "solar-system": {"reader": "#101722", "ink": "#d8dde7"}};
+      var c = MODE_COLORS[prefs.background];
+      if (c) {
+        html.style.setProperty("--hs-reader-bg", c.reader);
+        html.style.setProperty("--hs-reader-ink", c.ink);
+        html.style.setProperty("--hs-outer-bg", c.reader);
+      }
+    }
+  } catch (e) { /* ignore (private browsing, malformed storage, etc.) --
+                     page renders at its ordinary static/server defaults. */ }
+})();
+</script>
+  <link rel="stylesheet" type="text/css" href="../reader_theme.css"/>
+  <link rel="stylesheet" type="text/css" href="../reader_controls.css"/>
+  <style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+  <style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="calibre1">
+<div id="hs-background" aria-hidden="true"></div><div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="book-page" id="reader-page-start">
+
+<div class="reader-source-unit" data-reader-member="0">
+
+<div class="calibre2"><h1 class="calibre5"><span class="calibre12">Energy of the Athenians</span></h1></div>
+<p class="calibre13">
+The cavalry which was dispatched from Athens early in
+the year was to be horsed in Sicily. Attica was too
+hilly a region, and had, for the most part, too light a
+soil, to be suitable for the breeding of horses. We may
+be certain, therefore, that at all times, when any
+large number was wanted, they would have to be procured
+elsewhere. After the beginning of the war the native
+supply must have ceased altogether, nor could it have
+had time to be renewed in the few years that had
+elapsed since the peace. It is difficult to suppose
+that a man so experienced as Nicias could have
+forgotten this necessary arm when making his
+requisitions for the expedition. Probably it had
+always been intended to find horses in the island,
+which, indeed, was famous for its breed,
+and one of the results of
+the unfriendly reception given to the expedition was
+the disappointment of this expectation. This important
+defect was now, however, remedied,
+and the generals began the new campaign with energy.
+</p>
+<p class="calibre15">
+This campaign it was possible to carry on in one way
+only. The city had to be invested. During the winter
+the Syracusans had been busy on a work which rendered
+this operation more laborious and difficult. This was a
+new wall, built about a thousand yards in advance of
+the wall of Gelon, and reaching from the cliffs on the
+southern side of the Bay of Thapsus down to the Great
+Harbour. This wall had to be matched, so to speak, by
+an Athenian wall of equal length—I might say greater
+length, seeing it had to cover more ground. So far the
+attacking side was at a great disadvantage as compared
+with the position which it might have occupied if the
+advice of Lamachus, given in the previous summer, had
+been followed. If the Syracusan generals had followed
+up this measure of defence with another, and had
+occupied the high ground of Epipolæ, first with an
+armed force, and then with a fort, a siege would have
+been rendered almost impossible. This
+precaution they neglected, nor did Nicias think of
+seizing this point of vantage till he was on the point
+of beginning his operations. He anticipated, indeed,
+the Syracusan generals, but he anticipated them by but
+a very short time. A detachment of six hundred picked
+troops from the city had been told off to occupy
+Epipolæ, and were about to march for that purpose when
+intelligence reached the officer in command that the
+Athenians had taken possession of it. On the preceding
+night, so long had the step been delayed, Nicias and
+Lamachus had embarked a force at Catana, landed them on
+the south side of the Bay of Thapsus, and, marching up
+the north-eastern slope by which Epipolæ was approached
+from the sea, had occupied the position in force. The
+Syracusans were not disposed to acquiesce without a
+struggle in the loss of this commanding position. The
+detachment spoken of was led by the officer in command
+to the attack. But it had to march in haste nearly
+three miles, it had to breast the hill, and it found
+the enemy strongly posted. The assault failed, with the
+loss of the leader and half his men. The besiegers were
+able to erect forts without molestation at a spot
+called Labdalum, situated on the southern cliffs of the
+Bay of Thapsus, and at Tyke, a commanding
+position in the Epipolæ region, including one to be
+called the Circle.
+ This last was to be, it seemed, the central point from
+which the investing lines were to start, being drawn
+north-ward to the Bay of Thapsus, southward to the
+Great Harbour.
+</p>
+<p class="calibre15">
+The Athenians had always enjoyed, and appear to have
+deserved, a high reputation for the celerity and skill
+with which they conducted siege operations.
+Their vigour now terrified the Syracusans, who saw the
+lines which were to shut them in pushed forward with an
+astonishing speed. They approached with the intention
+of delivering an attack, but the Athenians promptly
+accepted the challenge, and presented so orderly and
+imposing an array that the Syracusan generals,
+contrasting it with the disorder in their own
+undisciplined ranks, did not venture to give battle.
+They retired, but left some troopers to harass the
+besiegers. These brought out their own cavalry, and in
+the skirmish which followed the latter had the
+advantage. This is the first and last appearance of the
+Athenian cavalry in the story of the siege.
+</p>
+<p class="calibre15">
+The Circle Fort—if fort it was—was next finished. This
+done, the investing line was pushed northward towards
+the shore at Trogilus, one part of the soldiers
+building the wall, another carrying timber and stone,
+which they deposited according as materials would be
+required. Though these occupations must have put them
+at a disadvantage in the face of a vigilant enemy,
+Hermocrates did not venture to risk a battle. A defeat
+would have caused such discouragement as to imperil the
+safety of the city, and he felt compelled to adhere to
+a more prudent policy. His plan was to push an
+intercepting wall from the Syracusan fortification
+across the line of circumvallation; this, or at least
+a palisade, which would serve the same purpose for a
+time, he hoped to finish before the Athenians could
+hinder him. This intercepting wall was to be between
+the Circle Fort and the southern end of the Outer City,
+at a spot where there was a temple of Apollo surrounded
+by a grove (temenos) of olive trees, and known
+accordingly as Apollo Teminites. Hermocrates succeeded
+in finishing this work; perhaps I should rather say,
+was allowed to finish it without interruption. The
+heavy-armed soldiers belonging to one of the city
+tribes were told off to guard it, and the
+remainder of the army retired within their own line.
+</p>
+<p class="calibre15">
+Nicias, however, had no intention of allowing this
+interruption to continue. While the enemy was busy with
+the work, he could pursue his own operations
+undisturbed, nor did he care to challenge a conflict
+for which he could detach but a portion of his forces,
+the other portion being wanted to protect the
+circumvallation. An opportunity was sure, he thought,
+to occur of attacking the new wall with success. Nor
+was he disappointed. The garrison soon began to relax
+its vigilance. The inaction of the Athenians had put
+it off its guard. It seemed as if it would be allowed
+to keep the position, just as it had been allowed to
+occupy it, without interruption. By degrees the
+customary watches ceased. The soldiers of the garrison,
+instead of manning the wall, took their ease in tents
+which they set up behind it to shelter them from the
+sun. Some even stole away at mid-day to take their meal
+and the siesta which followed it at their own homes.
+Here was the opportunity for which the Athenian
+generals had been waiting. They selected three hundred
+heavy-armed
+soldiers, with a number of light-armed similarly
+accoutred for the occasion, and sent them to attack the
+wall, covering the movement by a demonstration of their
+whole force, one half being detached to watch the
+postern gate at which the intercepting wall began, the
+other being ready to check any sally that might be
+attempted from other parts of the city. The assault,
+delivered as it was with the rapidity for which the
+Athenians were famous, was completely successful. The
+garrison, taken by surprise, fled in hot haste along
+the inner side of the wall towards the postern gate.
+The storming party followed in pursuit, and overtook
+them. Some were adventurous enough to press through the
+postern gates along with the fugitives; some soldiers
+from the main division, which had reached the gate at
+the same time, doing the same. Here, however, they met
+with a check. The Syracusans were in force inside the
+wall, and drove out the intruders with some loss. But
+the wall and the stockade which covered it were
+destroyed, the Athenians carrying off the materials to
+be used for their own walls. The same day an aqueduct
+which partially supplied the city with water was
+destroyed.
+</p>
+<p class="calibre15">
+But the plan of the intercepting wall was not
+to be given up. It was a necessity to the besieged, if
+they were to save the city from being blockaded, and
+another attempt was made to construct one. The first
+had been pushed across Epipolæ as far as the cliffs in
+which that region terminated. These cliffs were now
+strongly occupied by Nicias, and another direction had
+to be taken. This time the building party, starting as
+before from the wall, but from a lower point, traversed
+the low-lying ground west of the city till they reached
+the River Anapus. Again they were allowed to complete
+their work without interruption, and again they had the
+mortification of seeing it destroyed. On the former
+occasion the attack had been timed for the noonday meal
+and rest; on this it was made before dawn. Lamachus was
+in command, Nicias, as we shall see hereafter, being on
+the sick-list. Lamachus came down from the fort which
+commanded the cliffs of Epipolæ into the low ground,
+his men carrying planks and door panels to help them
+across impassable portions of the marsh. It had been
+arranged that the fleet should have its anchorage in
+the Bay of Thapsus, and sail round into the Great
+Harbour. This movement had a two-fold purpose—to divert
+the attention of the Syracusan army, and to threaten
+the defenders
+of the new wall on the flank. While the fleet was on
+its way, the wall was attacked and carried. The
+Syracusan army sallied from the city to retake it, and
+a general action followed. Once more the superiority of
+the Athenians, a well-disciplined force, strongly
+leavened with the veterans of many campaigns, asserted
+itself. The right wing of the Syracusans was driven to
+take refuge within the line; the left, including the
+cavalry, retreated along the river bank towards the
+bridge by which, as has been already mentioned, the
+road to Helorus was carried across the stream.
+A body of Athenian heavy-armed, on the initiative, it
+would seem, of the subordinate officer in command,
+hurried to intercept them. But the Athenians became
+disordered by the rapidity of their movement, and the
+hostile cavalry, seizing the opportunity, charged with
+such energy as to drive them back on the right wing of
+the main army. This also was disordered by the impact
+of the fugitives, and the fortune of the day seemed
+about to change when Lamachus, who was in command on
+the left wing, came to the rescue with the Argive
+heavy-armed and as many archers as he could collect
+on the spur of the moment. His arrival restored the
+Athenian superiority, but the help that he brought cost
+his countrymen dear. Pressing to the front with
+characteristic impetuosity, he found himself with but
+a few followers on the further side of a dyke.
+There he was slain by a Syracusan horseman. A few
+moments afterwards the Athenians came up, but the enemy
+had by this time crossed the bridge, carrying the dead
+body of Lamachus along with them.
+</p>
+<p class="calibre15">
+Fighting was not yet over for the day. The Syracusans,
+encouraged by the check administered to the Athenian
+right, made a sally against the Circle Fort. The
+movement was unexpected, and the garrison was probably
+weaker than usual, some of the troops serving for the
+day in the ranks of the main army. The outworks of the
+fort were carried, and the fort itself might have been
+captured but for the presence of mind of Nicias, who
+happened to be on the spot, an attack of illness
+preventing him from taking the field. By his orders a
+pile of timber and some battering-rams which lay in
+front of
+the walls were set on fire.	The flame checked the
+advance of the enemy, and served also as a signal of
+help required to the army engaged in the lower ground.
+At the same time the Athenian fleet was seen to sail
+into the Great Harbour. This diversion was immediately
+effective. The Syracusan generals, anticipating an
+attack on their quarters, recalled all their troops,
+and retreated within their lines.
+</p>
+<p class="calibre15">
+It is difficult to estimate the loss which Athens
+suffered by the death of Lamachus. The extraordinary
+change in the prospects of the enterprise which took
+place between the beginning of the campaign and the
+battle in which he met with his end—a period of some
+three months—was largely due to his energy and
+enterprise. When he died, Athens was within a
+measurable distance of success. We may be entirely
+convinced that the whole affair was a piece of madness,
+on the ground that no permanent occupation of the
+island was possible, and yet feel that if Lamachus had
+been permitted to have his way when he advised an
+immediate attack on Syracuse, a great victory might
+well have been won. That first chance was missed, and
+now when it seemed possible that the mistake might
+have been retrieved, the army lost its most vigorous
+leader. There is something else to be said. It was a
+fortunate thing for the moment that illness had kept
+Nicias at the Circle Fort just when his sagacity and
+experience were found to be particularly useful. But
+the cause that detained him from the field of battle
+had the most disastrous consequences.
+</p>
+<p class="calibre15">
+We happen to know from the sufferer himself the nature
+of his disease. It was an affection of the kidneys.
+There is no ailment that is more apt to cloud the
+brain. In some trouble of this kind, it is believed,
+may be found the mysterious cause which from time to
+time in Napoleon's latter days seemed to paralyse the
+great soldier's energies. Nicias was no Napoleon, and
+was wholly unequal to the conduct of the great
+enterprise which was forced upon him, but there were
+occasions on which he would not have failed so
+disastrously as he did if he had had full command of
+his mental and bodily energies.
+</p>
+<p class="calibre15">
+For the moment, however, the fortunes of Athens were in
+the ascendant. The Syracusan forces had been proved to
+be manifestly unequal to their antagonists; so unequal,
+indeed, that for a time their
+commanders did not venture to risk an engagement. The
+investing wall was not wholly finished—the northern
+portion, from the Circle to the Bay of Thapsus, never
+was completed—but not much remained to be done. It
+reached, or was soon about to reach, from the Circle
+down to the Great Harbour. Four-fifths, we may say, of
+the land circuit of Syracuse was blockaded; the
+remaining fifth was, in a way, open. But the egress and
+ingress thus left was not by any means easy or
+convenient. Everything had to pass by the narrow neck
+of ground which connected Epipolæ with the high lands
+of the interior. It only remained for Nicias to occupy
+this by a fort—and it is impossible to imagine why he
+did not—and Syracuse would have been practically cut
+off from communication with the outer world.
+</p>
+
+</div>
+</div>
+<nav class="book-nav"><a href="p0008.html" class="prev-link">&larr; Previous</a><a href="../index.html" class="toc-link">Table of Contents</a><a href="p0010.html" class="next-link">Next &rarr;</a><span class="settings-slot"></span></nav>
+</div>
+<script src="../engine/generators/common.js"></script><script src="../engine/generators/library.js"></script><script src="../engine/generators/dark.js"></script><script src="../engine/generators/deep-sky-locked.js"></script><script src="../engine/generators/starfield.js"></script><script src="../engine/generators/solar-system.js"></script><script src="../engine/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Church%2C%20Alfred%20J/Sicilian%20Expedition/~archive/Sicilian%20Expedition%20-%20Church%2C%20Alfred%20J%20%281899%29_webbook/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script src="../reader_controls.js"></script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

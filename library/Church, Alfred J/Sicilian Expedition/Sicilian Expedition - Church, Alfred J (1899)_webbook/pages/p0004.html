@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html data-reader-size="m" data-reader-font="original" data-reader-images="on">
+<head>
+    <title>Soldier — Sicilian Expedition</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../images/r0004.css"/>
+<link rel="stylesheet" type="text/css" href="../images/r0003.css"/>
+  <script>
+(function () {
+  var html = document.documentElement;
+  try {
+    var raw = localStorage.getItem("webbook-reader-prefs-v1");
+    var prefs = raw ? JSON.parse(raw) : {};
+    html.setAttribute("data-reader-size", prefs.size || "m");
+    html.setAttribute("data-reader-font", prefs.font || "original");
+    html.setAttribute("data-reader-images", prefs.images || "on");
+    if (prefs.background && prefs.background !== "auto") {
+      html.setAttribute("data-bg-override", prefs.background);
+      var MODE_COLORS = {"library": {"reader": "#f3eadc", "ink": "#332f2d"}, "dark": {"reader": "#151b23", "ink": "#d9e0e8"}, "deep-sky": {"reader": "#101722", "ink": "#d9e0ea"}, "starfield": {"reader": "#080b12", "ink": "#d8dde7"}, "solar-system": {"reader": "#101722", "ink": "#d8dde7"}};
+      var c = MODE_COLORS[prefs.background];
+      if (c) {
+        html.style.setProperty("--hs-reader-bg", c.reader);
+        html.style.setProperty("--hs-reader-ink", c.ink);
+        html.style.setProperty("--hs-outer-bg", c.reader);
+      }
+    }
+  } catch (e) { /* ignore (private browsing, malformed storage, etc.) --
+                     page renders at its ordinary static/server defaults. */ }
+})();
+</script>
+  <link rel="stylesheet" type="text/css" href="../reader_theme.css"/>
+  <link rel="stylesheet" type="text/css" href="../reader_controls.css"/>
+  <style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+  <style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="calibre1">
+<div id="hs-background" aria-hidden="true"></div><div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="book-page" id="reader-page-start">
+
+<div class="reader-source-unit" data-reader-member="0">
+
+<div class="calibre2"><h1 class="calibre5"><span class="calibre12">Soldier</span></h1></div>
+<p class="calibre13">
+The command of the fleets and armies of Athens was in
+the hands of a college of ten members, bearing the
+title of Generals (<i class="calibre14">strategi</i>), and annually
+elected. Nicias is said to have held this office more
+than once during the lifetime of Pericles. Its duties
+included home administration as well as command in the
+field, and it is possible that the former fell to the
+share of Nicias on the earlier occasions of his being
+elected to the office. Anyhow, we do not hear of him as
+conducting any operation of either army or fleet before
+the year 427 B.C. (the fifth year of the Peloponnesian
+war). He then distinguished himself by a success which
+must have been highly gratifying to his countrymen.
+There was no state in the Lacedæmonian alliance that
+was more hated by the Athenians than Megara. It had
+been under their power, and had successfully rebelled,
+slaughtering at
+the same time the Athenian garrison. It was close at
+hand, the mouth of its harbour being little more than
+fifteen miles from the Peiræus. A long series of mutual
+injuries had embittered the feelings of the two cities
+to the uttermost. Athens, on losing her dependency, had
+retaliated by forbidding the Megarians to use her
+markets or harbours, a measure which had been one of
+the provocations that resulted in the Peloponnesian
+War. Compelled to see her own territory ravaged by the
+superior forces of Sparta, she had taken the revenge of
+invading once, or even twice, a year the territory of
+Megara, and Megara, on the other hand, was always on
+the watch to do what injury she could to the commerce
+of her powerful neighbour. Freebooting ships issued
+from her harbour, seized Athenian merchantmen, and even
+committed ravages on unprotected points of the coast.
+An Athenian squadron was sent to blockade the harbour,
+but could not do this effectually because it had no
+anchorage nearer than Salamis. Nicias saw an
+opportunity of striking a heavy blow at this enemy. In
+the mouth of the harbour was a rocky island, Minoa by
+name—legend connected the famous Minos of Crete with
+the history of the city—which was occupied by a
+fort, and further protected on one side by towers and
+walls extending from Nisæa, the port of Megara, and on
+the other by a lagoon bridged over by a causeway.
+Nicias embarked some battering-rams on his ships of
+war, knocked the towers to pieces, captured the fort,
+and made the island, which he strongly fortified on the
+side of the lagoon, into a convenient base for the
+blockading fleet.
+</p>
+<p class="calibre15">
+This was the earliest operation of the year. Later on,
+he sailed with sixty ships of war to Melos, an island
+in the southwest of the Ægean, settled in former days
+by a colony from Sparta, which had always declined to
+ally itself with Athens. He called upon the city to
+submit and receive a garrison within its walls, and on
+its refusal ravaged the surrounding country. This
+done, as he was not prepared to undertake a siege, he
+sailed away to the point where the frontier between
+Bœotia and Attica touched the coast. Here he was joined
+by some troops from Athens, and with the combined
+forces ravaged part of the Bœotian territory.
+Reembarking his army, he sailed northwards, wasting
+the country as he went, where there this could be done
+without risk, and, when the season for operations drew
+to an end, returned to Athens.
+</p>
+<p class="calibre15">
+During the next year he seems not to have been
+employed, but in that which followed—the seventh of the
+war—he was in chief command of an expedition which was
+directed against the territory of Corinth. It helps us
+to realise the smallness of the scene on which these
+operations were carried on to note that, starting from
+the Peiræus in the evening he arrived at his
+destination, a point seven miles south of Corinth,
+before sunrise. No very great success was gained,
+possibly because the Corinthians had been warned of
+what was intended; but after a brisk engagement, in
+which the fortune of the day varied from time to time,
+the Athenians were left in possession of the field of
+battle. They had lost forty-seven men, their
+adversaries more than four times as many. Technically,
+however, Nicias had to own to a defeat. He discovered,
+when the increasing forces of the enemy had made it
+prudent to retreat, that he had left two of his own
+dead on the field. This compelled him to send a herald
+to ask for a truce, and to send a herald was to confess
+that he had been worsted.
+</p>
+<p class="calibre15">
+In the eighth year of the war, Nicias conducted with
+success an operation of more importance, and likely to
+have a more permanent effect. This was the occupation
+of the island
+of Cythera, off the southern coast of Laconia. Cythera
+was the most vulnerable point of the Spartan territory.
+Chilon, one of the Seven Wise Men, himself a Spartan,
+had said that it would be well for his country if
+Cythera could be sunk to the bottom of the sea. If we
+imagine the Isle of Wight in the possession of the
+French, we have an idea of what Sparta would feel with
+Cythera occupied by a hostile force. Nicias, who had
+been in communication for some time with an
+anti-Spartan party in this island, sailed thither with
+a force of  about 4000. This time he caught the enemy
+unprepared. The two towns of the island were
+simultaneously attacked. One made no resistance; the
+other surrendered after a brief struggle. A few
+prominent members of the pro-Spartan party were carried
+away, but the remainder of the inhabitants were
+leniently treated, becoming allies of Athens, and
+paying a tribute of four talents. Nicias, leaving an
+Athenian garrison in Cythera, spent some days in
+ravaging the neighbouring coast of the mainland.
+</p>
+<p class="calibre15">
+On his way home he gratified another long-standing
+grudge of his countrymen against an ancient enemy. In
+the days when Athens was still a feeble state, she had
+had two hostile
+neighbours against whom she had hardly been able to
+hold up. Of one of these—Megara—I have already spoken;
+Ægina was the other. After various fluctuations of
+fortune, Ægina had become (in 456 B.C.) a dependency of
+Athens. When, a quarter of a century later, the
+Peloponnesian War broke out, the Athenians regarded
+with apprehension the possibility of a revolt.
+'Ægina,' said the great Pericles, 'is the eye-sore of
+the Peiræus,' from which indeed it was but some twelve
+miles distant. The Athenians proceeded to expel the
+whole population, and to fill their place with settlers
+of their own nationality. The Spartans gave the exiles
+a home at Thyrea, a district in the eastern part of
+their own territory. The town itself was too far from
+the sea to suit the tastes of its new inhabitants, who
+came of a race famous for seamanship.
+They were at this time engaged, with the help of a
+contingent of Lacedæmonian troops, in building a fort
+upon the coast. This they abandoned when the Athenian
+squadron came in sight, retreating inland to Thyrea.
+Thyrea consisted of an upper and a lower town. The
+Æginetans
+resolved to hold the former, but could not persuade
+their allies to remain. The Lacedæmonians declared that
+the place was untenable, and retreated to the hills.
+Their judgment was proved to be right, for the
+Athenians stormed the place with but little difficulty,
+and captured its defenders. These were carried to
+Athens and there put to death. Mercy was never shown to
+prisoners of war except their captors believed that
+some advantage might be gained by keeping them alive.
+</p>
+<p class="calibre15">
+It is now necessary to turn back to an event which had
+an important bearing on the fortunes of Athens in
+general, and of Nicias in particular. In the earlier
+part of the seventh year—the same as that in which
+Nicias had conducted his operations against
+Corinth—Athens had secured a signal advantage over its
+great enemy. A powerful force under the command of
+Demosthenes, who was probably the ablest soldier in the
+Athenian service, had landed on the western coast of
+Laconia, and, after a series of operations which it is
+not necessary to describe in detail, had succeeded
+in shutting up in the island of Sphacteria a force of
+about 460 Peloponnesian heavy-armed troops, of whom
+more than 120 were pure-blood Spartans belonging to the
+first families of the city. The Spartan Government was
+so affected by this disaster that it sent envoys to
+Athens to solicit peace. This mission accomplished
+nothing. The terms demanded were such as it was
+impossible to grant, and the envoys went home. Then
+affairs took another turn. The siege of the Spartans in
+the island did not seem to make any progress; the
+besiegers were in as bad a plight as the besieged, it
+may be in a worse, as they were actively employed in
+the blockade, while the besieged had only to sit still.
+Provisions they had, but they were very short of water,
+for there was but one spring available, and that was
+quite insufficient to supply the needs of so large an
+armament. As for the besieged, they fared pretty well.
+They seem not to have wanted water, and there were
+plenty of Helots
+ready to run cargoes of food, tempted by the handsome
+offers of reward, in the shape of pay and freedom,
+which the government offered. Demosthenes determined to
+make an assault in force, and for this purpose
+collected troops
+from friendly cities in Western Greece, and sent home a
+request for reinforcements.
+</p>
+<p class="calibre15">
+The disappointment at Athens was intense, and the
+reaction of feeling against the politicians who had
+spoken against peace proportionately great. Of these
+politicians, Cleon was the leader, and Cleon felt that
+his popularity was in imminent danger. He began by
+declaring that the envoys from Demosthenes had
+exaggerated the difficulties of the enterprise. The
+answer to this was simple. 'Send commissioners to
+examine the state of things.' This suggestion was
+approved, and Cleon and another were actually named.
+Cleon did not like the prospect of going, and altered
+his tone. 'Don't waste time,' he cried, 'in sending
+envoys. Sail to Sphacteria and capture the soldiers
+that have been shut up there. If our generals were
+men,' and he pointed as he spoke contemptuously to
+Nicias, 'this they would easily do with a proper force.
+This I would do, if I were in their place.'   There was
+a hostile murmur from part of the assembly. 'Why not
+go, if it is so easy.'  Nicias caught eagerly at the
+idea. It seemed to put his adversary into a dilemma.
+'Go, Cleon,' he said, 'and do it; I and my colleagues
+will put at your disposal such forces as you may think
+necessary.'
+</p>
+<p class="calibre15">
+At first Cleon accepted, not thinking for a moment that
+the offer was serious. When he perceived his mistake,
+he drew back.  'It was Nicias's business, not his,' he
+said, 'to direct the campaign.' Instantly there arose a
+great shout from the assembly, which doubtless enjoyed
+the humour of the situation. They shouted to Nicias to
+make over the command to Cleon; they shouted to Cleon
+that he must accept it. There was nothing for the two
+but to yield. Nicias formally resigned the command;
+Cleon, so to speak, took the bull by the horns. 'I am
+not afraid,' he said. 'Give me some heavy-armed men—I
+don't want them from our own muster roll—some
+light-armed, and, say, 400 archers, and I will bring
+the Spartans, dead or alive, within twenty days.' And,
+not to lengthen the story, he did it.
+</p>
+<p class="calibre15">
+It is impossible to say that the conduct of Nicias in
+this matter was patriotic. It may have been a telling
+party-stroke to take Cleon at his word, and to commit
+him to an undertaking which Nicias believed must end in
+failure, but it was made at the expense of Athens. If
+the man was an incompetent braggart, why should he be
+trusted with the lives of Athenian soldiers? It was
+impossible for Nicias and his friends not to wish that
+he
+might fail, and his failure meant, not only an
+immediate loss of men, but the missing of such an
+opportunity of bringing Sparta to terms as might never
+occur again. If, on the other hand, Cleon succeeded, a
+result which Nicias clearly never expected for a
+moment, this meant another spell of power to a
+politician whom he believed to be unprincipled and
+mischievous. And this was the result which actually
+followed.
+</p>
+
+</div>
+</div>
+<nav class="book-nav"><a href="p0003.html" class="prev-link">&larr; Previous</a><a href="../index.html" class="toc-link">Table of Contents</a><a href="p0005.html" class="next-link">Next &rarr;</a><span class="settings-slot"></span></nav>
+</div>
+<script src="../engine/generators/common.js"></script><script src="../engine/generators/library.js"></script><script src="../engine/generators/dark.js"></script><script src="../engine/generators/deep-sky-locked.js"></script><script src="../engine/generators/starfield.js"></script><script src="../engine/generators/solar-system.js"></script><script src="../engine/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Church%2C%20Alfred%20J/Sicilian%20Expedition/~archive/Sicilian%20Expedition%20-%20Church%2C%20Alfred%20J%20%281899%29_webbook/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script src="../reader_controls.js"></script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>
