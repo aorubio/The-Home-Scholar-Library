@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html data-reader-size="m" data-reader-font="original" data-reader-images="on">
+<head>
+    <title>Negotiations at Tarsus — Retreat of the Ten Thousand</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../images/r0027.css"/>
+<link rel="stylesheet" type="text/css" href="../images/r0026.css"/>
+  <script>
+(function () {
+  var html = document.documentElement;
+  try {
+    var raw = localStorage.getItem("webbook-reader-prefs-v1");
+    var prefs = raw ? JSON.parse(raw) : {};
+    html.setAttribute("data-reader-size", prefs.size || "m");
+    html.setAttribute("data-reader-font", prefs.font || "original");
+    html.setAttribute("data-reader-images", prefs.images || "on");
+    if (prefs.background && prefs.background !== "auto") {
+      html.setAttribute("data-bg-override", prefs.background);
+      var MODE_COLORS = {"library": {"reader": "#f3eadc", "ink": "#332f2d"}, "dark": {"reader": "#151b23", "ink": "#d9e0e8"}, "deep-sky": {"reader": "#101722", "ink": "#d9e0ea"}, "starfield": {"reader": "#080b12", "ink": "#d8dde7"}, "solar-system": {"reader": "#101722", "ink": "#d8dde7"}};
+      var c = MODE_COLORS[prefs.background];
+      if (c) {
+        html.style.setProperty("--hs-reader-bg", c.reader);
+        html.style.setProperty("--hs-reader-ink", c.ink);
+        html.style.setProperty("--hs-outer-bg", c.reader);
+      }
+    }
+  } catch (e) { /* ignore (private browsing, malformed storage, etc.) --
+                     page renders at its ordinary static/server defaults. */ }
+})();
+</script>
+  <link rel="stylesheet" type="text/css" href="../reader_theme.css"/>
+  <link rel="stylesheet" type="text/css" href="../reader_controls.css"/>
+  <style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+  <style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="calibre1">
+<div id="hs-background" aria-hidden="true"></div><div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/online_ebooks.html">Online Ebooks</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="book-page" id="reader-page-start">
+
+<div class="reader-source-unit" data-reader-member="0">
+
+<div class="calibre2"><h1 class="calibre5"><span class="calibre12">Negotiations at Tarsus</span></h1></div>
+<p class="calibre13">
+When first the soldiers of his company declared their intention of marching 
+no farther, Clearchus refused to listen to them, He thought he had 
+sufficient influence over them to compel them to do as he wished, but in 
+this he was mistaken. For when he sternly ordered them to continue the 
+march, and placed himself at their head to lead them on whether they would 
+or no, they took up stones to throw at him, and if he had not quickly made 
+his escape, they would have stoned him to death.
+</p>
+<p class="calibre14">
+It was clear that any attempt to enforce discipline would be of no avail in 
+such a case as this, but for all that, Clearchus did not intend to be 
+beaten. He knew how to manoeuvre as well as how to fight, and had no 
+difficulty in finding ways and means to gain his end.
+</p>
+<p class="calibre14">
+After allowing a little time for the excitement of the soldiers to subside, 
+he sent to summon them to a meeting. They were at first disinclined to go, 
+but they said to one another, "We may as well hear what it is that he wants 
+us to do. But no matter what he says, we will be firm, and hold to our 
+decision."
+</p>
+<p class="calibre14">
+When they came to the meeting, they found Clearchus so changed that they 
+would hardly have recognised
+ 
+him. Instead of the stern officer with angry brow and flashing eyes, there 
+stood before them a silent, downcast man, who wept like a child. Never had 
+they seen him so deeply moved.
+</p>
+<p class="calibre14">
+At last he began to speak in a low agitated voice. "Comrades," he said, "be 
+not surprised that I am grieved at your decision. I have every cause to be 
+grateful to Cyrus, who has been to me the best of friends, and for this 
+reason it was my earnest hope that with your assistance I might be able to 
+repay his kindness by helping him in his present undertaking. But you are 
+not willing, and it shall never be said of me that I took the part of a 
+Barbarian against my own countrymen. I declare therefore that I will follow 
+you, for to me you are country, friends, comrades. Without you I can neither 
+help a friend nor harm an enemy."
+</p>
+<p class="calibre14">
+On hearing these words, the soldiers felt perfectly satisfied, and at once 
+made peace with their general. Moreover two thousand men, belonging to two 
+other companies, left the generals under whom they had been enlisted, in 
+order to join the company of Clearchus. For they believed that having once 
+said that he would not march against the Great King, Clearchus would hold to 
+his resolution whatever happened, whereas it seemed very possible that the 
+other officers might be won over by Cyrus, notwithstanding their present 
+protests.
+</p>
+<p class="calibre14">
+When Cyrus heard what had passed at the meeting, he was vexed and 
+disappointed, and sent a messenger to summon Clearchus to his presence. 
+Clearchus however refused to go, and took care that the soldiers
+ 
+should know of his refusal, but sent word secretly to Cyrus that he hoped 
+all would yet be well.
+</p>
+<p class="calibre14">
+Several more days went by, and then Clearchus again summoned the soldiers to 
+a meeting. This time any one was allowed to attend, whether he belonged to 
+the company of Clearchus or not, so that there was a very large gathering. 
+Clearchus was the first to speak.
+</p>
+<p class="calibre14">
+"Comrades," he said, "we have now broken with Cyrus. We are no longer his 
+mercenaries, and he is no longer our paymaster. Naturally he is angry with 
+us for deserting him, and as for me, I dare not show myself in his presence, 
+for although he is the best of friends, he is at the same time a relentless 
+enemy, and his power is great. We shall do well therefore to lose no time in 
+considering how we may return in safety, and above all, how it will be 
+possible, without the help of Cyrus, to obtain food for the march. Let 
+whosoever will, now speak his mind."
+</p>
+<p class="calibre14">
+First one man and then another rose to speak, some saying what occurred to 
+them at the moment, and others according to instructions previously 
+received. For Clearchus had made his own preparations for the meeting, and 
+had prompted several of the soldiers as to what they should say. Some were 
+to speak in favour of returning home at once, and others were to raise 
+difficulties.
+</p>
+<p class="calibre14">
+After some of the other soldiers had spoken, one of the men who had been 
+prompted by Clearchus, rose and began to urge with great eagerness an 
+immediate return home, as if it were the easiest thing in the world.
+</p>
+<p class="calibre14">
+"To begin with," he said, "we must lay in a store
+ 
+of provisions, and then ask Cyrus to give us ships to take us home by sea 
+from Tarsus. Or, if he refuses that, we must ask him to supply us with a 
+guide, who knows the country, to take us back by land. We must act promptly 
+moreover, lest the people of the country treat us as enemies s and come out 
+against us."
+</p>
+<p class="calibre14">
+This speech was received with great applause. But immediately another of 
+those who had been previously told what to say, rose to reply.
+</p>
+<p class="calibre14">
+"All that you have just heard," he said, "is utter nonsense. How can we 
+expect to get food, when the only market is in the camp of the Barbarians? 
+Do you suppose that after we have broken with Cyrus, he is likely to be so 
+pleasant and obliging as to allow us to take provisions out of his camp for 
+our journey? And the ships that he has brought here for his own use, is it 
+likely that he will part with them in order that we may get home 
+comfortably?
+</p>
+<p class="calibre14">
+"Then as regards the guide, is it to be expected that he will grant a guide 
+to us, who by our desertion will be doing him the greatest injury and 
+crossing all his plans? Even if he were to supply us with ships, I, for one, 
+should expect the ships to be sunk in mid-sea in order that we might be 
+drowned, or if he gave us a guide, I should fear that the guide would lead 
+us into some place where we could not fail to perish.
+</p>
+<p class="calibre14">
+"This plan will never do. I propose instead that we nominate certain persons 
+to go with Clearchus to Cyrus, and ask him what it is exactly that he wants 
+of us. If he proposes some such enterprise as those on which our countrymen 
+have been employed before, then let us follow him. If on the other hand it 
+appears likely that
+ 
+his plans will involve us in great toils and dangers, we must ask him either 
+to give us good reasons for advancing, or else consent to our going back. 
+Then we shall either accompany him as friends, or else be allowed to return 
+in peace."
+</p>
+<p class="calibre14">
+This speech made the desired impression, for the Hellenes could not but see 
+that there was far more sense in the apprehensions of the last speaker than 
+in the hopeful view of the man who had preceded him, and accordingly, when 
+the proposal to send a deputation to Cyrus was put to the meeting, a great 
+show of hands was raised in favour of it. The members of the deputation were 
+therefore chosen at once, and sent away on their errand.
+</p>
+<div class="calibre2">
+<img src="../images/r0011.gif" alt="[Illustration]" class="calibre26"/>
+</div>
+<p class="calibre16">R<span class="calibre17">UINS</span> <span class="calibre17">OF</span> P<span class="calibre17">ERSEPOLIS</span>: H<span class="calibre17">ALL</span> <span class="calibre17">OF</span> <span class="calibre17">THE</span> <span class="calibre17">HUNDRED</span> <span class="calibre17">COLUMNS</span>.</p>
+
+<p class="calibre14">
+Cyrus granted the messengers an interview, and agreed to answer their 
+questions. He made no mention of attacking the Pisidians, still less of 
+marching against the Great King, but spoke of an enemy of his, a powerful 
+satrap named Abrocamas, who lived on the banks of the Euphrates at a 
+distance of twelve days' march from Tarsus. It was for the purpose of 
+fighting this satrap, he said, that he wanted the help of the Hellenes, for 
+Abrocamas had a great army under his command. If he held his ground, he 
+should be punished; but if on the other hand he should save himself by 
+flight, then in that case, it would be necessary to consider further what 
+would have to be done.
+</p>
+<p class="calibre14">
+With this answer the messengers returned to their comrades, and the Hellenes 
+declared themselves ready to remain in the service of Cyrus, on condition 
+that he would increase their pay. To this he readily consented, and promised 
+that instead of receiving every month one
+ 
+daric as before,
+the private soldiers should in future have a daric and a 
+half. In like proportion, the captains were to have three darics instead of 
+two, and the generals six darics instead of four.
+</p>
+<p class="calibre14">
+The Hellenes were in the position of a man whose path lies through a bog. 
+After he has advanced some little way, he begins to consider whether it 
+would not be better to turn back, but finding that this is just as difficult 
+as to go forward, he thinks it a pity to waste the effort he has already 
+made, and decides to continue.
+</p>
+<p class="calibre14">
+So to the Hellenes it seemed that to return promised to be no less dangerous 
+than to advance. The more clear-sighted were by this time perfectly aware 
+that whatever Cyrus might say, or refrain from saying, his ultimate design 
+was to proclaim war against the Great King. But the great mass of the 
+soldiers, although they knew in their hearts that this was his real 
+intention, preferred not to think too much about it, and persisted in hoping 
+that after all it might turn out to be something else.
+</p>
+
+</div>
+</div>
+<nav class="book-nav"><a href="p0010.html" class="prev-link">&larr; Previous</a><a href="../index.html" class="toc-link">Table of Contents</a><a href="p0012.html" class="next-link">Next &rarr;</a><span class="settings-slot"></span></nav>
+</div>
+<script src="../engine/generators/common.js"></script><script src="../engine/generators/library.js"></script><script src="../engine/generators/dark.js"></script><script src="../engine/generators/deep-sky-locked.js"></script><script src="../engine/generators/starfield.js"></script><script src="../engine/generators/solar-system.js"></script><script src="../engine/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Younghusband%2C%20F/Retreat%20of%20the%20Ten%20Thousand/Retreat%20of%20the%20Ten%20Thousand%20-%20F%20Younghusband_webbook/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script src="../reader_controls.js"></script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

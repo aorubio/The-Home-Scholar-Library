@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html data-reader-size="m" data-reader-font="original" data-reader-images="on">
+<head>
+    <title>Harassed by Tissaphernes — Retreat of the Ten Thousand</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" type="text/css" href="../images/r0027.css"/>
+<link rel="stylesheet" type="text/css" href="../images/r0026.css"/>
+  <script>
+(function () {
+  var html = document.documentElement;
+  try {
+    var raw = localStorage.getItem("webbook-reader-prefs-v1");
+    var prefs = raw ? JSON.parse(raw) : {};
+    html.setAttribute("data-reader-size", prefs.size || "m");
+    html.setAttribute("data-reader-font", prefs.font || "original");
+    html.setAttribute("data-reader-images", prefs.images || "on");
+    if (prefs.background && prefs.background !== "auto") {
+      html.setAttribute("data-bg-override", prefs.background);
+      var MODE_COLORS = {"library": {"reader": "#f3eadc", "ink": "#332f2d"}, "dark": {"reader": "#151b23", "ink": "#d9e0e8"}, "deep-sky": {"reader": "#101722", "ink": "#d9e0ea"}, "starfield": {"reader": "#080b12", "ink": "#d8dde7"}, "solar-system": {"reader": "#101722", "ink": "#d8dde7"}};
+      var c = MODE_COLORS[prefs.background];
+      if (c) {
+        html.style.setProperty("--hs-reader-bg", c.reader);
+        html.style.setProperty("--hs-reader-ink", c.ink);
+        html.style.setProperty("--hs-outer-bg", c.reader);
+      }
+    }
+  } catch (e) { /* ignore (private browsing, malformed storage, etc.) --
+                     page renders at its ordinary static/server defaults. */ }
+})();
+</script>
+  <link rel="stylesheet" type="text/css" href="../reader_theme.css"/>
+  <link rel="stylesheet" type="text/css" href="../reader_controls.css"/>
+  <style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
+  <style>
+  :root { --site-font: 'EB Garamond', Georgia, serif; }
+  .site-nav { display: flex; align-items: center; gap: 18px; padding: 10px 0 16px; font-family: var(--site-font); flex-wrap: wrap; }
+  .site-nav-home { color: #1a5fb4; text-decoration: none; font-size: 0.85rem; font-weight: 600; flex: 0 0 auto; white-space: nowrap; }
+  .site-nav-home:hover { text-decoration: underline; }
+  .site-pages-nav { display: flex; align-items: center; gap: 14px; flex: 0 1 auto; flex-wrap: wrap; }
+  .site-pages-nav a { color: #444; text-decoration: none; font-size: 0.85rem; white-space: nowrap; }
+  .site-pages-nav a:hover { color: #1a5fb4; text-decoration: underline; }
+  .site-search { position: relative; flex: 1 1 auto; max-width: 360px; margin-left: auto; }
+  .site-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; font-size: 0.85rem;
+                        border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+  .site-search-results { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff;
+                          border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                          max-height: 320px; overflow-y: auto; z-index: 50; }
+  .site-search-results:empty { display: none; }
+  .site-search-result { display: block; padding: 7px 10px; font-size: 0.85rem; color: #222; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+  .site-search-result:last-child { border-bottom: none; }
+  .site-search-result:hover { background: #f4f6fa; }
+  .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
+  .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="calibre1">
+<div id="hs-background" aria-hidden="true"></div><div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/online_ebooks.html">Online Ebooks</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
+<div class="book-page" id="reader-page-start">
+
+<div class="reader-source-unit" data-reader-member="0">
+
+<div class="calibre2"><h1 class="calibre5"><span class="calibre12">Harassed by Tissaphernes</span></h1></div>
+<p class="calibre13">
+For some days after the repulse of Mithridates, the Hellenes were allowed to 
+continue their march unmolested, but soon the Persians were again seen 
+coming up behind them. Tissaphernes was now pursuing them with all the 
+forces under his command, determined that they should not much longer escape 
+his vengeance.
+</p>
+<p class="calibre14">
+Keeping the main body of his army in the background, he brought to the front 
+his numerous companies of light infantry, and commanded them to make use of 
+their slings and bows. But the Hellenes, unawed by the overpowering numbers 
+of the enemy, quickly brought forward their little band of Rhodians, whose 
+leaden bullets carried farther than the heavy shot of the Persian slingers, 
+and before the enemy was near enough to do them any harm, they had opened 
+fire upon their close-packed ranks where every shot was certain to tell. The 
+archers too discharged their arrows with equal effect, and so deadly was the 
+assault, that Tissaphernes was obliged to withdraw his men out of range, and 
+for the rest of that day, contented himself with following the Hellenes at a 
+safe distance.
+</p>
+<p class="calibre14">
+Before retiring from the ground where the skirmish had taken place, the 
+Hellenes were careful to collect all
+ 
+the bows and arrows that had belonged to the dead Persians. These bows, 
+which were much stronger than their own, were likely to be of great service 
+to them, and in the evening, when they reached the villages in which they 
+were to spend the night, they took great pains to practise using them with 
+effect. They were so fortunate moreover as to find in these same villages a 
+store of excellent bow-strings, and a quantity of lead, which they at once 
+set to work to make into bullets.
+</p>
+<p class="calibre14">
+After resting for one whole day, they continued their march, and now the 
+road lay through a flat plain. Tissaphernes followed at a distance, always 
+on the lookout for any opportunity of attacking them at a disadvantage, and 
+so overwhelming was his superiority in point of numbers that he was often 
+able to inflict considerable loss, even upon the brave Hellenes.
+</p>
+<p class="calibre14">
+Sometimes for instance the road would narrow considerably, or a bridge would 
+have to be crossed, and then it was found that the plan of marching in the 
+form of a square had many drawbacks for a retreating army with the enemy in 
+pursuit. Confusion was sure to arise, both in breaking up the square on 
+arriving at the narrow part of the road, and in re-forming it on coming out 
+again into the open country, and by this confusion Tissaphernes did not fail 
+to profit.
+</p>
+<p class="calibre14">
+The generals agreed that some new plan must be devised to meet the 
+difficulty, and they decided to form six small companies, each consisting of 
+a hundred men, and subdivided into half and quarter companies, each with its 
+own officer. When the square had to be compressed for passing over a bridge 
+or narrow road, these
+ 
+companies fell out of their places in the wings, and wheeled round to the 
+back of the rear, returning again to the wings when the square widened out 
+again. By this means disorder was prevented, and for the next four days the 
+Hellenes continued their way with very little loss.
+</p>
+<p class="calibre14">
+On the fifth day they came to the end of the flat country. They had now to 
+cross a range of hills, and at this they rejoiced, thinking that the hilly 
+ground would be disadvantageous for the Persian cavalry. But this day was 
+destined to be the most disastrous of any they had yet known.
+</p>
+<p class="calibre14">
+Seeing in the distance a palace with several villages clustering round it, 
+they decided to make for it. The road lay over hilly ground, and they had 
+already climbed the first hill when they received an unexpected check. As 
+they descended the farther side, the enemy appeared upon the height they had 
+just left, and discharged a volley of stones and arrows upon the light-armed 
+infantry, killing and wounding many of them.
+</p>
+<div class="calibre2">
+<img src="../images/r0019.gif" alt="[Illustration]" class="calibre34"/>
+</div>
+<p class="calibre16">T<span class="calibre17">HE</span> <span class="calibre17">HILL</span> <span class="calibre17">COUNTRY</span> <span class="calibre17">EAST</span> <span class="calibre17">OF</span> <span class="calibre17">THE</span> T<span class="calibre17">IGRIS</span>.</p>
+   
+   
+<p class="calibre14">
+To this the Hellenes replied by sending a detachment of hoplites to march 
+back up the hill, and dislodge the Persians. Their. heavy armour protected 
+them to some extent, but made it impossible for them to advance rapidly, and 
+the nimble Persians quickly withdrew beyond their, reach, returning however 
+as soon as the hoplites turned back to rejoin their comrades, and 
+discharging their shots and arrows as before.
+</p>
+<p class="calibre14">
+At the second hill, the same thing happened again, and now the Persian 
+cavalry were also brought into play, and directed to chase the Hellenes at 
+full speed
+ 
+down the steep descent. This they did, but only when they had been driven to 
+their work with whips. Meanwhile the hail of stones and arrows continued, 
+and made such havoc in the ranks of the light-armed troops who wore neither 
+helmet nor coat of mail, that it became urgently necessary to find some 
+means of diverting the attention of the enemy.
+</p>
+<p class="calibre14">
+Calling a short halt, the generals rapidly took counsel together, and formed 
+a plan by which the light infantry could be placed beyond the reach of 
+danger, and at the same time give assistance to their comrades.
+</p>
+<p class="calibre14">
+Parallel with the range of hills over which the Hellenes were making their 
+way, was a range of mountains, from whence the road along the hills could be 
+overlooked. To these mountains the light-armed troops were despatched, with 
+instructions to keep pace with their comrades on the lower level, and rain 
+down shots and arrows upon the enemy whenever they attempted to hinder them 
+in their march. As soon as the Persians perceived this device, they gave up 
+the pursuit. The disadvantage was now on their side, and they were afraid of 
+being cut off from the main body of their army.
+</p>
+<p class="calibre14">
+So for the rest of that day the Hellenes continued their way in peace, the 
+light infantry on the mountains, the hoplites on the lower hills. At last 
+they reached the villages which they had perceived in the distance, and now 
+the first thing to be done was to see to the sick and wounded, of whom there 
+were a great many.
+</p>
+<p class="calibre14">
+They were carefully tended by the eight surgeons who accompanied the Hellene 
+force, and for three days the army rested quietly in the villages. This was 
+chiefly
+ 
+on account of the sick, but partly also because they found there great 
+stores of wheat, barley, and wine, of which they took possession without 
+paying for them, because they were now at war, and in the enemy's country.
+</p>
+
+</div>
+</div>
+<nav class="book-nav"><a href="p0027.html" class="prev-link">&larr; Previous</a><a href="../index.html" class="toc-link">Table of Contents</a><a href="p0029.html" class="next-link">Next &rarr;</a><span class="settings-slot"></span></nav>
+</div>
+<script src="../engine/generators/common.js"></script><script src="../engine/generators/library.js"></script><script src="../engine/generators/dark.js"></script><script src="../engine/generators/deep-sky-locked.js"></script><script src="../engine/generators/starfield.js"></script><script src="../engine/generators/solar-system.js"></script><script src="../engine/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Younghusband%2C%20F/Retreat%20of%20the%20Ten%20Thousand/Retreat%20of%20the%20Ten%20Thousand%20-%20F%20Younghusband_webbook/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
+<script src="../reader_controls.js"></script>
+<script>
+(function() {
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
+  var indexPromise = null;
+
+  function loadIndex() {
+    if (!indexPromise) {
+      indexPromise = fetch(INDEX_URL)
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .catch(function() { return []; });
+    }
+    return indexPromise;
+  }
+
+  function render(results, matches) {
+    results.innerHTML = "";
+    if (!matches.length) {
+      var empty = document.createElement("div");
+      empty.className = "site-search-empty";
+      empty.textContent = "No matches";
+      results.appendChild(empty);
+      return;
+    }
+    matches.slice(0, 20).forEach(function(item) {
+      var a = document.createElement("a");
+      a.className = "site-search-result";
+      a.href = item.url;
+      var title = document.createElement("span");
+      title.textContent = item.title;
+      var path = document.createElement("span");
+      path.className = "site-search-result-path";
+      path.textContent = item.path || "";
+      a.appendChild(title);
+      a.appendChild(path);
+      results.appendChild(a);
+    });
+  }
+
+  document.querySelectorAll(".site-search").forEach(function(wrap) {
+    var input = wrap.querySelector(".site-search-input");
+    var results = wrap.querySelector(".site-search-results");
+    if (!input || !results) return;
+
+    input.addEventListener("input", function() {
+      var query = input.value.trim().toLowerCase();
+      if (!query) { results.innerHTML = ""; return; }
+      loadIndex().then(function(idx) {
+        var matches = idx.filter(function(item) {
+          return item.title.toLowerCase().indexOf(query) !== -1;
+        });
+        render(results, matches);
+      });
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!wrap.contains(e.target)) results.innerHTML = "";
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,217 +1,124 @@
-<!DOCTYPE html>
+<!--
+templates/library_index.html
+=============================
+Real template for pipeline.library_index.render_library_index() --
+consumed via plain double-brace-token substitution
+(pipeline.library_index._load_template()), same convention as every
+other *.html file in this folder. Falls back to a minimal built-in
+default (pipeline.library_index._DEFAULT_LIBRARY_INDEX_TEMPLATE) if this
+file goes missing or loses its DATA_URL token.
+
+CAUTION for anyone editing this file's own comments: every token is
+substituted via plain str.replace(), not a real templating engine (same
+convention/caveat as every other *.html file here) -- writing a token's
+literal double-brace spelling in PROSE, even inside this comment block,
+gets clobbered by that same replace() call. Spell them out some other
+way (as done throughout this comment) instead.
+
+Look and feel: deliberately reuses the SAME chrome/colors/typography every
+other page on the site already uses -- the shared site-nav header and its
+style block (pipeline.site_nav, config.SITE_FONT_FAMILY via
+var(--site-font)), and the
+same link-blue/border-gray values pipeline.catalog_renderer's own node
+template uses (#1a5fb4 links, #222 body text, #ddd/#eee borders) -- NOT
+example/library_index_mockup.html's own standalone cream/sepia palette
+and Google Fonts import. Structure/behavior below (tabs, the Books/
+Authors toggle, the alpha index, the author tree, badges) is carried over
+from that mockup close to verbatim per docs/library-index-integration.md
+-- only the visual skin and the "how do I get DATA" line changed (fetch()
+instead of an inlined <script type="application/json"> blob).
+
+Deliberately no `background` set on <body>/<html> here, same omission
+every other page template in this pipeline already makes -- this was
+reserved for a site-wide page-background feature, and that feature has
+now arrived: pipeline.backgrounds (its own module, not folded into
+pipeline.site_nav) owns it, via the BACKGROUND / BACKGROUND_STYLE /
+BACKGROUND_CONTENT_OPEN / BACKGROUND_CONTENT_CLOSE / BACKGROUND_SCRIPT
+tokens below (spelled here without their double braces on purpose --
+see this file's own CAUTION note above about why). This page's
+own body/html rule still carries no explicit background color --
+correct on purpose, since the plugin's own fixed layer supplies it now
+instead.
+-->
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Home Scholar Library - Home Scholar Library</title>
+<title>Library Index - Home Scholar Library</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/The-Home-Scholar-Library/assets/css/site.css">
 <style>
-  /* font-family reads the shared --site-font custom property, defined
-     once in pipeline.site_nav.site_nav_style() (config.SITE_FONT_FAMILY)
-     -- home_page_design addendum follow-up: the site's typography is
-     one config knob, not a per-template hardcoded value. Trailing
-     fallback covers a custom node.html that somehow omits the site-nav
-     style block. */
-  body { font-family: var(--site-font, system-ui, sans-serif); max-width: 60rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #222; }
-  .breadcrumb { font-size: 0.85rem; color: #666; margin-bottom: 1.5rem; }
-  .breadcrumb a { color: #666; }
-  h1 { margin-top: 0; }
-  .node-cover { max-width: 220px; display: block; margin-bottom: 1rem; }
+  body { font-family: var(--site-font, system-ui, sans-serif); max-width: 64rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #222; }
+  h1 { margin: 0 0 0.15em; }
 
-  .folders, .files { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; margin: 1rem 0; }
-  .folder, .file-viewable, .file-download, .file-fbundle, .ext-link { text-decoration: none; color: #1a5fb4; }
+  .li-stats { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 1.25rem; font-size: 0.85rem; color: #555; }
+  .li-stats b { color: #222; }
 
-  /* §7 folder-listing display thumbnail */
-  .folder { display: flex; align-items: center; gap: 10px; }
-  .folder-thumb { width: 40px; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 4px; flex: 0 0 auto; }
-  .folder-name { line-height: 1.3; }
+  /* ===== Tabs ===== */
+  .li-tabbar { display: flex; gap: 4px; border-bottom: 1px solid #ddd; margin-bottom: 0; }
+  .li-tab { font: inherit; font-size: 0.85rem; font-weight: 600; background: #f5f5f5; border: 1px solid #ddd;
+    border-bottom: none; border-radius: 6px 6px 0 0; padding: 8px 16px 7px; cursor: pointer; color: #555;
+    position: relative; top: 1px; }
+  .li-tab .n { color: #1a5fb4; font-weight: 700; }
+  .li-tab.active { background: #fff; color: #222; border-bottom: 1px solid #fff; }
+  .li-tab:hover:not(.active) { background: #eee; }
 
-  .gallery-preview { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .gallery-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; }
+  /* ===== Toolbar (mode toggle) ===== */
+  .li-toolbar { border-bottom: 1px solid #ddd; padding: 10px 0; display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .li-mode-toggle { display: inline-flex; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+  .li-mode-toggle button { font: inherit; font-size: 0.82rem; border: none; background: #fff; padding: 6px 14px;
+    cursor: pointer; color: #555; }
+  .li-mode-toggle button + button { border-left: 1px solid #ddd; }
+  .li-mode-toggle button[aria-pressed="true"] { background: #1a5fb4; color: #fff; }
+  .li-tree-actions { font-size: 0.78rem; display: flex; gap: 8px; }
+  .li-tree-actions button { background: #eee; border: 1px solid #ddd; border-radius: 6px; padding: 5px 10px;
+    cursor: pointer; color: #555; font-size: 0.78rem; }
+  .li-tree-actions button:hover { background: #ddd; }
 
-  /* design_2 §1.2/§2.2 -- button-styled links (view-full-gallery, fbundle
-     view/download), shared look with each viewer page's own .btn */
-  .btn { display: inline-block; padding: 6px 14px; border-radius: 6px; background: #1a5fb4; color: #fff !important;
-         text-decoration: none !important; font-size: 0.85rem; border: none; cursor: pointer; }
-  .btn:hover { background: #164a8f; }
-  .btn.secondary { background: #eee; color: #222 !important; border: 1px solid #ccc; }
-  .btn.secondary:hover { background: #ddd; }
-  .fbundle-tile { display: flex; align-items: center; gap: 10px; }
+  /* ===== Alpha index ===== */
+  .li-alpha-index { position: sticky; top: 0; z-index: 25; background: #fafafa; border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .li-alpha-index-inner { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 4px; }
+  .li-alpha-link { font-size: 0.78rem; font-weight: 700; width: 24px; height: 24px; display: flex;
+    align-items: center; justify-content: center; border-radius: 4px; color: #333; text-decoration: none;
+    border: 1px solid transparent; }
+  .li-alpha-link:hover { background: #eaf1fb; border-color: #b8d0ef; text-decoration: none; }
+  .li-alpha-link.li-top { background: #1a5fb4; color: #fff; width: auto; padding: 0 10px; }
+  .li-alpha-link.li-top:hover { background: #164a8f; }
+  .li-alpha-link.li-disabled { color: #ccc; pointer-events: none; }
 
-  /* asset buckets -- Ebooks / Images / Audio / Links / Facebook Bundles / Downloads */
-  /* .files is `display: flex; flex-direction: column; align-items:
-     flex-start` (see .folders, .files rule above -- kept that way on
-     purpose for §7's folder links, which should shrink to their own
-     content width, not stretch full-width). .asset-bucket/.view-toggle-
-     row are also direct flex-item children of .files, though, and
-     `align-items: flex-start` shrink-wraps THEM too by default -- which
-     silently collapsed every grid bucket below to a single narrow
-     column (the grid's own auto-fill sizing has no width to divide up
-     if its block-level ancestor never gets more than its content's
-     width in the first place). `align-self: stretch` opts these two
-     back into filling .files' full row width, independent of the
-     folder links' own shrink-to-fit behavior. Confirmed via a real
-     rendered page (Chromium/Playwright), not just reasoning about the
-     CSS -- same "measure it" lesson §6.4 already documents for this
-     codebase. */
-  .asset-bucket, .view-toggle-row { align-self: stretch; }
-  .asset-bucket { margin: 1.25rem 0; }
-  .bucket-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: #666; margin: 0 0 0.5rem; }
+  /* ===== Content ===== */
+  .li-main { padding-top: 18px; }
+  .li-view { display: none; }
+  .li-view.active { display: block; }
+  .li-letter-heading { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: #1a5fb4;
+    border-bottom: 2px solid #cfe0f5; padding: 18px 0 4px; margin-bottom: 6px; scroll-margin-top: 46px; }
+  .li-letter-heading:first-child { padding-top: 0; }
 
-  /* §4a -- ONE master Grid/List toggle, rendered once above the first of
-     the three ordered sections (downloads -> images -> links), governing
-     .bucket-items in every .asset-bucket except .fbundle (see module
-     docstring/_render_view_toggle() -- Facebook Bundles keeps its own
-     completed, untouched layout and is never in the toggle's reach). */
-  .view-toggle-row { display: flex; justify-content: flex-end; margin: 0 0 0.75rem; }
-  .view-toggle { display: inline-flex; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; flex: 0 0 auto; }
-  .view-toggle-btn { background: #fff; border: none; padding: 4px 10px; font-size: 0.78rem; color: #666; cursor: pointer; }
-  .view-toggle-btn + .view-toggle-btn { border-left: 1px solid #ddd; }
-  .view-toggle-btn[aria-pressed="true"] { background: #1a5fb4; color: #fff; }
+  .li-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
+    gap: 6px 12px; padding: 8px 4px; border-bottom: 1px solid #eee; }
+  .li-row:hover { background: #f7f9fc; }
+  .li-row-title { font-size: 1rem; flex: 1 1 auto; min-width: 220px; }
+  .li-row-author { flex: 0 0 auto; font-size: 0.9rem; color: #555; }
+  .li-row-author a { color: #1a5fb4; }
 
-  /* §4a amendment -- every card-based bucket (Ebooks/Audio/Other/
-     Downloads/Images/Links -- everything except .fbundle) shares ONE
-     preview-card visual system, matching the look Links established
-     first (§5): a bordered, rounded card with a shaped thumb-wrap plus a
-     filename/label underneath, uniformly resized between Grid (CSS grid,
-     auto-fill columns) and List (compact 34px-square-thumb row) by the
-     shared toggle above -- not a bespoke smaller treatment per bucket.
-     default (no JS yet / view class not applied) falls back to a plain
-     column, same as before the toggle existed. */
-  .bucket-items { display: flex; flex-direction: column; gap: 0.5rem; }
-  .bucket-items.view-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; align-items: start; }
-  .bucket-items.view-list { display: flex; flex-direction: column; gap: 4px; }
+  .li-author-node summary { cursor: pointer; padding: 8px 4px; border-bottom: 1px solid #eee; list-style: none; }
+  .li-author-node summary::-webkit-details-marker { display: none; }
+  .li-author-node summary::before { content: "▸"; display: inline-block; width: 1em; color: #888; }
+  .li-author-node[open] > summary::before { content: "▾"; }
+  .li-author-count { color: #888; font-size: 0.85rem; }
+  .li-book-list { list-style: none; margin: 0 0 8px; padding: 0 0 0 2.1em; }
+  .li-book-list li { padding: 5px 0; border-bottom: 1px solid #f2f2f2; font-size: 0.95rem; }
 
-  /* Card shell -- shape is the primary type signal (book = 2/3 portrait
-     cover proportions, video = 16/9 landscape thumbnail proportions,
-     file/image = 1/1 square, unknown/no-preview-available = 4/3) --
-     reads before anyone gets to the label or badge text. Border color is
-     the secondary, redundant signal: 1px #ddd default, 1px red for video
-     specifically (session-confirmed values -- started at a thicker/
-     darker treatment, walked back to this after comparing against a
-     real page). type-file/type-image (§4a) reuse this exact shell --
-     only their thumb-wrap aspect ratio + inner content differ from the
-     original type-book/type-video/type-unknown set Links introduced. */
-  .preview-card { display: block; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; text-decoration: none; background: #fff; }
-  .preview-card.type-video { border-color: #c62828; }
-  .preview-card.type-book .preview-thumb-wrap { aspect-ratio: 2 / 3; }
-  .preview-card.type-video .preview-thumb-wrap { aspect-ratio: 16 / 9; }
-  .preview-card.type-unknown .preview-thumb-wrap { aspect-ratio: 4 / 3; }
-  .preview-card.type-file .preview-thumb-wrap,
-  .preview-card.type-image .preview-thumb-wrap { aspect-ratio: 1 / 1; }
-  .preview-thumb-wrap { position: relative; background: #eee; }
-  .preview-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .fallback-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #aaa; background: #f2f2f2; }
-  .play-badge { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.1); }
-  .play-circle { width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; }
-  .platform-badge { position: absolute; left: 5px; bottom: 5px; font-size: 9px; padding: 1px 6px; border-radius: 8px; background: rgba(0,0,0,0.6); color: #fff; letter-spacing: 0.02em; }
-  .preview-card-label { padding: 6px 7px; font-size: 11.5px; color: #222; line-height: 1.3; word-break: break-word; }
+  .li-empty-note { color: #888; font-size: 0.9rem; padding: 1rem 0; }
 
-  /* type-file (§4a) -- icon is a flat badge graphic on a transparent
-     background, not a photo, so it gets `object-fit: contain` + padding
-     on a light neutral backdrop rather than the `cover`-fit real
-     thumbnails use (same idea as .fallback-icon above, just a real
-     per-filetype <img> instead of a text glyph, since every file gets an
-     icon -- config.FILETYPE_ICON_FALLBACK covers anything not in the
-     8-filetype map, so there's never a "no icon" case to handle here). */
-  .preview-card.type-file .preview-thumb-wrap { background: #f2f2f2; }
-  .preview-card.type-file .preview-thumb-wrap img { object-fit: contain; padding: 16%; box-sizing: border-box; }
-
-  /* type-image (§4a) -- the existing hover-preview + download widget
-     (pipeline.viewers.render_preview_tile()/PREVIEW_WIDGET_STYLE, §6.4)
-     is nested inside the shared thumb-wrap unchanged; its own
-     `.preview-thumb`/`.thumb-img` elements just need to fill the
-     wrap's box (previously a fixed 96x96px square of their own) so the
-     card shell -- not the widget -- now owns sizing. `.thumb-dl`'s
-     absolute corner-badge positioning is untouched, since it's already
-     relative to `.preview-thumb`, not to any fixed image size. */
-  .preview-card.type-image .preview-thumb-wrap .preview-thumb { display: block; width: 100%; height: 100%; }
-  .preview-card.type-image .preview-thumb-wrap .thumb-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-  /* List view: a genuinely different, compact ROW -- fixed 34px square
-     thumbnail (shape distinction is grid-only; list relies on border
-     color for links, and is simply uniform for file/image cards) +
-     single-line label -- not the grid card shrunk into one column,
-     which produced tall wasteful rows when thumbnails kept their
-     type-specific aspect ratio. Badge/play-icon dropped: no room for
-     them at this size, and border color alone still carries the link
-     type signal. Label is nowrap+ellipsis so no row can wrap and grow
-     taller than its neighbors -- that's what makes every row the same
-     height, not just the fixed thumbnail size alone. Un-scoped from
-     `.asset-bucket.links` this pass (§4a) -- applies to every card in
-     every bucket the master toggle governs, not just Links. */
-  .view-list .preview-card { display: flex; align-items: center; gap: 8px; border-radius: 6px; }
-  .view-list .preview-thumb-wrap { flex: 0 0 auto; width: 34px; aspect-ratio: 1 / 1 !important; }
-  .view-list .play-badge, .view-list .platform-badge { display: none; }
-  .view-list .preview-card-label { padding: 4px 8px 4px 0; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  /* type-image in list view (§4a) -- the hover-preview widget's own
-     22px download badge (.thumb-dl) doesn't fit inside a 34px list
-     thumbnail (confirmed visually -- it swallowed the whole thumbnail).
-     Same tradeoff Links' list view already makes for its own badges at
-     this size (see .play-badge/.platform-badge above): drop it, keep
-     the thumbnail itself clickable for the hover-preview. Whole-row
-     download stays available from Grid view. */
-  .view-list .preview-card.type-image .thumb-dl { display: none; }
-</style>
-
-<style>
-  .preview-thumb { position: relative; display: inline-block; line-height: 0; }
-  .thumb-img { cursor: zoom-in; }
-  .thumb-dl { position: absolute; right: 4px; bottom: 4px; background: rgba(0,0,0,0.6); color: #fff;
-              width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center;
-              justify-content: center; text-decoration: none; font-size: 0.8rem; line-height: 1;
-              cursor: pointer; }
-  .thumb-dl:hover { background: rgba(0,0,0,0.85); }
-  .thumb-dl.downloading { opacity: 0.6; pointer-events: none; }
-
-  /* Fixed, centered preview that fades + scales in over a darkening
-     backdrop -- matching the reference catalog design (uploaded
-     catalog.html) rather than the earlier flat, abrupt-show/hide
-     modal. Driven by a CSS class (not the `hidden` attribute), since
-     `display` can't be transitioned -- opacity/visibility/transform
-     can. This also sidesteps the earlier `[hidden]` vs `display:`
-     specificity bug entirely for this element: nothing here sets its
-     own `display`, so there's no UA-stylesheet tie to lose.
-
-     pointer-events: none ALWAYS (never `auto`, even while .visible) --
-     this isn't cosmetic, it's load-bearing. Once shown, this overlay
-     sits on top of the very tile the mouse is still resting on; if it
-     accepted pointer events, the browser would treat the tile as
-     "left" the instant the overlay appeared (it's now the topmost
-     element under the cursor) even though the mouse never moved --
-     which immediately fired this module's own mouseleave handler and
-     hid the preview it had just shown. Confirmed directly: instrumented
-     logging caught `mouseleave` firing ~1s after `mouseenter`, exactly
-     when the dwell timer completed and the overlay appeared -- that's
-     what "flickers and doesn't show until repositioning the mouse" was.
-     The reference design had this right from the start (`.preview {
-     pointer-events: none; }`, permanently) -- this was lost when
-     adapting it. Dismissal relies entirely on the tile's own
-     mouseleave now (move the mouse away -> hides), not a click on the
-     overlay, since pointer-events: none means the overlay can never
-     receive a click in the first place. */
-  .preview-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-                      background: rgba(20,16,12,0); opacity: 0; visibility: hidden; pointer-events: none;
-                      transition: opacity 0.12s ease, background 0.12s ease, visibility 0s linear 0.12s;
-                      z-index: 200; }
-  .preview-overlay.visible { background: rgba(20,16,12,0.55); opacity: 1; visibility: visible;
-                              transition: opacity 0.12s ease, background 0.12s ease; }
-  .preview-overlay img { max-width: 92vw; max-height: 92vh; width: auto; height: auto;
-                          object-fit: contain; background: var(--card-bg, #fff); border: 4px solid var(--card-bg, #fff);
-                          box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.97);
-                          transition: transform 0.12s ease; }
-  .preview-overlay.visible img { transform: scale(1); }
-
-  /* Bug fix (see module docstring): `[hidden]` and a plain class
-     selector both have specificity (0,1,0); author CSS loaded after the
-     UA stylesheet wins that tie, so any `hidden`-toggled element that
-     also sets its own `display:` stays visible without this override.
-     !important beats the tie unconditionally regardless of order/
-     specificity. Still needed here for OTHER hidden-toggled elements
-     on pages that include this stylesheet (.preview-overlay itself no
-     longer relies on `hidden` -- see above). */
-  [hidden] { display: none !important; }
+  /* ===== Back to top ===== */
+  .li-back-top { position: fixed; right: 22px; bottom: 22px; width: 42px; height: 42px; border-radius: 50%;
+    background: #1a5fb4; color: #fff; border: none; font-size: 18px; cursor: pointer; display: none;
+    align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 30; }
+  .li-back-top.show { display: flex; }
+  .li-back-top:hover { background: #164a8f; }
 </style>
 <style>
   :root { --site-font: 'EB Garamond', Georgia, serif; }
@@ -233,160 +140,596 @@
   .site-search-result:hover { background: #f4f6fa; }
   .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
   .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
 </style>
+<style>
+  .badge{font-family:inherit;font-size:0.7rem;font-weight:600;letter-spacing:.02em;
+    border-radius:5px;padding:2px 8px;margin-left:6px;vertical-align:middle;
+    white-space:nowrap;display:inline-block;line-height:1.5;}
+  a.badge{text-decoration:none!important;cursor:pointer;}
+  a.badge:hover{text-decoration:none!important;filter:brightness(0.94);}
+  .badge-new{background:#fbe1db;color:#a13a24;}
+  .badge-gallery{background:#eee3d3;color:#7a5a34;}
+  .badge-favorite{background:#f6e6b8;color:#8a6a13;}
+  .badge-hs{background:#dbe8e3;color:#2f6357;}
+  .badge-audiobook{background:#e6dff5;color:#5b3a94;}
+  .badge-film{background:#f3dede;color:#8a3a3a;}
+  .badge-readonline{background:#dbe9fb;color:#164a8f;}
+  .badge-fbundle{background:#dce7f7;color:#1e4d8c;}
+</style>
+<!-- Background System plugin (pipeline.backgrounds) -- this page has no
+     background set on <body>/<html> of its own (see this file's earlier
+     comment), so the BACKGROUND_CONTENT_OPEN/BACKGROUND_CONTENT_CLOSE
+     tokens below just need to raise ordinary content above the plugin's
+     fixed, z-index:0 background layer -- no body-color change needed
+     here the way home.html needed one. -->
+<style>
+:root{--hs-sky-adjust:1;--hs-pulse-adjust:1;--hs-meteor-rate:1}
+#hs-background{position:fixed;inset:-7%;z-index:0;overflow:hidden;pointer-events:none}
+#hs-background svg{width:100%;height:100%;display:block}
+.hs-pulse{animation:hsPulse calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+.hs-drift{animation:hsDrift calc(37.5s / var(--hs-sky-adjust)) ease-in-out infinite alternate}
+.hs-meteor{opacity:0}
+@keyframes hsPulse{from{opacity:.22}to{opacity:.92}}
+@keyframes hsDrift{to{transform:rotate(3.5deg) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.hs-pulse,.hs-drift,.hs-pulse-strong{animation:none!important}.hs-meteor{opacity:0}}
+
+.hs-pulse-strong{animation:hsPulseStrong calc(4.76s / var(--hs-pulse-adjust)) ease-in-out infinite alternate}
+@keyframes hsPulseStrong{from{opacity:.05}to{opacity:1}}
+
+:root {
+  --hs-reader-bg: #f3eadc;
+  --hs-outer-bg: #f3eadc;
+  --hs-reader-ink: #332f2d;
+}
+.hs-content {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 4rem);
+  background: var(--hs-reader-bg);
+  color: var(--hs-reader-ink);
+  padding: 1.75rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.10);
+}</style>
 </head>
 <body>
-<div class="site-nav"><a class="site-nav-home" href="/">&#9738; Home</a><nav class="site-pages-nav"><a href="/library/">Browse Library</a><a href="/about Home Scholar Library.html">About</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/ebook_collections.html">Ebook Collections</a><a href="/faq.html">FAQ</a><a href="/reading-guide.html">Reading Guide</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
-<div class="breadcrumb"><a href="/library/">Home Scholar Library</a></div>
-<h1>Home Scholar Library</h1>
+<div id="hs-background" aria-hidden="true"></div>
+<div class="hs-content">
+<div class="site-nav"><a class="site-nav-home" href="/The-Home-Scholar-Library/">&#9738; Home</a><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/online_ebooks.html">Online Ebooks</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div>
 
+<h1>Library</h1>
+<div class="li-stats" id="liStats"></div>
 
-<div class="folders"><a class="folder" href="/library/--Abbott%2C%20Jacob/"><span class="folder-name">--Abbott, Jacob</span></a>
-<a class="folder" href="/library/--Facebook%20Pages/"><span class="folder-name">--Facebook Pages</span></a>
-<a class="folder" href="/library/--Fudd%2C%20Elmer/"><span class="folder-name">--Fudd, Elmer</span></a>
-<a class="folder" href="/library/--Pinelli%2C%20%20Bartolomeo%20%281781%E2%80%931835%29/"><span class="folder-name">--Pinelli,  Bartolomeo (1781–1835)</span></a>
-<a class="folder" href="/library/Asimov%2C%20Isaac/"><span class="folder-name">Asimov, Isaac</span></a>
-<a class="folder" href="/library/Carr%2C%20Edward%20Hallett/"><span class="folder-name">Carr, Edward Hallett</span></a>
-<a class="folder" href="/library/Maybury%2C%20Richard%20J/"><span class="folder-name">Maybury, Richard J</span></a>
-<a class="folder" href="/library/Nardo%2C%20Don/"><span class="folder-name">Nardo, Don</span></a>
-<a class="folder" href="/library/Steiner%2C%20Rudolf/"><span class="folder-name">Steiner, Rudolf</span></a></div>
-<div class="files"></div>
-<div id="preview-overlay" class="preview-overlay"><img id="preview-img" src="" alt=""></div>
+<nav class="li-tabbar">
+  <button class="li-tab active" data-tab="library">Library <span class="n" id="liCountLibrary"></span></button>
+  <button class="li-tab" data-tab="galleries">Galleries <span class="n" id="liCountGalleries"></span></button>
+  <button class="li-tab" data-tab="audiobooks">Audiobooks <span class="n" id="liCountAudiobooks"></span></button>
+  <button class="li-tab" data-tab="films">Films <span class="n" id="liCountFilms"></span></button>
+  <button class="li-tab" data-tab="readonline">Read Online <span class="n" id="liCountReadOnline"></span></button>
+  <button class="li-tab" data-tab="fbundles">Facebook Bundles <span class="n" id="liCountFbundles"></span></button>
+</nav>
+
+<div class="li-toolbar" id="liToolbar">
+  <div class="li-mode-toggle" id="liModeToggle">
+    <button data-mode="authors" aria-pressed="true" id="liModeAuthorsBtn"></button>
+    <button data-mode="books" aria-pressed="false" id="liModeBooksBtn"></button>
+  </div>
+  <div class="li-tree-actions" id="liTreeActions">
+    <button id="liExpandAllBtn">Expand all</button>
+    <button id="liCollapseAllBtn">Collapse all</button>
+  </div>
+</div>
+
+<div class="li-alpha-index" id="liAlphaIndex">
+  <div class="li-alpha-index-inner" id="liAlphaIndexInner"></div>
+</div>
+
+<main class="li-main">
+  <div class="li-view active" id="liView-library"></div>
+  <div class="li-view" id="liView-galleries"></div>
+  <div class="li-view" id="liView-audiobooks"></div>
+  <div class="li-view" id="liView-films"></div>
+  <div class="li-view" id="liView-readonline"></div>
+  <div class="li-view" id="liView-fbundles"></div>
+</main>
+
+<button class="li-back-top" id="liBackTop" title="Back to top" aria-label="Back to top">&uarr;</button>
+
+<script>
+function bookBadges(b, isNew){
+  var out = '';
+  if (isNew) out += '<a class="badge badge-new" href="/The-Home-Scholar-Library/#latest">New</a>';
+  if (b.isGallery) out += '<a class="badge badge-gallery" href="/The-Home-Scholar-Library/library/#galleries">Gallery</a>';
+  if (b.isFavorite) out += '<a class="badge badge-favorite" href="/The-Home-Scholar-Library/#favorites">★ Favorite</a>';
+  if (b.isHsEdition) out += '<a class="badge badge-hs" href="/The-Home-Scholar-Library/#hs_editions">Home Scholar Edition</a>';
+  if (b.isAudiobook) out += '<a class="badge badge-audiobook" href="/The-Home-Scholar-Library/library/#audiobooks">🎧 Audiobook</a>';
+  if (b.isFilm) out += '<a class="badge badge-film" href="/The-Home-Scholar-Library/library/#films">🎬 Film</a>';
+  if (b.isFbundle) out += '<a class="badge badge-fbundle" href="/The-Home-Scholar-Library/library/#fbundles">Facebook Bundle</a>';
+  if (b.isReadOnline) out += '<a class="badge badge-readonline" href="/The-Home-Scholar-Library/library/#readonline">Read Online</a>';
+  return out;
+}
+function fbundleBadges(isNew){
+  return isNew ? '<a class="badge badge-new" href="/The-Home-Scholar-Library/#latest">New</a>' : '';
+}
+function escBadge(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+</script>
+<script>
+(function(){
+  var BASE_PATH = "/The-Home-Scholar-Library";
+  var DATA_URL = "/The-Home-Scholar-Library/assets/library-index-data.json";
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function encodePath(p){ return p.split('/').map(encodeURIComponent).join('/'); }
+  function bookHref(path){ return BASE_PATH + '/library/' + encodePath(path) + '/'; }
+  function authorHref(name){ return BASE_PATH + '/library/' + encodeURIComponent(name) + '/'; }
+
+  // Natural-ish sort -- split into text/number runs so "Book 2" < "Book 10".
+  function natKey(str){ return String(str).toLowerCase().match(/\d+|\D+/g) || [str]; }
+  function natCompare(a, b){
+    var ak = natKey(a), bk = natKey(b);
+    var len = Math.max(ak.length, bk.length);
+    for (var i = 0; i < len; i++){
+      var av = ak[i], bv = bk[i];
+      if (av === undefined) return -1;
+      if (bv === undefined) return 1;
+      var an = /^\d+$/.test(av), bn = /^\d+$/.test(bv);
+      if (an && bn){
+        var d = parseInt(av,10) - parseInt(bv,10);
+        if (d !== 0) return d;
+      } else if (av !== bv) return av < bv ? -1 : 1;
+    }
+    return 0;
+  }
+  function firstLetter(str){
+    var m = String(str).trim().match(/[A-Za-z]/);
+    return m ? m[0].toUpperCase() : '#';
+  }
+
+  // Strip a leading catalog-numbering prefix ("Book 01.", "Volume 09.",
+  // "GA-7,", a bare "04 ") so sorting/grouping/display go by the actual
+  // title instead of clustering everything under one letter -- see
+  // docs/library-index-integration.md §2 "Title sort & display". Only a
+  // known prefix-word whitelist (plus bare leading digits) qualifies, so
+  // "Mahabharata 3 Vols. Translated By M N Dutt" is left alone.
+  var PREFIX_RE = /^(?:(?:Book|Volume|Vol|Part|Chapter|No\.?|Number|GA)[\s\-]*)?\d{1,4}[.,:)\-]?\s+(?=\S)/i;
+
+  // GA-prefixed titles (Rudolf Steiner's Gesamtausgabe catalog numbers)
+  // are a special case of the above, checked FIRST: the real on-disk
+  // prefix is "GA<identifier>," followed by a space (e.g. "GA116, ",
+  // "GA-7, ", "GA 291a, ") -- unlike the plain PREFIX_RE case above,
+  // where the whole matched prefix is just noise to discard, the GA
+  // identifier itself is real reference information a visitor may still
+  // want to see. So instead of being dropped, it's moved to a
+  // parenthesized suffix on the (sorted/grouped/displayed) title --
+  // "GA116, Nature of Man" -> "Nature of Man (GA116)" -- so sorting/
+  // grouping go by the actual title (the point of stripping it from the
+  // front), while the GA number is still visible, just at the end, sans
+  // its comma. Falls through to the generic PREFIX_RE above (which still
+  // matches a bare "GA" prefix with no comma) if this doesn't match --
+  // GA remains in that alternation on purpose, as the fallback for that
+  // edge case.
+  var GA_PREFIX_RE = /^GA\s*([^,]+),\s+(?=\S)/i;
+
+  function stripNumberPrefix(title){
+    title = String(title);
+    var ga = title.match(GA_PREFIX_RE);
+    if (ga) return title.slice(ga[0].length) + ' (GA' + ga[1].trim() + ')';
+    var m = title.match(PREFIX_RE);
+    return m ? title.slice(m[0].length) : title;
+  }
+
+  var ALPHABET = '#ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  function buildAlphaIndex(letters, containerId){
+    var present = {};
+    letters.forEach(function(l){ present[l] = true; });
+    var html = '<a href="#" class="li-alpha-link li-top" data-jump-top="1">&uarr; Top</a>';
+    ALPHABET.forEach(function(letter){
+      html += present[letter]
+        ? '<a class="li-alpha-link" href="#' + containerId + '-' + letter + '">' + letter + '</a>'
+        : '<span class="li-alpha-link li-disabled">' + letter + '</span>';
+    });
+    return html;
+  }
+
+  var DATA = null;
+  var NEWEST_SET = {};
+  function isNewItem(path){ return !!NEWEST_SET[path]; }
+
+  function renderBooksFlat(authors, containerId){
+    var rows = [];
+    authors.forEach(function(a){
+      a.books.forEach(function(b){
+        rows.push({ author: a.name, book: b, displayTitle: stripNumberPrefix(b.title) });
+      });
+    });
+    rows.sort(function(x,y){ return natCompare(x.displayTitle, y.displayTitle); });
+
+    var lettersSeen = [], html = '', lastLetter = null;
+    rows.forEach(function(r){
+      var L = firstLetter(r.displayTitle);
+      if (L !== lastLetter){
+        html += '<h2 class="li-letter-heading" id="' + containerId + '-' + L + '">' + L + '</h2>';
+        lettersSeen.push(L); lastLetter = L;
+      }
+      html += '<div class="li-row">' +
+                '<span class="li-row-title"><a href="' + bookHref(r.book.path) + '">' + esc(r.displayTitle) + '</a>' +
+                  bookBadges(r.book, isNewItem(r.book.path)) + '</span>' +
+                '<span class="li-row-author">by <a href="' + authorHref(r.author) + '">' + esc(r.author) + '</a></span>' +
+              '</div>';
+    });
+    if (!rows.length) html = '<div class="li-empty-note">No items in this view yet.</div>';
+    return { html: html, letters: lettersSeen };
+  }
+
+  function renderAuthorsTree(authors, containerId){
+    var sorted = authors.slice().sort(function(a,b){ return natCompare(a.name, b.name); });
+    var lettersSeen = [], html = '', lastLetter = null;
+    sorted.forEach(function(a){
+      var L = firstLetter(a.name);
+      if (L !== lastLetter){
+        html += '<h2 class="li-letter-heading" id="' + containerId + '-' + L + '">' + L + '</h2>';
+        lettersSeen.push(L); lastLetter = L;
+      }
+      var books = a.books.map(function(b){ return { book: b, displayTitle: stripNumberPrefix(b.title) }; })
+                          .sort(function(x,y){ return natCompare(x.displayTitle, y.displayTitle); });
+      var itemsHtml = books.map(function(entry){
+        return '<li><a href="' + bookHref(entry.book.path) + '">' + esc(entry.displayTitle) + '</a>' +
+               bookBadges(entry.book, isNewItem(entry.book.path)) + '</li>';
+      }).join('');
+      html += '<details class="li-author-node" open>' +
+                '<summary><a href="' + authorHref(a.name) + '">' + esc(a.name) + '</a> ' +
+                  '<span class="li-author-count">(' + books.length + ')</span></summary>' +
+                '<ul class="li-book-list">' + itemsHtml + '</ul>' +
+              '</details>';
+    });
+    if (!sorted.length) html = '<div class="li-empty-note">No authors have items in this view yet.</div>';
+    return { html: html, letters: lettersSeen };
+  }
+
+  function renderFbundles(){
+    var items = DATA.fbundles.map(function(f){ return { f: f, displayTitle: stripNumberPrefix(f.title) }; })
+                              .sort(function(x,y){ return natCompare(x.displayTitle, y.displayTitle); });
+    var lettersSeen = [], html = '', lastLetter = null;
+    items.forEach(function(entry){
+      var f = entry.f;
+      var L = firstLetter(entry.displayTitle);
+      if (L !== lastLetter){
+        html += '<h2 class="li-letter-heading" id="fbundles-' + L + '">' + L + '</h2>';
+        lettersSeen.push(L); lastLetter = L;
+      }
+      // Links to the bundle's own node page (same URL catalog_renderer
+      // already gives it) rather than guessing the derived _fbundle_web
+      // viewer path here a second time -- that node page already renders
+      // the correct "View collection" / "Download .zip" buttons via
+      // pipeline.catalog_renderer._fbundle_viewer_href(), pairing-gate
+      // failures included.
+      html += '<div class="li-row">' +
+                '<span class="li-row-title"><a href="' + bookHref(f.path) + '">' + esc(entry.displayTitle) + '</a>' +
+                  fbundleBadges(isNewItem(f.path)) + '</span>' +
+              '</div>';
+    });
+    if (!items.length) html = '<div class="li-empty-note">No Facebook bundles yet.</div>';
+    return { html: html, letters: lettersSeen };
+  }
+
+  // Films tab: a flat, alphabetically-sorted list with NO author grouping
+  // at all -- "there are no authors" -- same shape as renderFbundles()
+  // above rather than the Authors/Books toggle every other tab uses (see
+  // render()'s showToolbar, which deliberately excludes 'films' the same
+  // way it already excludes 'fbundles'). Unlike fbundles, a film item IS
+  // book-shaped (DATA.films entries come from library_index.py's shared
+  // _book_entry(), same fields a Library/Galleries/Audiobooks row has), so
+  // this uses the full bookBadges() renderer, not fbundleBadges().
+  function renderFilms(){
+    var items = DATA.films.map(function(f){ return { f: f, displayTitle: stripNumberPrefix(f.title) }; })
+                           .sort(function(x,y){ return natCompare(x.displayTitle, y.displayTitle); });
+    var lettersSeen = [], html = '', lastLetter = null;
+    items.forEach(function(entry){
+      var f = entry.f;
+      var L = firstLetter(entry.displayTitle);
+      if (L !== lastLetter){
+        html += '<h2 class="li-letter-heading" id="films-' + L + '">' + L + '</h2>';
+        lettersSeen.push(L); lastLetter = L;
+      }
+      html += '<div class="li-row">' +
+                '<span class="li-row-title"><a href="' + bookHref(f.path) + '">' + esc(entry.displayTitle) + '</a>' +
+                  bookBadges(f, isNewItem(f.path)) + '</span>' +
+              '</div>';
+    });
+    if (!items.length) html = '<div class="li-empty-note">No films yet.</div>';
+    return { html: html, letters: lettersSeen };
+  }
+
+  var state = { tab: 'library', mode: 'authors' };
+
+  function currentAuthorsForTab(tab){
+    if (tab === 'library') return DATA.authors;
+    if (tab === 'galleries'){
+      return DATA.authors
+        .map(function(a){ return { name: a.name, books: a.books.filter(function(b){ return b.isGallery; }) }; })
+        .filter(function(a){ return a.books.length > 0; });
+    }
+    if (tab === 'audiobooks'){
+      return DATA.authors
+        .map(function(a){ return { name: a.name, books: a.books.filter(function(b){ return b.isAudiobook; }) }; })
+        .filter(function(a){ return a.books.length > 0; });
+    }
+    if (tab === 'readonline'){
+      return DATA.authors
+        .map(function(a){ return { name: a.name, books: a.books.filter(function(b){ return b.isReadOnline; }) }; })
+        .filter(function(a){ return a.books.length > 0; });
+    }
+    return [];
+  }
+
+  function render(){
+    var tab = state.tab;
+    document.querySelectorAll('.li-tab').forEach(function(btn){
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    document.querySelectorAll('.li-view').forEach(function(v){ v.classList.remove('active'); });
+    document.getElementById('liView-' + tab).classList.add('active');
+
+    var showToolbar = (tab === 'library' || tab === 'galleries' || tab === 'audiobooks' || tab === 'readonline');
+    document.getElementById('liToolbar').style.display = showToolbar ? '' : 'none';
+    document.getElementById('liTreeActions').style.display = (showToolbar && state.mode === 'authors') ? '' : 'none';
+
+    if (showToolbar){
+      var scopedAuthors = currentAuthorsForTab(tab);
+      var scopedBookCount = scopedAuthors.reduce(function(sum, a){ return sum + a.books.length; }, 0);
+      document.getElementById('liModeAuthorsBtn').textContent = 'Authors (' + scopedAuthors.length + ')';
+      document.getElementById('liModeBooksBtn').textContent = 'Books (' + scopedBookCount + ')';
+    }
+
+    var result;
+    if (tab === 'fbundles'){
+      result = renderFbundles();
+      document.getElementById('liView-fbundles').innerHTML = result.html;
+    } else if (tab === 'films'){
+      result = renderFilms();
+      document.getElementById('liView-films').innerHTML = result.html;
+    } else {
+      var authors = currentAuthorsForTab(tab);
+      result = state.mode === 'authors' ? renderAuthorsTree(authors, tab) : renderBooksFlat(authors, tab);
+      document.getElementById('liView-' + tab).innerHTML = result.html;
+    }
+    document.getElementById('liAlphaIndexInner').innerHTML = buildAlphaIndex(result.letters, tab);
+  }
+
+  document.querySelectorAll('.li-tab').forEach(function(btn){
+    btn.addEventListener('click', function(){ state.tab = btn.dataset.tab; render(); });
+  });
+
+  function updateModeButtons(){
+    document.getElementById('liModeAuthorsBtn').setAttribute('aria-pressed', state.mode === 'authors');
+    document.getElementById('liModeBooksBtn').setAttribute('aria-pressed', state.mode === 'books');
+  }
+  document.getElementById('liModeAuthorsBtn').addEventListener('click', function(){ state.mode = 'authors'; updateModeButtons(); render(); });
+  document.getElementById('liModeBooksBtn').addEventListener('click', function(){ state.mode = 'books'; updateModeButtons(); render(); });
+
+  document.getElementById('liExpandAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.li-view.active details.li-author-node').forEach(function(d){ d.open = true; });
+  });
+  document.getElementById('liCollapseAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.li-view.active details.li-author-node').forEach(function(d){ d.open = false; });
+  });
+
+  var backBtn = document.getElementById('liBackTop');
+  window.addEventListener('scroll', function(){
+    backBtn.classList.toggle('show', window.scrollY > 480);
+  }, { passive: true });
+  backBtn.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  // Delegated -- the alpha index bar's contents are replaced on every
+  // render(), so a static listener attached once here survives that.
+  document.getElementById('liAlphaIndex').addEventListener('click', function(e){
+    var t = e.target.closest('[data-jump-top]');
+    if (!t) return;
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  fetch(DATA_URL).then(function(r){ return r.json(); }).then(function(data){
+    DATA = data;
+    NEWEST_SET = {};
+    (data.newestPaths || []).forEach(function(p){ NEWEST_SET[p] = true; });
+
+    document.getElementById('liStats').innerHTML =
+      '<span>Last updated: <b>' + esc(data.lastUpdated) + '</b></span>' +
+      '<span><b>' + data.totalBooks + '</b> total book pages</span>' +
+      '<span><b>' + data.totalAuthors + '</b> authors</span>';
+      // Facebook bundle count removed from this top stats line by request --
+      // still tracked in data.totalFbundles and shown on the "Facebook
+      // Bundles" tab button itself (liCountFbundles) below.
+
+    document.getElementById('liCountLibrary').textContent = '(' + data.totalBooks + ')';
+    document.getElementById('liCountGalleries').textContent = '(' + data.totalGalleries + ')';
+    document.getElementById('liCountAudiobooks').textContent = '(' + data.totalAudiobooks + ')';
+    document.getElementById('liCountFilms').textContent = '(' + data.totalFilms + ')';
+    document.getElementById('liCountReadOnline').textContent = '(' + data.totalReadOnline + ')';
+    document.getElementById('liCountFbundles').textContent = '(' + data.totalFbundles + ')';
+
+    // Deep-link from a badge (pipeline.badges' library_anchor_url(), e.g.
+    // "/library/#audiobooks" or "/library/#films") -- simpler than
+    // pipeline.home's own activateFromHash(): render() above already keys
+    // entirely off state.tab, so all that's needed is seeding it from the
+    // hash before the first render() call below, no separate "activate a
+    // panel, then scroll to it" step. Only a known tab id is honored --
+    // an unrelated/stray hash leaves the default 'library' tab in place.
+    var hashTab = (window.location.hash || '').replace(/^#/, '');
+    if (['library', 'galleries', 'audiobooks', 'films', 'readonline', 'fbundles'].indexOf(hashTab) !== -1){
+      state.tab = hashTab;
+    }
+
+    updateModeButtons();
+    render();
+  }).catch(function(err){
+    document.getElementById('liView-library').innerHTML =
+      '<div class="li-empty-note">Could not load the library index data (' + esc(err && err.message) + ').</div>';
+  });
+})();
+</script>
+</div>
+<script src="/The-Home-Scholar-Library/assets/backgrounds/generators/common.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/library.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/dark.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/deep-sky-locked.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/starfield.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/generators/solar-system.js"></script><script src="/The-Home-Scholar-Library/assets/backgrounds/plugin.js"></script><script>(function(){
+  if (!window.HomeScholarBackgrounds) return;
+  var target = document.getElementById("hs-background");
+  if (!target) return;
+  // Additive (design doc §6, pipeline.webbook_nav): the server-resolved
+  // mode, stashed on the target itself so client-side code -- today
+  // only webbook_nav.js's "Auto" picker button -- can recover "what did
+  // this page's own deterministic default actually pick" without
+  // duplicating mode_for()'s resolution logic in JS. plugin.js's own
+  // render() already does the same thing for `identity`
+  // (target.dataset.identity); this is the same pattern for `mode`.
+  target.dataset.mode = "library";
+  // A saved, non-"auto" override is already on <html> by now --
+  // pipeline.webbook_nav's preapply_script() runs synchronously in <head>,
+  // before this script (loaded at the end of body) ever does. Render THAT
+  // mode directly instead of this page's own default, so a visitor with a
+  // saved override never sees the wrong scene drawn first.
+  var savedOverride = document.documentElement.getAttribute("data-bg-override");
+  var effectiveMode = (savedOverride && savedOverride !== "auto") ? savedOverride : "library";
+  var result = HomeScholarBackgrounds.render({
+    target: target,
+    mode: effectiveMode,
+    identity: "home-scholar-library-bg-v1::/library/Abbott%2C%20Jacob/Alexander%20the%20Great/",
+    date: new Date().toISOString().slice(0, 10)
+  });
+  if (result) {
+    var root = document.documentElement.style;
+    if (result.reader) {
+      root.setProperty("--hs-reader-bg", result.reader);
+      root.setProperty("--hs-outer-bg", result.reader);
+    }
+    if (result.ink) root.setProperty("--hs-reader-ink", result.ink);
+  }
+})();</script>
 <script>
 (function() {
-  // §4a -- ONE master Grid/List toggle for the whole page (replaces the
-  // earlier Links-only per-bucket toggle/key). Applies to every
-  // .bucket-items EXCEPT inside .asset-bucket.fbundle -- Facebook
-  // Bundles is exempt on purpose (see catalog_renderer module docstring/
-  // _render_view_toggle()), so its own item layout is never touched here
-  // regardless of which view is selected.
-  var STORAGE_KEY = "library-asset-view";
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
 
-  function applyView(view) {
-    document.querySelectorAll(".asset-bucket:not(.fbundle) .bucket-items").forEach(function(items) {
-      items.classList.toggle("view-grid", view === "grid");
-      items.classList.toggle("view-list", view === "list");
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
     });
-    document.querySelectorAll(".view-toggle-btn").forEach(function(btn) {
-      btn.setAttribute("aria-pressed", btn.dataset.view === view ? "true" : "false");
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
     });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
   }
 
   document.addEventListener("click", function(e) {
-    var btn = e.target.closest(".view-toggle-btn");
-    if (!btn) return;
-    var view = btn.dataset.view;
-    try { localStorage.setItem(STORAGE_KEY, view); } catch (err) { /* private browsing, etc. */ }
-    applyView(view);
-  });
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
 
-  var saved = "grid";
-  try { saved = localStorage.getItem(STORAGE_KEY) || "grid"; } catch (err) { /* private browsing, etc. */ }
-  applyView(saved);
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
 })();
-</script>
-<script>
+
 (function() {
-  var HOVER_DELAY_MS = 700;
-  var overlay = document.getElementById("preview-overlay");
-  var overlayImg = document.getElementById("preview-img");
-  if (!overlay || !overlayImg) return;
-  var hoverTimer = null;
-
-  function showPreview(tile) {
-    overlayImg.src = tile.dataset.full;
-    overlayImg.alt = tile.dataset.name || "";
-    overlay.classList.add("visible");
-  }
-  function hidePreview() {
-    overlay.classList.remove("visible");
-  }
-
-  // Fetch-to-blob download: the plain `download` attribute on `.thumb-dl`
-  // is silently ignored by browsers for a cross-origin href (full_url
-  // points at Internet Archive), so a plain click just navigates/opens
-  // the image instead of saving it -- confirmed IA's file-serving
-  // response itself sends `Access-Control-Allow-Origin: *` (checked
-  // against a real item/file, both the archive.org redirect hop and the
-  // resolved ia*.us.archive.org response), so a same-origin-style fetch
-  // is allowed and we can build a real local download from the bytes.
-  // Falls back to opening the image in a new tab if the fetch ever
-  // fails (network error, IA outage, a future file host that doesn't
-  // send the header) -- never leaves the click doing nothing.
-  function downloadFull(link) {
-    var url = link.getAttribute("href");
-    var filename = link.getAttribute("download") || "";
-    link.classList.add("downloading");
-    fetch(url)
-      .then(function(resp) {
-        if (!resp.ok) throw new Error("bad response " + resp.status);
-        return resp.blob();
-      })
-      .then(function(blob) {
-        var blobUrl = URL.createObjectURL(blob);
-        var a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 30000);
-      })
-      .catch(function() {
-        window.open(url, "_blank");
-      })
-      .finally(function() {
-        link.classList.remove("downloading");
-      });
-  }
-
-  document.querySelectorAll(".preview-thumb").forEach(function(tile) {
-    // Listen on the TILE (the wrapper around both the image and the
-    // small download icon), not the <img> alone -- the download icon
-    // is a sibling absolutely-positioned on top of the image's corner,
-    // so listening on just the <img> meant the cursor landing on/near
-    // that icon fired a spurious mouseleave (icon is now topmost under
-    // the cursor) right as the dwell timer was about to complete,
-    // resetting it -- which is why the preview only ever appeared
-    // after "repositioning" the mouse. The wrapper's boundary is what
-    // actually matters for "is the pointer over this tile at all".
-    tile.addEventListener("mouseenter", function() {
-      clearTimeout(hoverTimer);
-      hoverTimer = setTimeout(function() { showPreview(tile); }, HOVER_DELAY_MS);
-    });
-    tile.addEventListener("mouseleave", function() {
-      clearTimeout(hoverTimer);
-      hidePreview();
-    });
-  });
-
-  document.querySelectorAll(".thumb-dl").forEach(function(link) {
-    // The icon sits inside the same tile the hover-preview timer
-    // watches (deliberately -- see the tile-level listener comment
-    // above), so moving the cursor toward the icon to click it never
-    // leaves the tile: the dwell timer keeps running and the full
-    // preview overlay was popping up right as/before the click landed.
-    // Cancelling the timer (and hiding an already-shown preview) the
-    // moment the cursor reaches the icon specifically -- not just the
-    // tile generally -- stops that: hovering the icon is a distinct
-    // intent (download) from hovering the image (preview), even though
-    // both live inside the same tile boundary.
-    link.addEventListener("mouseenter", function() {
-      clearTimeout(hoverTimer);
-      hidePreview();
-    });
-    link.addEventListener("click", function(e) {
-      e.preventDefault();
-      clearTimeout(hoverTimer);
-      hidePreview();
-      downloadFull(link);
-    });
-  });
-})();
-</script>
-<script>
-(function() {
-  var INDEX_URL = '/assets/search-index.json';
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
   var indexPromise = null;
 
   function loadIndex() {

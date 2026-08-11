@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Home Scholar Library</title>
-<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/The-Home-Scholar-Library/assets/css/site.css">
 <style>
   :root{--ink:#242018;--paper:#f3eee2;--cream:#fbf8f0;--gold:#a87a39;--rule:#c9b993;--deep:#172018}
   *{box-sizing:border-box}
@@ -30,13 +30,18 @@
   .site-search-result:hover { background: #f4f6fa; }
   .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
   .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
  block below, config.SITE_FONT_FAMILY) --
      home_page_design addendum follow-up: the site's typography is one
      config knob, applied here too, NOT just the nav -- except the hero
      itself, which is explicitly locked below regardless of this value. */
   body{font-family:var(--site-font, Georgia, "Times New Roman", serif);line-height:1.55}
   .page{max-width:1280px;margin:0 auto;background:var(--cream);min-height:100vh;box-shadow:0 0 36px #0001}
-  .hero{position:relative;height:min(54vw,600px);min-height:390px;background:url('/assets/images/muses-banner.png') center 45%/cover no-repeat;overflow:hidden}
+  .hero{position:relative;height:min(54vw,600px);min-height:390px;background:url('/The-Home-Scholar-Library/assets/images/muses-banner.png') center 45%/cover no-repeat;overflow:hidden}
   .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,13,9,.03) 38%,rgba(12,14,10,.26) 66%,rgba(15,16,12,.88) 100%)}
   /* LOCKED to the banner's own original font, deliberately independent
      of --site-font/body above -- this is the hero text as supplied
@@ -70,7 +75,7 @@
      wrapper's own flex/justify-content entirely -- .site-nav fills the
      row and spreads itself exactly like it does everywhere else. */
   .util-bar{max-width:1280px;margin:0 auto;padding:14px clamp(20px,4vw,48px)}
-  .util-bar .site-search{max-width:300px}
+  @media(min-width:601px){.util-bar .site-search{max-width:300px}}
   .util-bar .site-search input{border-color:var(--rule);background:var(--cream);font-family:Georgia,"Times New Roman",serif}
 
   /* Home page categories (home_page_categories_design_addendum_20260810,
@@ -101,6 +106,11 @@
   .site-search-result:hover { background: #f4f6fa; }
   .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
   .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
  below) --
      retired the old .latest-section/.latest-heading/.latest-grid/
      .home-card* rules that used to live here, since they're superseded
@@ -116,7 +126,7 @@
     main{padding-top:36px;padding-bottom:34px}
     .util-bar,.home-categories{display:none}
   }
-  @media(max-width:620px){.hero{min-height:460px}.mast{padding:28px 22px 38px}main{padding-left:22px;padding-right:22px}}
+  @media(max-width:620px){.hero{min-height:460px;background-position:center 20%}.mast{padding:28px 22px 38px}main{padding-left:22px;padding-right:22px}}
 </style>
 <style>
   :root { --site-font: 'EB Garamond', Georgia, serif; }
@@ -138,11 +148,16 @@
   .site-search-result:hover { background: #f4f6fa; }
   .site-search-result-path { display: block; font-size: 0.72rem; color: #888; margin-top: 1px; }
   .site-search-empty { padding: 8px 10px; font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) {
+    .site-nav { gap: 10px 14px; }
+    .site-pages-nav { gap: 10px 14px; }
+    .site-search { flex: 1 1 100%; max-width: none; margin-left: 0; }
+  }
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="util-bar"><div class="site-nav"><nav class="site-pages-nav"><a href="/library/">Browse Library</a><a href="/about Home Scholar Library.html">About</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/ebook_collections.html">Ebook Collections</a><a href="/faq.html">FAQ</a><a href="/reading-guide.html">Reading Guide</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div></div>
+  <div class="util-bar"><div class="site-nav"><nav class="site-pages-nav"><a href="/The-Home-Scholar-Library/library/">Browse Library</a><a href="/The-Home-Scholar-Library/about.html">About</a><a href="/The-Home-Scholar-Library/contact.html">Contact</a><a href="/The-Home-Scholar-Library/online_ebooks.html">Online Ebooks</a><a href="/The-Home-Scholar-Library/faq.html">FAQ</a><a href="/The-Home-Scholar-Library/software.html">Software</a></nav><div class="site-search"><input type="search" class="site-search-input" placeholder="Search the library&hellip;" aria-label="Search the library" autocomplete="off"><div class="site-search-results" role="listbox"></div></div></div></div>
   <header class="hero" aria-label="Classical muses banner">
     <div class="mast">
       <p class="eyebrow">A Library for Independent Study</p>
@@ -154,13 +169,32 @@
   <main>
     <section class="home-categories"><style>
 .home-categories{max-width:980px;margin:56px auto 0;text-align:left}
+.home-panel-anchor{font-family:var(--site-font,serif);font-size:1.15rem;font-weight:600;
+  margin:0 0 16px;color:var(--ink);scroll-margin-top:24px}
+/* A sparsely-populated category (e.g. only one book currently tagged
+   Home Scholar Edition) makes for a short document -- too short for
+   activateFromHash()'s scrollIntoView({block:"start"}) to actually reach
+   the top of the viewport, since a browser can never scroll past the
+   bottom of the page: it clamps, leaving the anchor stranded partway
+   down instead of at the top (confirmed: a 1-item panel's document was
+   only 1410px tall against a 900px viewport, so the max possible scroll
+   landed the anchor at ~375px, not 0 -- while a 12-item panel, tall
+   enough to have real scroll room, landed correctly). min-height on
+   whichever panel is actually showing ([hidden] already collapses every
+   other one to zero regardless) guarantees enough room below ANY
+   category's own anchor for it to reach the top, no matter how few
+   items are tagged into it -- a well-populated panel that already
+   exceeds this is unaffected. */
+.home-panel{min-height:100vh}
 .home-category-bar{display:flex;align-items:center;justify-content:space-between;
   flex-wrap:wrap;gap:16px;margin:0 0 30px}
 .home-tabs{display:flex;flex-wrap:wrap;gap:10px}
 .home-tab{font:inherit;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;
   background:transparent;border:1px solid var(--rule);color:var(--ink);border-radius:999px;
   padding:8px 18px;cursor:pointer}
+a.home-tab{text-decoration:none;display:inline-block}
 .home-tab.is-active{background:var(--gold);border-color:var(--gold);color:var(--cream)}
+.home-view-controls{display:flex;flex-direction:column;align-items:flex-end;gap:8px;margin-left:auto}
 .home-view-toggle{font:inherit;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
   background:transparent;border:1px solid var(--rule);color:var(--ink);border-radius:6px;
   padding:7px 14px;cursor:pointer}
@@ -178,12 +212,13 @@
 .home-card-title{margin-top:9px;font-size:.86rem;line-height:1.35;text-align:center}
 .home-card:hover .home-card-title{color:var(--gold)}
 .home-empty-note{text-align:center;color:#6b6253;font-size:.9rem}
-</style><div class="home-category-bar"><div class="home-tabs" role="tablist"><button type="button" class="home-tab is-active" data-panel="home-panel-latest" role="tab" aria-selected="true">Latest Additions</button><button type="button" class="home-tab" data-panel="home-panel-favorites" role="tab" aria-selected="false">My Favorites</button><button type="button" class="home-tab" data-panel="home-panel-hs_editions" role="tab" aria-selected="false">Home Scholar Editions</button></div><button type="button" id="home-view-toggle" class="home-view-toggle" aria-label="Toggle grid/list view">Grid / List</button></div><div class="home-panel" id="home-panel-latest" role="tabpanel"><div class="home-grid"><a class="home-card" href="/library/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%20Crisis%201919-1939/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%20Crisis%201919-1939/_display.jpg" alt=""></div><div class="home-card-title">The Twenty Year Crisis 1919-1939</div></a><a class="home-card" href="/library/--Abbott%2C%20Jacob/Alexander%20the%20Great/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/--Abbott%2C%20Jacob/Alexander%20the%20Great/_display.jpg" alt=""></div><div class="home-card-title">Alexander the Great</div></a><a class="home-card" href="/library/--Facebook%20Pages/Modernity%20and%20the%20Bonfire%20of%20the%20Humanities/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/--Facebook%20Pages/Modernity%20and%20the%20Bonfire%20of%20the%20Humanities/dpx_017_dark-spade_display.jpg" alt=""></div><div class="home-card-title">Modernity and the Bonfire of the Humanities</div></a><a class="home-card" href="/library/Asimov%2C%20Isaac/Book%2000.%20Dummy/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Asimov%2C%20Isaac/Book%2000.%20Dummy/dpx_067_palmetto_display.jpg" alt=""></div><div class="home-card-title">Book 00. Dummy</div></a><a class="home-card" href="/library/--Fudd%2C%20Elmer/What%27s%20up%20Doc/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/--Fudd%2C%20Elmer/What%27s%20up%20Doc/dpx_053_lotus-vases_display.jpg" alt=""></div><div class="home-card-title">What&#x27;s up Doc</div></a><a class="home-card" href="/library/Steiner%2C%20Rudolf/Christianity%20as%20Mystical%20Fact/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/Christianity%20as%20Mystical%20Fact/_display.jpg" alt=""></div><div class="home-card-title">Christianity as Mystical Fact</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20Roman%20Empire/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Nardo%2C%20Don/The%20Roman%20Empire/_display.jpg" alt=""></div><div class="home-card-title">The Roman Empire</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20battle%20of%20Marathon/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Nardo%2C%20Don/The%20battle%20of%20Marathon/_display.jpg" alt=""></div><div class="home-card-title">The battle of Marathon</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20Civil%20War/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Nardo%2C%20Don/The%20Civil%20War/_display.jpg" alt=""></div><div class="home-card-title">The Civil War</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20age%20of%20Augustus/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Nardo%2C%20Don/The%20age%20of%20Augustus/_display.jpg" alt=""></div><div class="home-card-title">The age of Augustus</div></a><a class="home-card" href="/library/Nardo%2C%20Don/The%20collapse%20of%20the%20Roman%20Republic/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Nardo%2C%20Don/The%20collapse%20of%20the%20Roman%20Republic/_display.jpg" alt=""></div><div class="home-card-title">The collapse of the Roman Republic</div></a><a class="home-card" href="/library/Nardo%2C%20Don/Tycho%20Brahe/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Nardo%2C%20Don/Tycho%20Brahe/_display.jpg" alt=""></div><div class="home-card-title">Tycho Brahe</div></a></div></div><div class="home-panel" id="home-panel-favorites" role="tabpanel" hidden><div class="home-grid"><a class="home-card" href="/library/Asimov%2C%20Isaac/Book%2004.%20The%20Greeks%20A%20Great%20Adventure/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Asimov%2C%20Isaac/Book%2004.%20The%20Greeks%20A%20Great%20Adventure/_display.jpg" alt=""></div><div class="home-card-title">Book 04. The Greeks A Great Adventure</div></a><a class="home-card" href="/library/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%20Crisis%201919-1939/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%20Crisis%201919-1939/_display.jpg" alt=""></div><div class="home-card-title">The Twenty Year Crisis 1919-1939</div></a><a class="home-card" href="/library/Maybury%2C%20Richard%20J/Book%2002.%20whatever%20happened%20to%20penny%20candy/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Maybury%2C%20Richard%20J/Book%2002.%20whatever%20happened%20to%20penny%20candy/_display.jpg" alt=""></div><div class="home-card-title">Book 02. whatever happened to penny candy</div></a></div></div><div class="home-panel" id="home-panel-hs_editions" role="tabpanel" hidden><div class="home-grid"><a class="home-card" href="/library/--Fudd%2C%20Elmer/What%27s%20up%20Doc/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/--Fudd%2C%20Elmer/What%27s%20up%20Doc/dpx_053_lotus-vases_display.jpg" alt=""></div><div class="home-card-title">What&#x27;s up Doc</div></a></div></div><script>
+</style><div class="home-category-bar"><div class="home-tabs" role="tablist"><a class="home-tab" href="/The-Home-Scholar-Library/library/">Browse</a><button type="button" class="home-tab is-active" data-panel="home-panel-random" data-category="random" role="tab" aria-selected="true">Random Shelf</button><button type="button" class="home-tab" data-panel="home-panel-latest" data-category="latest" role="tab" aria-selected="false">Latest Books</button><button type="button" class="home-tab" data-panel="home-panel-favorites" data-category="favorites" role="tab" aria-selected="false">My Favorites</button><button type="button" class="home-tab" data-panel="home-panel-hs_editions" data-category="hs_editions" role="tab" aria-selected="false">Home Scholar Editions</button></div><div class="home-view-controls"><button type="button" id="home-view-toggle" class="home-view-toggle" aria-label="Toggle grid/list view">Grid / List</button><div id="home-sort-toggle-wrap"><button type="button" id="home-sort-toggle" class="home-view-toggle" data-sort="unsorted" aria-label="Toggle sorted/unsorted order for the random selection">Sorted / Unsorted</button></div></div></div><div class="home-panel" id="home-panel-random" role="tabpanel"><h2 id="random" class="home-panel-anchor">Random Shelf</h2><div class="home-grid" id="home-random-grid"><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-102%2C%20The%20Way%20Spiritual%20Beings%20Work%20Into%20Human%20Beings/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-102%2C%20The%20Way%20Spiritual%20Beings%20Work%20Into%20Human%20Beings/_display.jpg" alt=""></div><div class="home-card-title">GA-102, The Way Spiritual Beings Work Into Human Beings</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-149%2C%20Christ%20and%20the%20Spiritual%20World.%20Concerning%20the%20Search%20for%20the%20Holy%20Grail/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-149%2C%20Christ%20and%20the%20Spiritual%20World.%20Concerning%20the%20Search%20for%20the%20Holy%20Grail/_display.jpg" alt=""></div><div class="home-card-title">GA-149, Christ and the Spiritual World. Concerning the Search for the Holy Grail</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Asimov%2C%20Isaac/Book%2003.%20The%20Egyptians/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Asimov%2C%20Isaac/Book%2003.%20The%20Egyptians/_display.jpg" alt=""></div><div class="home-card-title">Book 03. The Egyptians</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-209%2C%20The%20Human%20Being%20in%20Relationship%20With%20the%20Cosmos%209/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-209%2C%20The%20Human%20Being%20in%20Relationship%20With%20the%20Cosmos%209/_display.jpg" alt=""></div><div class="home-card-title">GA-209, The Human Being in Relationship With the Cosmos 9</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Maybury%2C%20Richard%20J/Book%2010.%20World%20War%20I%20the%20Rest%20of%20the%20Story/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Maybury%2C%20Richard%20J/Book%2010.%20World%20War%20I%20the%20Rest%20of%20the%20Story/_display.jpg" alt=""></div><div class="home-card-title">Book 10. World War I the Rest of the Story</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Abbott%2C%20Jacob/Richard%20III/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Abbott%2C%20Jacob/Richard%20III/_display.jpg" alt=""></div><div class="home-card-title">Richard III</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-154%2C%20The%20Presence%20of%20the%20Dead/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-154%2C%20The%20Presence%20of%20the%20Dead/_display.jpg" alt=""></div><div class="home-card-title">GA-154, The Presence of the Dead</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-122%2C%20The%20Secrets%20of%20the%20Biblical%20Creation-Story.%20The%20Six-Day%20Work%20in%20the%20First%20Book%20of%20Moses/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-122%2C%20The%20Secrets%20of%20the%20Biblical%20Creation-Story.%20The%20Six-Day%20Work%20in%20the%20First%20Book%20of%20Moses/_display.jpg" alt=""></div><div class="home-card-title">GA-122, The Secrets of the Biblical Creation-Story. The Six-Day Work in the First Book of Moses</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-227%2C%20Initiation%20Science%20And%20the%20Development%20of%20the%20Human%20Mind/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-227%2C%20Initiation%20Science%20And%20the%20Development%20of%20the%20Human%20Mind/_display.jpg" alt=""></div><div class="home-card-title">GA-227, Initiation Science And the Development of the Human Mind</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-188%2C%20Goetheanism%2C%20a%20Transformation-Impulse%20and%20Resurrection-Thought/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-188%2C%20Goetheanism%2C%20a%20Transformation-Impulse%20and%20Resurrection-Thought/_display.jpg" alt=""></div><div class="home-card-title">GA-188, Goetheanism, a Transformation-Impulse and Resurrection-Thought</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Nardo%2C%20Don/The%20Persian%20Empire/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Nardo%2C%20Don/The%20Persian%20Empire/_display.jpg" alt=""></div><div class="home-card-title">The Persian Empire</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-217%2C%20Spiritually%20Active%20Forces%20in%20the%20Coexistence%20of%20the%20Older%20and%20Younger%20Generations/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-217%2C%20Spiritually%20Active%20Forces%20in%20the%20Coexistence%20of%20the%20Older%20and%20Younger%20Generations/_display.jpg" alt=""></div><div class="home-card-title">GA-217, Spiritually Active Forces in the Coexistence of the Older and Younger Generations</div></a></div><p class="home-empty-note" id="home-random-empty" hidden>Nothing in the library yet &mdash; check back soon.</p></div><div class="home-panel" id="home-panel-latest" role="tabpanel" hidden><h2 id="latest" class="home-panel-anchor">Latest Books</h2><div class="home-grid"><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-233%2C%20World%20History%20Illuminated%20by%20Anthroposophy%20as%20the%20Foundation%20for%20a%20Knowledge%20of%20the%20Human/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-233%2C%20World%20History%20Illuminated%20by%20Anthroposophy%20as%20the%20Foundation%20for%20a%20Knowledge%20of%20the%20Human/0_display.jpg" alt=""></div><div class="home-card-title">GA-233, World History Illuminated by Anthroposophy as the Foundation for a Knowledge of the Human</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-214%2C%20The%20Secret%20of%20the%20Trinity%20The%20Human%20Being%20and%20His%20Relationship%20to%20the%20Spiritual%20World/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-214%2C%20The%20Secret%20of%20the%20Trinity%20The%20Human%20Being%20and%20His%20Relationship%20to%20the%20Spiritual%20World/_display.webp" alt=""></div><div class="home-card-title">GA-214, The Secret of the Trinity The Human Being and His Relationship to the Spiritual World</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Hodgkin%2C%20Thomas/The%20Life%20of%20Charlemagne/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Hodgkin%2C%20Thomas/The%20Life%20of%20Charlemagne/0_display.jpg" alt=""></div><div class="home-card-title">The Life of Charlemagne</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-9%2C%20Theosophy.%20An%20Introduction%20Into%20Supersensible%20World%20Knowledge%20and%20Human%20Purpose/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-9%2C%20Theosophy.%20An%20Introduction%20Into%20Supersensible%20World%20Knowledge%20and%20Human%20Purpose/_display.webp" alt=""></div><div class="home-card-title">GA-9, Theosophy. An Introduction Into Supersensible World Knowledge and Human Purpose</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-8%2C%20Christianity%20as%20Mystical%20Fact%20and%20the%20Mysteries%20of%20Antiquity/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-8%2C%20Christianity%20as%20Mystical%20Fact%20and%20the%20Mysteries%20of%20Antiquity/0_display.jpg" alt=""></div><div class="home-card-title">GA-8, Christianity as Mystical Fact and the Mysteries of Antiquity</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-7%2C%20Mysticism%20at%20the%20Dawn%20of%20the%20Modern%20Age/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-7%2C%20Mysticism%20at%20the%20Dawn%20of%20the%20Modern%20Age/0_display.webp" alt=""></div><div class="home-card-title">GA-7, Mysticism at the Dawn of the Modern Age</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-5%2C%20Friedrich%20Nietzsche%2C%20A%20Fighter%20Against%20His%20Own%20Era/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-5%2C%20Friedrich%20Nietzsche%2C%20A%20Fighter%20Against%20His%20Own%20Era/0_display.webp" alt=""></div><div class="home-card-title">GA-5, Friedrich Nietzsche, A Fighter Against His Own Era</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-4%2C%20The%20Philosophy%20of%20Freedom/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-4%2C%20The%20Philosophy%20of%20Freedom/0_display.jpg" alt=""></div><div class="home-card-title">GA-4, The Philosophy of Freedom</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-3%2C%20Truth%20and%20Science/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-3%2C%20Truth%20and%20Science/0_display.webp" alt=""></div><div class="home-card-title">GA-3, Truth and Science</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-2%2C%20Outlines%20of%20an%20Epistemology%20of%20the%20Goethean%20World%20View%2C%20With%20Special%20Consideration%20of%20Schiller/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-2%2C%20Outlines%20of%20an%20Epistemology%20of%20the%20Goethean%20World%20View%2C%20With%20Special%20Consideration%20of%20Schiller/0_display.jpg" alt=""></div><div class="home-card-title">GA-2, Outlines of an Epistemology of the Goethean World View, With Special Consideration of Schiller</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-157a%2C%20The%20Formation%20of%20Destiny%20and%20the%20Life%20After%20Death/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-157a%2C%20The%20Formation%20of%20Destiny%20and%20the%20Life%20After%20Death/_display.webp" alt=""></div><div class="home-card-title">GA-157a, The Formation of Destiny and the Life After Death</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-191%2C%20Social%20Understanding%20From%20Spiritual-Scientific%20Cognition/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-191%2C%20Social%20Understanding%20From%20Spiritual-Scientific%20Cognition/0_display.jpg" alt=""></div><div class="home-card-title">GA-191, Social Understanding From Spiritual-Scientific Cognition</div></a></div></div><div class="home-panel" id="home-panel-favorites" role="tabpanel" hidden><h2 id="favorites" class="home-panel-anchor">My Favorites</h2><div class="home-grid"><a class="home-card" href="/The-Home-Scholar-Library/library/Asimov%2C%20Isaac/Book%2004.%20The%20Greeks%20A%20Great%20Adventure/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Asimov%2C%20Isaac/Book%2004.%20The%20Greeks%20A%20Great%20Adventure/_display.jpg" alt=""></div><div class="home-card-title">Book 04. The Greeks A Great Adventure</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Asimov%2C%20Isaac/Book%2005.%20The%20Roman%20Republic/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Asimov%2C%20Isaac/Book%2005.%20The%20Roman%20Republic/_display.jpg" alt=""></div><div class="home-card-title">Book 05. The Roman Republic</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Asimov%2C%20Isaac/Book%2006.%20The%20Roman%20Empire/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Asimov%2C%20Isaac/Book%2006.%20The%20Roman%20Empire/_display.jpg" alt=""></div><div class="home-card-title">Book 06. The Roman Empire</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%27s%20Crisis%201919-1939/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Carr%2C%20Edward%20Hallett/The%20Twenty%20Year%27s%20Crisis%201919-1939/_display.jpg" alt=""></div><div class="home-card-title">The Twenty Year&#x27;s Crisis 1919-1939</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/Aeneid%20for%20Boys%20and%20Girls/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/Aeneid%20for%20Boys%20and%20Girls/_display.jpg" alt=""></div><div class="home-card-title">Aeneid for Boys and Girls</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/Iliad%20for%20Boys%20and%20Girls/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/Iliad%20for%20Boys%20and%20Girls/_display.jpg" alt=""></div><div class="home-card-title">Iliad for Boys and Girls</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/Odyssey%20for%20Boys%20and%20Girls/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/Odyssey%20for%20Boys%20and%20Girls/_display.jpg" alt=""></div><div class="home-card-title">Odyssey for Boys and Girls</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/Sicilian%20Expedition/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/Sicilian%20Expedition/_display.jpg" alt=""></div><div class="home-card-title">Sicilian Expedition</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/Stories%20From%20Greek%20Comedians/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/Stories%20From%20Greek%20Comedians/_display.jpg" alt=""></div><div class="home-card-title">Stories From Greek Comedians</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/Stories%20From%20Greek%20Tragedians/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/Stories%20From%20Greek%20Tragedians/_display.jpg" alt=""></div><div class="home-card-title">Stories From Greek Tragedians</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/Stories%20From%20Herodotus/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/Stories%20From%20Herodotus/_display.jpg" alt=""></div><div class="home-card-title">Stories From Herodotus</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/Stories%20From%20Livy/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/Stories%20From%20Livy/_display.jpg" alt=""></div><div class="home-card-title">Stories From Livy</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Church%2C%20Alfred%20J/The%20Persian%20War/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Church%2C%20Alfred%20J/The%20Persian%20War/_display.jpg" alt=""></div><div class="home-card-title">The Persian War</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Guenon%2C%20Rene/07%20The%20Crisis%20Of%20The%20Modern%20World/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Guenon%2C%20Rene/07%20The%20Crisis%20Of%20The%20Modern%20World/_display.jpg" alt=""></div><div class="home-card-title">07 The Crisis Of The Modern World</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Guenon%2C%20Rene/The%20Essential%20Ren%C3%A9%20Gu%C3%A9non%20-%20Metaphysical%20Principles%2C%20Traditional%20Doctrines%2C%20and%20the%20Crisis%20of%20Modernity/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Guenon%2C%20Rene/The%20Essential%20Ren%C3%A9%20Gu%C3%A9non%20-%20Metaphysical%20Principles%2C%20Traditional%20Doctrines%2C%20and%20the%20Crisis%20of%20Modernity/_display.jpg" alt=""></div><div class="home-card-title">The Essential René Guénon - Metaphysical Principles, Traditional Doctrines, and the Crisis of Modernity</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Maybury%2C%20Richard%20J/Book%2002.%20Whatever%20Happened%20to%20Penny%20Candy/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Maybury%2C%20Richard%20J/Book%2002.%20Whatever%20Happened%20to%20Penny%20Candy/_display.jpg" alt=""></div><div class="home-card-title">Book 02. Whatever Happened to Penny Candy</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Nanamoli%2C%20Bhikkhu/The%20Life%20of%20the%20Buddha/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Nanamoli%2C%20Bhikkhu/The%20Life%20of%20the%20Buddha/_display.jpg" alt=""></div><div class="home-card-title">The Life of the Buddha</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Sri%20Aurobindo/Ilion%2C%20A%20Poem%20by%20Sri%20Aurobindo/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Sri%20Aurobindo/Ilion%2C%20A%20Poem%20by%20Sri%20Aurobindo/_display.jpg" alt=""></div><div class="home-card-title">Ilion, A Poem by Sri Aurobindo</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-8%2C%20Christianity%20as%20Mystical%20Fact%20and%20the%20Mysteries%20of%20Antiquity/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-8%2C%20Christianity%20as%20Mystical%20Fact%20and%20the%20Mysteries%20of%20Antiquity/0_display.jpg" alt=""></div><div class="home-card-title">GA-8, Christianity as Mystical Fact and the Mysteries of Antiquity</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-129%2C%20Wonders%20of%20the%20World%2C%20Trials%20of%20the%20Soul%2C%20and%20Revelations%20of%20the%20Spirit/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-129%2C%20Wonders%20of%20the%20World%2C%20Trials%20of%20the%20Soul%2C%20and%20Revelations%20of%20the%20Spirit/_display.jpg" alt=""></div><div class="home-card-title">GA-129, Wonders of the World, Trials of the Soul, and Revelations of the Spirit</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-142%2C%20The%20Bhagavad-Gita%20and%20the%20Letters%20of%20Paul/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-142%2C%20The%20Bhagavad-Gita%20and%20the%20Letters%20of%20Paul/_display.jpg" alt=""></div><div class="home-card-title">GA-142, The Bhagavad-Gita and the Letters of Paul</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-146%2C%20The%20Occult%20Foundations%20of%20the%20Bhagavad-Gita/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-146%2C%20The%20Occult%20Foundations%20of%20the%20Bhagavad-Gita/0_display.jpg" alt=""></div><div class="home-card-title">GA-146, The Occult Foundations of the Bhagavad-Gita</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-173%2C%20The%20Karma%20of%20Untruthfulness%2C%20Part%20One/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-173%2C%20The%20Karma%20of%20Untruthfulness%2C%20Part%20One/_display.webp" alt=""></div><div class="home-card-title">GA-173, The Karma of Untruthfulness, Part One</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-174%2C%20The%20Karma%20of%20Untruthfulness%2C%20Part%20Two/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-174%2C%20The%20Karma%20of%20Untruthfulness%2C%20Part%20Two/_display.jpg" alt=""></div><div class="home-card-title">GA-174, The Karma of Untruthfulness, Part Two</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Steiner%2C%20Rudolf/GA-233%2C%20World%20History%20Illuminated%20by%20Anthroposophy%20as%20the%20Foundation%20for%20a%20Knowledge%20of%20the%20Human/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Steiner%2C%20Rudolf/GA-233%2C%20World%20History%20Illuminated%20by%20Anthroposophy%20as%20the%20Foundation%20for%20a%20Knowledge%20of%20the%20Human/0_display.jpg" alt=""></div><div class="home-card-title">GA-233, World History Illuminated by Anthroposophy as the Foundation for a Knowledge of the Human</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Vyasa%2C%20Mahabharata/Mahabharata%20%281989%29%20Film%20by%20Peter%20Brooks%3B%20Adapted%20From%20the%20Play%20by%20Jean-Claude%20Carriere/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Vyasa%2C%20Mahabharata/Mahabharata%20%281989%29%20Film%20by%20Peter%20Brooks%3B%20Adapted%20From%20the%20Play%20by%20Jean-Claude%20Carriere/0_display.jpg" alt=""></div><div class="home-card-title">Mahabharata (1989) Film by Peter Brooks; Adapted From the Play by Jean-Claude Carriere</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Vyasa%2C%20Mahabharata/Mahabharata%20%28Saraswat%20Prakashan%20Edition%29%20Translated%20by%20Kisari%20Mohan%20Ganguli%20%5B1883-1896%5D/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Vyasa%2C%20Mahabharata/Mahabharata%20%28Saraswat%20Prakashan%20Edition%29%20Translated%20by%20Kisari%20Mohan%20Ganguli%20%5B1883-1896%5D/_display.jpg" alt=""></div><div class="home-card-title">Mahabharata (Saraswat Prakashan Edition) Translated by Kisari Mohan Ganguli [1883-1896]</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Vyasa%2C%20Mahabharata/Mahabharata%2C%20TTS%20and%20EPUPs%2C%20Translated%20by%20Kisari%20Mohan%20Ganguli%20%5B1883-1896%5D/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Vyasa%2C%20Mahabharata/Mahabharata%2C%20TTS%20and%20EPUPs%2C%20Translated%20by%20Kisari%20Mohan%20Ganguli%20%5B1883-1896%5D/_display.jpg" alt=""></div><div class="home-card-title">Mahabharata, TTS and EPUPs, Translated by Kisari Mohan Ganguli [1883-1896]</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Vyasa%2C%20Mahabharata/The%20Bhagavad%20Gita%20%28Audible%29%20Sagar%20Arya%2C%20Naxos/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Vyasa%2C%20Mahabharata/The%20Bhagavad%20Gita%20%28Audible%29%20Sagar%20Arya%2C%20Naxos/_display.jpg" alt=""></div><div class="home-card-title">The Bhagavad Gita (Audible) Sagar Arya, Naxos</div></a><a class="home-card" href="/The-Home-Scholar-Library/library/Vyasa%2C%20Mahabharata/The%20Mahabharata%20Abridged%20Penguin%20Classics/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Vyasa%2C%20Mahabharata/The%20Mahabharata%20Abridged%20Penguin%20Classics/_display.jpg" alt=""></div><div class="home-card-title">The Mahabharata Abridged Penguin Classics</div></a></div></div><div class="home-panel" id="home-panel-hs_editions" role="tabpanel" hidden><h2 id="hs_editions" class="home-panel-anchor">Home Scholar Editions</h2><div class="home-grid"><a class="home-card" href="/The-Home-Scholar-Library/library/Vyasa%2C%20Mahabharata/Mahabharata%2C%20TTS%20and%20EPUPs%2C%20Translated%20by%20Kisari%20Mohan%20Ganguli%20%5B1883-1896%5D/"><div class="home-card-thumb"><img src="https://archive.org/download/home-scholar-archive/HomeScholarArchive.zip/Vyasa%2C%20Mahabharata/Mahabharata%2C%20TTS%20and%20EPUPs%2C%20Translated%20by%20Kisari%20Mohan%20Ganguli%20%5B1883-1896%5D/_display.jpg" alt=""></div><div class="home-card-title">Mahabharata, TTS and EPUPs, Translated by Kisari Mohan Ganguli [1883-1896]</div></a></div></div><script>
 (function(){
   var STORAGE_KEY = "homeViewMode"; // separate key from the §4a file-explorer toggle
-  var tabs = document.querySelectorAll(".home-tab");
+  var tabs = document.querySelectorAll(".home-tab[data-panel]"); // excludes the "browse" link-type button -- it has no data-panel
   var panels = document.querySelectorAll(".home-panel");
   var viewToggle = document.getElementById("home-view-toggle");
+  var sortToggleWrap = document.getElementById("home-sort-toggle-wrap"); // only exists when a "random" tab is configured
 
   function activatePanel(id){
     tabs.forEach(function(t){
@@ -192,9 +227,21 @@
       t.setAttribute("aria-selected", on ? "true" : "false");
     });
     panels.forEach(function(p){ p.hidden = (p.id !== id); });
+    // Sorted/Unsorted lives in the shared control column, not inside the
+    // panel itself (see _render_view_controls()) -- so it needs its own
+    // show/hide here, in lockstep with whichever panel just activated,
+    // rather than riding along on a panel's own [hidden] attribute.
+    if (sortToggleWrap) sortToggleWrap.hidden = (id !== "home-panel-random");
   }
   tabs.forEach(function(t){
-    t.addEventListener("click", function(){ activatePanel(t.getAttribute("data-panel")); });
+    t.addEventListener("click", function(){
+      activatePanel(t.getAttribute("data-panel"));
+      // Random redraws on EVERY click, even when it's already the active
+      // tab (it ships as the default-active one) -- "a new random
+      // selection on each click" is meant literally, not just on first
+      // switch-to.
+      if (t.getAttribute("data-category") === "random") reshuffleRandom();
+    });
   });
 
   function applyViewMode(mode){
@@ -211,6 +258,149 @@
       try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
     });
   }
+
+  // ---- Random tab -----------------------------------------------------
+  // Fully static site, no server to ask for "something different" -- a
+  // fresh draw on every click is a client-side re-sample from a pool of
+  // every leaf's {title, url, thumb} baked in at build time
+  // (config.HOME_RANDOM_POOL_PATH). The pool is fetched once, lazily, on
+  // the first click that actually needs it, and cached from then on --
+  // same shape as pipeline.site_nav's own search-index fetch.
+  var randomGrid = document.getElementById("home-random-grid");
+  var randomEmpty = document.getElementById("home-random-empty");
+  var POOL_URL = "/The-Home-Scholar-Library/assets/home-random-pool.json";
+  var DRAW_COUNT = 12;
+  var poolPromise = null;
+  var sortMode = "unsorted"; // matches the server-rendered initial draw's own order
+  var lastDrawOrder = [];    // card elements from the most recent draw, in DRAW order
+
+  function loadPool(){
+    if (!poolPromise){
+      poolPromise = fetch(POOL_URL)
+        .then(function(r){ return r.ok ? r.json() : []; })
+        .catch(function(){ return []; });
+    }
+    return poolPromise;
+  }
+
+  function sampleItems(pool, n){
+    // Fisher-Yates -- unbiased, and cheap enough for a per-click draw
+    // even against a library with several thousand leaves.
+    var copy = pool.slice();
+    for (var i = copy.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = copy[i]; copy[i] = copy[j]; copy[j] = tmp;
+    }
+    return (n === null || n >= copy.length) ? copy : copy.slice(0, n);
+  }
+
+  function buildCard(item){
+    // Mirrors pipeline.home._render_home_card()'s markup exactly --
+    // keep the two in sync if that changes. textContent (not innerHTML)
+    // for the title, deliberately -- no HTML-escaping needed for
+    // pool.json's plain-text title field this way.
+    var a = document.createElement("a");
+    a.className = "home-card";
+    a.href = item.url;
+    var thumb = document.createElement("div");
+    thumb.className = "home-card-thumb";
+    if (item.thumb){
+      var img = document.createElement("img");
+      img.src = item.thumb;
+      img.alt = "";
+      thumb.appendChild(img);
+    } else {
+      var fb = document.createElement("div");
+      fb.className = "home-card-fallback";
+      fb.textContent = "📖"; // open-book glyph (U+1F4D6, as a UTF-16 surrogate pair), same fallback as the server-rendered cards
+      thumb.appendChild(fb);
+    }
+    var title = document.createElement("div");
+    title.className = "home-card-title";
+    title.textContent = item.title;
+    a.appendChild(thumb);
+    a.appendChild(title);
+    a.dataset.title = item.title;
+    return a;
+  }
+
+  function applySort(){
+    if (!randomGrid) return;
+    var cards = sortMode === "sorted"
+      ? lastDrawOrder.slice().sort(function(a, b){
+          return a.dataset.title.localeCompare(b.dataset.title, undefined, {sensitivity: "base"});
+        })
+      : lastDrawOrder;
+    cards.forEach(function(c){ randomGrid.appendChild(c); });
+  }
+
+  function renderDraw(items){
+    if (!randomGrid) return;
+    randomGrid.innerHTML = "";
+    lastDrawOrder = items.map(buildCard);
+    var hasItems = lastDrawOrder.length > 0;
+    randomGrid.hidden = !hasItems;
+    if (randomEmpty) randomEmpty.hidden = hasItems;
+    applySort(); // preserves whatever sort mode was active across the reshuffle, rather than resetting it
+  }
+
+  function reshuffleRandom(){
+    loadPool().then(function(pool){ renderDraw(sampleItems(pool, DRAW_COUNT)); });
+  }
+
+  if (randomGrid){
+    // Seed lastDrawOrder from the server-rendered initial draw so the
+    // sort toggle works correctly even if it's clicked before the
+    // visitor ever re-clicks the (already-active) Random tab.
+    lastDrawOrder = Array.prototype.slice.call(randomGrid.children);
+    lastDrawOrder.forEach(function(c){
+      var t = c.querySelector(".home-card-title");
+      c.dataset.title = t ? t.textContent : "";
+    });
+  }
+
+  // Single button, same "flip state on click, label never changes" shape
+  // as viewToggle above (and the exact same .home-view-toggle look, per
+  // request) -- not a two-button segmented control any more.
+  var sortToggle = document.getElementById("home-sort-toggle");
+  if (sortToggle){
+    sortToggle.addEventListener("click", function(){
+      sortMode = sortMode === "sorted" ? "unsorted" : "sorted";
+      sortToggle.setAttribute("data-sort", sortMode);
+      applySort();
+    });
+  }
+
+  // ---- Deep-link support (badges elsewhere on the site) ---------------
+  // pipeline.badges renders Favorite/Home Scholar Edition/New badges as
+  // links straight into the matching category here -- "/#favorites",
+  // "/#hs_editions", "/#latest" (pipeline.badges.HOME_ANCHOR_* / this
+  // module's own _TAB_CATEGORIES keys) -- rather than just to "/". Honor
+  // that on load the same way a tab click would. Placed at the very end
+  // of this IIFE, after every function/variable it calls is already
+  // defined/assigned above (activatePanel, reshuffleRandom, randomGrid),
+  // same reasoning tabs.forEach's own click handler already relies on.
+  // Unknown/disabled category (e.g. a library owner removed that button
+  // from config.HOME_BUTTONS) degrades to "do nothing, default tab
+  // stays active" rather than a dead click -- see this module's own
+  // comment about the earlier "#<tab-id> matched nothing" mistake this
+  // is deliberately not repeating.
+  (function activateFromHash(){
+    var key = (window.location.hash || "").replace(/^#/, "");
+    if (!key) return;
+    var panelId = "home-panel-" + key;
+    if (!document.getElementById(panelId)) return;
+    activatePanel(panelId);
+    if (key === "random") reshuffleRandom();
+    // Explicit scroll, not just the browser's own fragment-navigation
+    // scroll -- the target anchor (_render_panel_anchor(), id === key)
+    // is inside a panel that starts [hidden] for every non-default
+    // category, so it isn't laid out yet when the browser first
+    // processes the URL's fragment on page load; activatePanel() above
+    // has to un-hide it first, then THIS scrolls to it explicitly.
+    var anchor = document.getElementById(key);
+    if (anchor) anchor.scrollIntoView({ behavior: "smooth", block: "start" });
+  })();
 })();
 </script></section>
   </main>
@@ -218,7 +408,117 @@
 </div>
 <script>
 (function() {
-  var INDEX_URL = '/assets/search-index.json';
+  var MAX_RETRIES = 2;            // up to 3 attempts total per click
+  var RETRY_BASE_DELAY_MS = 400;  // doubles each retry, plus jitter
+  var CHECK_TIMEOUT_MS = 4000;    // give up on one attempt after this
+  var INDICATOR_DELAY_MS = 220;   // only show "checking" if it's not instant
+
+  function isEligible(a, e) {
+    if (!a || !a.getAttribute("href")) return false;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return false;
+    if (a.hasAttribute("download")) return false;
+    var url;
+    try { url = new URL(a.href, window.location.href); } catch (err) { return false; }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
+    if (url.origin !== window.location.origin) return false;
+    // Fragment-only link on the current document -- nothing to verify.
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return false;
+    return true;
+  }
+
+  function checkOnce(url) {
+    var hasAbort = "AbortController" in window;
+    var controller = hasAbort ? new AbortController() : null;
+    var timer = controller ? setTimeout(function() { controller.abort(); }, CHECK_TIMEOUT_MS) : null;
+    return fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    }).then(function(resp) {
+      if (timer) clearTimeout(timer);
+      return resp;
+    }, function(err) {
+      if (timer) clearTimeout(timer);
+      throw err;
+    });
+  }
+
+  function verify(url, attemptNum) {
+    return checkOnce(url).then(function(resp) {
+      // A real 404 means the page genuinely isn't there right now --
+      // retrying won't change that, so stop and let it through as-is
+      // rather than delaying an accurate result.
+      if (resp.status === 404) return true;
+      if (!resp.ok && attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    }).catch(function() {
+      // Network error / timeout / aborted request -- exactly the
+      // transient-hiccup case this exists for. Worth a retry.
+      if (attemptNum < MAX_RETRIES) return retryAfterDelay(url, attemptNum);
+      return true;
+    });
+  }
+
+  function retryAfterDelay(url, attemptNum) {
+    var delay = RETRY_BASE_DELAY_MS * Math.pow(2, attemptNum) + Math.random() * 150;
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve(verify(url, attemptNum + 1)); }, delay);
+    });
+  }
+
+  var indicatorTimer = null;
+  var indicatorEl = null;
+
+  function ensureIndicatorStyle() {
+    if (document.getElementById("nav-reliability-style")) return;
+    var style = document.createElement("style");
+    style.id = "nav-reliability-style";
+    style.textContent =
+      "@keyframes nav-reliability-sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}" +
+      "#nav-reliability-bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:99999;" +
+      "background:linear-gradient(90deg,transparent,#9C6B2E,transparent);background-size:200% 100%;" +
+      "animation:nav-reliability-sweep 1s linear infinite;opacity:0.7;pointer-events:none;}";
+    document.head.appendChild(style);
+  }
+
+  function showIndicator() {
+    if (indicatorEl) return;
+    ensureIndicatorStyle();
+    indicatorEl = document.createElement("div");
+    indicatorEl.id = "nav-reliability-bar";
+    indicatorEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(indicatorEl);
+  }
+
+  function hideIndicator() {
+    if (indicatorTimer) { clearTimeout(indicatorTimer); indicatorTimer = null; }
+    if (indicatorEl) { indicatorEl.remove(); indicatorEl = null; }
+  }
+
+  document.addEventListener("click", function(e) {
+    var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!isEligible(a, e)) return;
+
+    e.preventDefault();
+    var href = a.href;
+    indicatorTimer = setTimeout(showIndicator, INDICATOR_DELAY_MS);
+
+    verify(href, 0).then(function() {
+      hideIndicator();
+      window.location.href = href;
+    }).catch(function() {
+      // Nothing above should reject, but never leave a click doing
+      // nothing -- fall through to a normal navigation regardless.
+      hideIndicator();
+      window.location.href = href;
+    });
+  }, true);
+})();
+
+(function() {
+  var INDEX_URL = '/The-Home-Scholar-Library/assets/search-index.json';
   var indexPromise = null;
 
   function loadIndex() {

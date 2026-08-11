@@ -1,0 +1,553 @@
+{
+  "schema": 1,
+  "book_title": "Retreat of the Ten Thousand",
+  "profile": "heritage_history",
+  "pages": [
+    {
+      "path": "pages/p0001.html",
+      "default_label": "Cover",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/cover.xhtml",
+          "label": "Retreat of the Ten Thousand",
+          "synthetic": true,
+          "role": "cover"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0002.html",
+      "default_label": "Front Matter",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/front-matter.html",
+          "label": "Front Matter",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0003.html",
+      "default_label": "The Great King",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/king.html",
+          "label": "The Great King",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0004.html",
+      "default_label": "The Persian Empire",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/empire.html",
+          "label": "The Persian Empire",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0005.html",
+      "default_label": "Hellas",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/hellas.html",
+          "label": "Hellas",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0006.html",
+      "default_label": "The Rival Brothers",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/rival.html",
+          "label": "The Rival Brothers",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0007.html",
+      "default_label": "Preparations",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/preparations.html",
+          "label": "Preparations",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0008.html",
+      "default_label": "On the March",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/march.html",
+          "label": "On the March",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0009.html",
+      "default_label": "The Princess Epyaxa",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/princess.html",
+          "label": "The Princess Epyaxa",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0010.html",
+      "default_label": "Clearchus",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/clearchus.html",
+          "label": "Clearchus",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0011.html",
+      "default_label": "Negotiations at Tarsus",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/tarsus.html",
+          "label": "Negotiations at Tarsus",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0012.html",
+      "default_label": "From Tarsus to Myriandus",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/myriandus.html",
+          "label": "From Tarsus to Myriandus",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0013.html",
+      "default_label": "Crossing the Euphrates",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/crossing.html",
+          "label": "Crossing the Euphrates",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0014.html",
+      "default_label": "In the Desert",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/desert.html",
+          "label": "In the Desert",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0015.html",
+      "default_label": "Treachery of Orontes",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/treachery.html",
+          "label": "Treachery of Orontes",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0016.html",
+      "default_label": "The King Approaches",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/approaches.html",
+          "label": "The King Approaches",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0017.html",
+      "default_label": "Before the Battle",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/battle.html",
+          "label": "Before the Battle",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0018.html",
+      "default_label": "The Battle of Cunaxa",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/cunaxa.html",
+          "label": "The Battle of Cunaxa",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0019.html",
+      "default_label": "Treaty with Ariaeus",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/treaty.html",
+          "label": "Treaty with Ariaeus",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0020.html",
+      "default_label": "Treaty with the Great King",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/treaty2.html",
+          "label": "Treaty with the Great King",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0021.html",
+      "default_label": "Defection of Ariaeus",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/defection.html",
+          "label": "Defection of Ariaeus",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0022.html",
+      "default_label": "Conference with Tissaphernes",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/conference.html",
+          "label": "Conference with Tissaphernes",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0023.html",
+      "default_label": "Treachery of Tissaphernes",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/treachery2.html",
+          "label": "Treachery of Tissaphernes",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0024.html",
+      "default_label": "Xenophon",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/xenophon.html",
+          "label": "Xenophon",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0025.html",
+      "default_label": "Election of Officers",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/election.html",
+          "label": "Election of Officers",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0026.html",
+      "default_label": "Xenophon Addresses Troops",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/addresses.html",
+          "label": "Xenophon Addresses Troops",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0027.html",
+      "default_label": "Annoyed by Mithridates",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/annoyed.html",
+          "label": "Annoyed by Mithridates",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0028.html",
+      "default_label": "Harassed by Tissaphernes",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/harassed.html",
+          "label": "Harassed by Tissaphernes",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0029.html",
+      "default_label": "The Last of Tissaphernes",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/last.html",
+          "label": "The Last of Tissaphernes",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0030.html",
+      "default_label": "River or Mountains?",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/river.html",
+          "label": "River or Mountains?",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0031.html",
+      "default_label": "The Carduchians",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/carduchians.html",
+          "label": "The Carduchians",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0032.html",
+      "default_label": "Seizing a Pass",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/pass.html",
+          "label": "Seizing a Pass",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0033.html",
+      "default_label": "A Long Day's Fighting",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/fighting.html",
+          "label": "A Long Day's Fighting",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0034.html",
+      "default_label": "Crossing of the Kentrites",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/crossing2.html",
+          "label": "Crossing of the Kentrites",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0035.html",
+      "default_label": "The Satrap Tiribazus",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/satrap.html",
+          "label": "The Satrap Tiribazus",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0036.html",
+      "default_label": "An Armenian Winter",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/winter.html",
+          "label": "An Armenian Winter",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0037.html",
+      "default_label": "Armenian Villages",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/villages.html",
+          "label": "Armenian Villages",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0038.html",
+      "default_label": "The Taochians",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/taochians.html",
+          "label": "The Taochians",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0039.html",
+      "default_label": "The Sea! The Sea!",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/sea.html",
+          "label": "The Sea! The Sea!",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0040.html",
+      "default_label": "The Macronians",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/macronians.html",
+          "label": "The Macronians",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0041.html",
+      "default_label": "Games at Trebizond",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/games.html",
+          "label": "Games at Trebizond",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    },
+    {
+      "path": "pages/p0042.html",
+      "default_label": "After-life of Xenophon",
+      "members": [
+        {
+          "index": 0,
+          "source": "content/after.html",
+          "label": "After-life of Xenophon",
+          "synthetic": false,
+          "role": "presentation"
+        }
+      ]
+    }
+  ]
+}

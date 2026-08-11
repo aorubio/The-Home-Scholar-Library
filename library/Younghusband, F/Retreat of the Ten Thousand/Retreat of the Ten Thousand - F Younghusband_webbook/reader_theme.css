@@ -1,0 +1,426 @@
+/* =========================================================
+   reader_theme.css
+   A general-purpose "online book reading" template theme.
+   Drop into any generated book site alongside the book's own
+   stylesheet.css. Load this file AFTER stylesheet.css so it
+   controls page chrome without fighting the book's own rules,
+   which are scoped inside .book-page by build_site.py.
+   ========================================================= */
+
+:root {
+  --page-bg: #f7f3ea;          /* cream page color */
+  --page-shadow: 0 2px 8px rgba(0,0,0,0.12), 0 12px 40px rgba(0,0,0,0.10);
+  --ink: #2b2620;
+  --accent: #8a6d3b;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --measure: 42em;             /* readable line length */
+}
+
+/* Decorative tiled background behind the page.
+   Swap the data-URI for your own tile image if you have one;
+   this is a lightweight inline SVG so it works with no extra asset. */
+html {
+  background-color: #d8cdb8;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%23d8cdb8'/%3E%3Cpath d='M0 0h60v60H0z' fill='none' stroke='%23c9bda3' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%23c9bda3'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+body {
+  margin: 0;
+  padding: var(--gutter) 0 6rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* The "page" card that sits on the decorative background */
+.book-page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  background: var(--page-bg);
+  color: var(--ink);
+  padding: clamp(2rem, 6vw, 4.5rem) clamp(1.5rem, 6vw, 4rem);
+  box-shadow: var(--page-shadow);
+  border-radius: 3px;
+
+
+}
+
+
+
+/* Drop cap on the first paragraph after a heading/header block */
+
+
+
+
+
+
+/* Reading nav bar — sticky footer, styled as site chrome (outside .book-page) */
+.book-nav {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: var(--measure);
+  margin: 2rem auto 0;
+  padding: 0.85rem 1.25rem;
+  background: rgba(43,38,32,0.92);
+  backdrop-filter: blur(4px);
+  border-radius: 999px;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+
+.book-nav a {
+  color: #f0e9d8;
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+}
+.book-nav a:hover { text-decoration: underline; }
+.book-nav .toc-link { opacity: 0.85; font-variant: small-caps; letter-spacing: 0.05em; }
+
+/* Index / table of contents page */
+.toc-page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  background: var(--page-bg);
+  box-shadow: var(--page-shadow);
+  padding: clamp(2rem, 6vw, 4.5rem);
+  border-radius: 3px;
+  font-family: Georgia, serif;
+}
+.toc-page h1 {
+  text-align: center;
+  font-family: "Trajan Pro", "Cinzel", Georgia, serif;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.2em;
+}
+.toc-page .toc-subtitle {
+  text-align: center;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 2.5em;
+}
+.toc-page ol {
+  line-height: 2.1;
+  columns: 1;
+}
+.toc-page a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(138,109,59,0.3); }
+.toc-page a:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  .book-page, .toc-page { border-radius: 0; }
+  .book-nav { border-radius: 12px; font-size: 0.82rem; }
+}
+
+
+/* build_site: rendering contract */
+html {
+    /* --hs-outer-bg (2026-09-04, single-source-of-truth pass -- see
+       pipeline.backgrounds.ENGINE_COLORS's own comment for the full
+       account): the SAME custom property pipeline.backgrounds' own
+       per-page <style> block declares on :root for THIS page's resolved
+       engine, and pipeline.webbook_nav's preapply_script()/
+       applyBackgroundOverride() overwrite for a visitor's saved/live
+       override. Was --bg-outer, a leftover hook from the deleted
+       per-book generated-theme system (module docstring's "WHAT MOVED
+       HERE") that nothing ever actually set -- this margin silently
+       fell back to the literal #d8cdb8 on every page load, which is
+       exactly what let it flash as "plain cream" while the decorative
+       canvas was still loading, regardless of which engine a visitor
+       had chosen. #d8cdb8 stays as the fallback for when backgrounds
+       are disabled entirely (no .hs-content, no reason for
+       pipeline.backgrounds to ever declare this property) -- unchanged
+       from the look before this pass. */
+    background-color: var(--hs-outer-bg, #d8cdb8) !important;
+    background-image: var(--bg-pattern, none) !important;
+    background-size: var(--bg-pattern-size, auto) !important;
+    background-repeat: repeat !important;
+    color: var(--ink, #2b241c);
+}
+
+/* EPUBs such as Gutenberg may put an opaque background on body. */
+body,
+body.x-ebookmaker {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+.book-page,
+.toc-page {
+    background: var(--page-bg, #fffdf8) !important;
+    color: var(--ink, #2b241c);
+}
+
+/* Generated TOC links must follow the reader's live ink color (set by
+   pipeline.backgrounds per generator/mode via .hs-content's inline
+   style/color), not the base template's static --ink default. .toc-page
+   itself already gets color:inherit !important from reader_controls.css,
+   but that doesn't reach <a> descendants once something gives them their
+   own explicit color -- and the base template's own .toc-page a rule
+   does exactly that (color: var(--ink), a fixed dark value). Since
+   nearly all of index.html's visible text is chapter links, the whole
+   contents page reads in dark ink even in a dark generator mode. This
+   rule is appended after the base template's own rule, so at equal
+   specificity it wins without needing !important. */
+.toc-page a {
+    color: inherit;
+}
+
+/* Reader page geometry must not depend on publisher body/layout rules.
+   padding/min-height need forcing here too, not just width/box-sizing:
+   without !important, a publisher's own EPUB CSS applying a class to
+   <body> (e.g. Calibre's body.calibre1) has higher specificity than the
+   base template's plain `body{...}` rule and silently zeroes out the
+   vertical gutter + min-height the sticky-footer nav layout below
+   depends on. Concretely: every real book page (body class="calibreN")
+   renders with 0 padding and no 100vh floor, while index.html (no
+   publisher body class) keeps the template's intended values -- so the
+   nav lands in a visibly different place on index.html than on every
+   other page, and short chapter pages don't reach a full viewport at
+   all before the nav appears, instead of "every page fills the screen
+   at minimum, nav in the same place page to page" as intended. */
+body {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: var(--gutter) 0 6rem !important;
+    min-height: 100vh !important;
+}
+.book-page,
+.toc-page {
+    box-sizing: border-box;
+    width: min(calc(100% - 2rem), calc(var(--measure, 42em) + 8rem));
+}
+.book-nav {
+    box-sizing: border-box;
+    width: min(calc(100% - 2rem), calc(var(--measure, 42em) + 8rem));
+    max-width: none;
+}
+
+/* pipeline.backgrounds' .hs-content card (in-library pages only -- see
+   pipeline.backgrounds.render_tokens()'s own docstring) relies on ITS
+   CALLER'S body{} rule for horizontal gutters: "Only the horizontal
+   margins outside each template's own existing body{max-width:...;
+   margin:...auto} rule are 'outer gutters' for the background to
+   occupy ... this module doesn't need its own max-width." Every other
+   consumer (pipeline.catalog_renderer, pipeline.renderer,
+   pipeline.library_index) gives body exactly that rule. This template
+   can't: the "must not depend on publisher body/layout rules" reset
+   two rules above deliberately strips body's own max-width so a
+   publisher's own EPUB CSS can't leak a stray width/max-width onto it
+   -- so body can never be the thing that gives .hs-content its side
+   gutters here. Giving .hs-content the same width formula .book-page/
+   .book-nav already use above (one value, one place, so all three stay
+   in lockstep) is the fix that belongs on this side of the module
+   boundary; pipeline.backgrounds' own contract and its other three
+   callers are untouched. Without this, .hs-content spans the full,
+   unconstrained body width with no horizontal gutter at all -- on any
+   theme where the card's color contrasts with the page background,
+   this is the visible "page claims almost the entire viewport" bug,
+   independent of (and still present after) the vertical min-height
+   already being correct by design.
+   Portable pages never get a background at all (build_one_webbook()'s
+   portable=True pass -- see _background_tokens()), so .hs-content is
+   always empty there; this rule is a no-op for that build. */
+.hs-content {
+    box-sizing: border-box;
+    width: min(calc(100% - 2rem), calc(var(--measure, 42em) + 8rem));
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Smooth a LIVE color change while already reading -- NOT a page-load
+   handoff any more (updated 2026-09-04; the original comment here
+   described an earlier state where .hs-content started from a flat,
+   uncorrelated default and the generator's own script snapped it to the
+   real color once it ran, which read as a "flash"). That case is fixed
+   at the source now: pipeline.backgrounds bakes THIS page's own
+   already-known-correct color into --hs-reader-bg/--hs-reader-ink
+   before anything paints, and pipeline.webbook_nav's preapply_script()
+   does the same for a visitor's saved override -- there is no
+   default-to-resolved swap left on an ordinary page load for this
+   transition to smooth. What it still does: a visitor picking a
+   different engine from the settings panel WHILE reading changes
+   --hs-reader-bg/--hs-reader-ink live (pipeline.webbook_nav's
+   applyBackgroundOverride()), and that change is SUPPOSED to be
+   visible -- this turns it into a brief cross-fade instead of a pop. */
+.hs-content {
+    transition: background-color .45s ease, color .45s ease;
+}
+
+/* Cross-document View Transitions: smooths everything ELSE about a
+   Next/Previous navigation (layout, illustrations, nav bar) into a
+   dissolve instead of a hard cut, the same way any ordinary link
+   navigation looks without this. Not doing any background-color work
+   any more -- that no longer needs bridging at the navigation boundary,
+   since both the outgoing and incoming page already paint their own
+   correct color from the first frame (see the transition rule above's
+   own updated comment for the history). Opting in here makes supporting
+   browsers (Chromium 126+; a progressive enhancement -- browsers
+   without support simply navigate as before, no fallback code needed)
+   automatically cross-fade the outgoing page's rendered frame into the
+   incoming page's. Every reader page loads this stylesheet, so both the
+   outgoing and incoming document opt in identically. */
+@view-transition {
+    navigation: auto;
+}
+
+/* Nested-pane frame contract. reader_controls.css (generated separately,
+   further down in build_pages(), by pipeline.webbook_nav.webbook_nav_
+   style() -- NOT copied from a static file the way THIS file is, and
+   NOT touched by anything in this function) already neutralizes the
+   inner card's own fill/text color: `.hs-content .book-page, .hs-content
+   .toc-page { background: transparent !important; color: inherit
+   !important; }`. That never touches box-shadow/border-radius (both
+   still declared on .book-page/.toc-page by the rest of THIS template,
+   above), so the inner card keeps drawing its own rounded, shadowed
+   rectangle on top of the outer .hs-content card's rounded, shadowed
+   rectangle (declared by pipeline.backgrounds' per-page inline <style>)
+   -- two independently framed panels nested inside each other, visible
+   regardless of whether their fill colors match. This rule belongs
+   here, in reader_theme.css, and not alongside the color rule in
+   reader_controls.css: build_pages() copies this file and then calls
+   normalize_reader_rendering_contract() (this function) BEFORE it
+   writes reader_controls.css a few lines later (see that function's
+   own comment on why -- webbook_nav.script()'s already-modernized JS
+   would be corrupted by a second pass of this function's legacy JS
+   fixup if reader_controls.js already existed). Both of this function's
+   os.path.isfile() guards mean anything appended to reader_controls.css
+   from here is silently never written on a real build -- it only
+   exists once this function has already returned. !important here
+   guarantees this still wins regardless of reader_controls.css's own
+   load order (it links after this file) or its content. In-library
+   pages should read as ONE surface: the outer .hs-content card is the
+   frame; the inner .book-page/.toc-page becomes plain content within
+   it, no frame of its own. Portable pages (no .hs-content wrapper --
+   see build_one_webbook()'s portable=True pass) are untouched: this
+   selector only matches book-page/toc-page when nested inside
+   .hs-content. */
+.hs-content .book-page,
+.hs-content .toc-page {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+/* The reading page sizes to its own content (previous rule removed a
+   fixed min-height here) so short front matter doesn't force a nearly
+   viewport-tall card with almost no background gutter left showing.
+   But .book-nav must not then land wherever short content happens to
+   end -- it should sit in the same place page to page. Both possible
+   nav parents (body directly on a portable page; .hs-content, the
+   in-library site-chrome wrapper pipeline.backgrounds renders around
+   book-page + book-nav, on an in-library page) become a min-height:100vh
+   flex column, and margin-top:auto on .book-nav claims all the leftover
+   space above it -- a standard sticky-footer layout, not a new one-off
+   rule. Short pages: nav pinned to the bottom of the viewport, background
+   gutter visible above it. Long pages: nav sits directly after content
+   as before, and .book-nav's own position:sticky (declared in the base
+   theme) still keeps it glued to the viewport bottom while scrolling. */
+body,
+.hs-content {
+    display: flex !important;
+    flex-direction: column !important;
+}
+.book-nav {
+    margin-top: auto !important;
+}
+
+html[data-reader-font="original"] .book-page:not(.toc-page) {
+    font-family: inherit;
+}
+html[data-reader-font="original"] .toc-page {
+    font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+
+/* Generated logical-page numbering is reader-owned metadata. */
+.reader-chapter-number {
+    margin: 0 0 1rem 0;
+    font-family: system-ui, sans-serif;
+    font-size: 1.56rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent, #6b4f32);
+}
+
+/* Navigation is reader chrome, not publisher content. */
+.book-nav {
+    background: var(--nav-bg, rgba(43, 38, 32, 0.94)) !important;
+    color: var(--nav-ink, #f0e9d8) !important;
+}
+.book-nav a,
+.book-nav a:visited,
+.book-nav .toc-link,
+.reader-settings-toggle {
+    color: var(--nav-ink, #f0e9d8) !important;
+}
+.book-nav a:hover,
+.book-nav a:focus {
+    color: var(--nav-accent, #ffffff) !important;
+}
+
+/* build_site: stable four-slot reader navigation */
+.book-nav:not(.settings-only) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(.2rem, 1vw, .75rem);
+}
+.book-nav .prev-link, .book-nav .prev-slot { grid-column: 1; justify-self: start; }
+.book-nav .toc-link { grid-column: 2; justify-self: center; white-space: nowrap; }
+.book-nav .next-link, .book-nav .next-slot { grid-column: 3; justify-self: end; white-space: nowrap; }
+.book-nav .settings-slot { grid-column: 4; justify-self: end; display: inline-flex; }
+.book-nav > .reader-settings-toggle { grid-column: 4; justify-self: end; }
+.book-nav .prev-link, .book-nav .next-link { white-space: nowrap; min-width: max-content; }
+@media (max-width: 34rem) {
+    .book-nav:not(.settings-only) {
+        grid-template-columns: auto minmax(0, 1fr) auto auto;
+        padding-inline: .55rem !important;
+        font-size: .78rem !important;
+    }
+    .book-nav .toc-link { overflow: hidden; text-overflow: ellipsis; max-width: 8.5rem; }
+    .book-nav a, .reader-settings-toggle { padding-inline: .35rem !important; }
+}
+
+/* build_site: generated TOC compatibility */
+/*
+ * index.html is generated reader UI. Neutralize first-letter/drop-cap
+ * decoration inside generated TOC UI only.
+ * Ordinary chapter .book-page content is intentionally unaffected.
+ */
+.toc-page .toc-subtitle::first-letter,
+.toc-page li::first-letter,
+.toc-page a::first-letter {
+    float: none !important;
+    display: inline !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    font-style: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    text-transform: inherit !important;
+    color: inherit !important;
+}
+
+
+
+/* build_site: presentation-page navigation */
+.reader-subtoc { margin:0 0 1.5rem; padding:.8rem 1rem; border:1px solid color-mix(in srgb,currentColor 18%,transparent); border-radius:.45rem; font-family:system-ui,sans-serif; font-size:.9rem; line-height:1.35; }
+.reader-subtoc-title { margin:0 0 .45rem; font-weight:700; }
+.reader-subtoc ul { margin:.2rem 0; padding-left:1.25rem; list-style:none; }
+.reader-subtoc > ul { padding-left:0; }
+.reader-outline, .reader-outline ul, .reader-supplemental-outline, .reader-supplemental-outline ul { list-style:none; }
+.reader-supplemental { margin-bottom:1.5rem; }
+.reader-supplemental-outline { padding-left:0; }
+.reader-outline { padding-left:0; }
+.reader-outline ul { margin:.3rem 0 .3rem 1.25rem; padding-left:.8rem; border-left:1px solid color-mix(in srgb,currentColor 18%,transparent); }
+.reader-subtoc li { margin:.22rem 0; }
+.reader-subtoc a { color:var(--reader-link,currentColor); }\n
